@@ -5,7 +5,7 @@ A validator of Heroku app.json manifests.
 ## Installation
 
 ```sh
-npm install heroku-app-manifest --save
+npm install app-manifest --save
 ```
 
 ## Usage
