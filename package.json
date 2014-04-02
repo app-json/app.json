@@ -1,7 +1,7 @@
 {
-  "name": "app-manifest-validator",
-  "version": "0.0.0",
-  "description": "validate heroku.json files",
+  "name": "heroku-app-manifest",
+  "version": "0.1.0",
+  "description": "A validator of Heroku app.json manifests",
   "main": "index.js",
   "scripts": {
     "test": "mocha"
@@ -24,7 +24,8 @@
     "modella-validators": "0.0.9",
     "model": "^0.5.10",
     "jsonlint": "^1.6.0",
-    "is-url": "^1.0.0"
+    "is-url": "^1.0.0",
+    "steeltoe": "^1.0.1"
   },
   "devDependencies": {
     "mocha": "^1.18.0"
