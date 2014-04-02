@@ -20,10 +20,6 @@
   },
   "homepage": "https://github.com/heroku/node-app-manifest",
   "dependencies": {
-    "modella": "^0.2.8",
-    "modella-validators": "0.0.9",
-    "model": "^0.5.10",
-    "jsonlint": "^1.6.0",
     "is-url": "^1.0.0",
     "steeltoe": "^1.0.1"
   },
