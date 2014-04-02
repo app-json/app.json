@@ -1,5 +1,5 @@
 {
-  "name": "heroku-app-manifest",
+  "name": "app-manifest",
   "version": "0.1.0",
   "description": "A validator of Heroku app.json manifests",
   "main": "index.js",
