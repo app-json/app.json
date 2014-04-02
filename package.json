@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/heroku/app-manifest-validator"
+    "url": "https://github.com/heroku/node-app-manifest"
   },
   "keywords": [
     "heroku.json"
@@ -16,9 +16,9 @@
   "author": "Zeke Sikelianos <zeke@sikelianos.com> (http://zeke.sikelianos.com/)",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/heroku/app-manifest-validator/issues"
+    "url": "https://github.com/heroku/node-app-manifest/issues"
   },
-  "homepage": "https://github.com/heroku/app-manifest-validator",
+  "homepage": "https://github.com/heroku/node-app-manifest",
   "dependencies": {
     "modella": "^0.2.8",
     "modella-validators": "0.0.9",
