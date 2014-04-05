@@ -1,6 +1,6 @@
 {
   "name": "app-manifest",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "A validator of Heroku app.json manifests",
   "main": "index.js",
   "scripts": {
@@ -11,7 +11,7 @@
     "url": "https://github.com/heroku/node-app-manifest"
   },
   "keywords": [
-    "heroku.json"
+    "app.json"
   ],
   "author": "Zeke Sikelianos <zeke@sikelianos.com> (http://zeke.sikelianos.com/)",
   "license": "ISC",
@@ -20,8 +20,7 @@
   },
   "homepage": "https://github.com/heroku/node-app-manifest",
   "dependencies": {
-    "is-url": "^1.0.0",
-    "steeltoe": "^1.0.1"
+    "revalidator": "^0.1.6"
   },
   "devDependencies": {
     "mocha": "^1.18.0"

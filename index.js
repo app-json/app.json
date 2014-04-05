@@ -1,53 +1,52 @@
 var fs = require("fs")
-var isUrl = require("is-url")
-var steeltoe = require("steeltoe")
-
-var blank = function(thing) {
-  return thing && thing !== ""
-}
+var schema = require('./schema')
+var revalidator = require('revalidator')
 
 var Manifest = module.exports = (function() {
 
-  function Manifest(payload) {
-    if (typeof(payload) === 'string' && payload.match(/\.json$/i)) {
-      this.payload = JSON.parse(fs.readFileSync(payload))
-    } else if (typeof(payload) === 'string') {
-      this.payload = JSON.parse(payload)
-    } else if (payload && typeof(payload) === 'object') {
-      this.payload = payload
-    }
-  }
+  function Manifest(raw) {
 
-  Manifest.prototype.isValid = function() {
-    this.validate()
-    return this.errors.length === 0
+    // If raw is a filename open it and parse it
+    // If raw is a JSON string, parse it
+    // If raw is already an object, we're good
+    if (typeof(raw) === 'string' && raw.match(/\.json$/i)) {
+      raw = JSON.parse(fs.readFileSync(raw))
+    } else if (typeof(raw) === 'string') {
+      raw = JSON.parse(raw)
+    }
+
+    for (key in raw) {
+      if (raw.hasOwnProperty(key)) {
+        this[key] = raw[key]
+      }
+    }
+
+    this.__defineGetter__("valid", function(){
+      return this.validate().valid
+    })
+
+    this.__defineGetter__("errors", function(){
+      var e = this.validate().errors
+      if (e.length === 0) return null
+      return e
+    })
+
+    return this
   }
 
   Manifest.prototype.validate = function() {
-    this.errors = []
-    var p = this.payload
+    return revalidator.validate(this, schema)
+  }
 
-    if (!p.name || p.name === "") {
-      this.errors.push({
-        property: "name",
-        message: "name is required"
-      })
+  Manifest.prototype.toJSON = function() {
+    // Can't stringify `this`, so rebuild self
+    var out = {}
+    for (key in this) {
+      if (this.hasOwnProperty(key)) {
+        out[key] = this[key]
+      }
     }
-
-    if (p.urls.website && !isUrl(p.urls.website)) {
-      this.errors.push({
-        property: "urls.website",
-        message: "urls.website is not a valid URL"
-      })
-    }
-
-    if (p.urls.source && !isUrl(p.urls.source)) {
-      this.errors.push({
-        property: "urls.source",
-        message: "urls.source is not a valid URL"
-      })
-    }
-    return this
+    return JSON.stringify(out, null, 2)
   }
 
   return Manifest

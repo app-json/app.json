@@ -10,8 +10,25 @@ npm install app-manifest --save
 
 ## Usage
 
+There are three ways to instantiate a manifest:
+
+### Instantiate with a JSON filename
+
 ```js
-manifest = new Manifest({
+var manifest = new Manifest(__dirname + "/path/to/app.json")
+```
+
+### Instantiate with a JSON string
+
+```js
+var rawJSON = "{name: \"small-sharp-tool\", description: \"This app does one little thing, and does it well.\"}"
+var manifest = new Manifest(rawJSON)
+```
+
+### Instantiate with a JavaScript object
+
+```js
+var manifest = new Manifest({
   name: "small-sharp-tool",
   description: "This app does one little thing, and does it well.",
   keywords: ["productivity", "HTML5", "scalpel"],
@@ -27,18 +44,42 @@ manifest = new Manifest({
     "mongolab:shared-single-small"
   ]
 })
-
-manifest.isValid()
-// true
-
-manifest.payload.name = null
-manifest.payload.urls.website = "derp.org"
-manifest.isValid()
-// false
-
-manifest.errors
-// [
-//   {property: "name", message: "name is required"},
-//   {property: "urls.source", message: "urls.source is not a valid URL"}
-// ]
 ```
+
+## Validatation
+
+Once you've instantiated a manifest, you can validate it:
+
+### .valid
+
+Validates the manifest and returns `true` or `false`
+
+### .errors
+
+Returns `null` if manifest is valid.
+
+Returns an array of error objects if invalid:
+
+```js
+[
+  {property: "name", message: "is required"},
+  {property: "website", message: "is not a valid url"}
+]
+```
+
+### .validate()
+
+Return an object with `valid` and `errors`, per the [revalidator
+module](https://github.com/flatiron/revalidator#revalidatorvalidate-obj-schema-options)'s
+validation function.
+
+## Tests
+
+```
+npm install
+npm test
+```
+
+## License
+
+MIT
