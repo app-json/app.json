@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+echo "window.Manifest = require('./')" \
+  | node_modules/browserify/bin/cmd.js \
+  | node_modules/uglify-js/bin/uglifyjs \
+  > dist/app-manifest.js

@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha",
-    "build": "echo \"window.Manifest = require('./')\" | browserify > dist/app-manifest.js"
+    "build": "bin/build"
   },
   "repository": {
     "type": "git",
@@ -27,6 +27,7 @@
   },
   "devDependencies": {
     "mocha": "^1.18.0",
-    "browserify": "^3.38.0"
+    "browserify": "^3.38.0",
+    "uglify-js": "^2.4.13"
   }
 }
