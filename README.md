@@ -29,7 +29,7 @@ var Manifest = require("app-manifest")
 ### In Browser (without Browserify)
 
 If browserify isn't your thing, use the pre-compiled browser-ready bundle in
-`dist/app-manifest.js`. Include this file in your html page and it will create
+[dist/app-manifest.js](/dist/app-manifest.js). Include this file in your html page and it will create
 `window.Manifest` for you.
 
 ## API
