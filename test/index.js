@@ -74,7 +74,7 @@ describe("Manifest", function() {
 
   })
 
-  describe("Manifest.toJSON()", function() {
+  describe(".toJSON()", function() {
 
     it("render pretty JSON", function() {
       manifest = new Manifest(payload)
@@ -87,6 +87,26 @@ describe("Manifest", function() {
     })
 
   })
+
+  describe(".getAddonsPrices()", function() {
+
+    it("fetches a remote list of addons and their total Price", function(done) {
+      payload.addons = [
+        "openredis",
+        "mongolab:shared-single-small"
+      ]
+      manifest = new Manifest(payload)
+      assert(manifest.valid)
+      manifest.getAddonsPrices(function(err, addons) {
+        assert(addons)
+        assert(addons.totalPrice)
+        assert(addons.totalPriceInCents)
+        done()
+      })
+    })
+
+  })
+
 
   describe("Manifest.fetch()", function() {
 

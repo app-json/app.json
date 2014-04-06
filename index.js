@@ -51,10 +51,18 @@ var Manifest = module.exports = (function() {
     return JSON.stringify(out, null, 2)
   }
 
+  Manifest.prototype.getAddonsPrices = function(cb) {
+    var url = "https://concoction.herokuapp.com/?slugs=" + this.addons.join(",")
+    request.get(url, function(res){
+      cb(null, res.body)
+    })
+  }
+
   Manifest.fetch = function(url, cb) {
     if (!url.match(/^http:/)) {
       url = "http://github-raw-cors-proxy.herokuapp.com/" + url + "/blob/master/app.json"
     }
+    console.log('fetch url', url)
 
     // var raw = ""
     // http.get(url, function (res) {

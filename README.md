@@ -97,9 +97,18 @@ Return an object with `valid` and `errors`, per the [revalidator
 module](https://github.com/flatiron/revalidator#revalidatorvalidate-obj-schema-options)'s
 validation function.
 
+### .toJSON()
+
+Return a pretty JSON string representation of the manifest, without any superfluous properties.
+
+### .getAddonsPrices(callback)
+
+Make a web request to [concoction](https://github.com/zeke/concoction) for a
+list of addon prices.
+
 ## Manifest.fetch(url, callback)
 
-You can fetch manifests straight from GitHub. The
+You can fetch app manifests straight from GitHub. The
 [github-raw-cors-proxy](https://github.com/zeke/github-raw-cors-proxy) service is used
 to make the `app.json` file downloadable from browsers.
 
