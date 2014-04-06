@@ -4,7 +4,8 @@
   "description": "A validator of Heroku app.json manifests",
   "main": "index.js",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "build": "echo \"window.Manifest = require('./')\" | browserify > dist/app-manifest.js"
   },
   "repository": {
     "type": "git",
@@ -20,9 +21,12 @@
   },
   "homepage": "https://github.com/heroku/node-app-manifest",
   "dependencies": {
-    "revalidator": "^0.1.6"
+    "revalidator": "^0.1.6",
+    "github-url-to-object": "^0.2.1",
+    "superagent": "^0.17.0"
   },
   "devDependencies": {
-    "mocha": "^1.18.0"
+    "mocha": "^1.18.0",
+    "browserify": "^3.38.0"
   }
 }

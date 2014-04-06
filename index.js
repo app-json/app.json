@@ -1,6 +1,8 @@
 var fs = require("fs")
 var schema = require('./schema')
+var request = require('superagent')
 var revalidator = require('revalidator')
+var http = require('http')
 
 var Manifest = module.exports = (function() {
 
@@ -47,6 +49,27 @@ var Manifest = module.exports = (function() {
       }
     }
     return JSON.stringify(out, null, 2)
+  }
+
+  Manifest.fetch = function(url, cb) {
+    if (!url.match(/^http:/)) {
+      url = "http://github-raw-cors-proxy.herokuapp.com/" + url + "/blob/master/app.json"
+    }
+
+    // var raw = ""
+    // http.get(url, function (res) {
+    //   res.on('data', function (buf) {
+    //     raw += buf
+    //   })
+    //   res.on('end', function () {
+    //     cb(null, new Manifest(raw))
+    //   })
+    // })
+
+    request.get(url, function(res){
+      cb(null, new Manifest(res.body))
+    })
+
   }
 
   return Manifest
