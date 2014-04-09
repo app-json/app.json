@@ -86,6 +86,26 @@ describe("Manifest", function() {
       assert.equal(manifest.name, manifest2.name)
     })
 
+    it("ignores properties that are not part of the schema", function() {
+      payload.funky = true
+      payload.junk = "stuff"
+
+      manifest = new Manifest(payload)
+      assert(manifest.valid)
+      assert(manifest.funky)
+      assert(manifest.junk)
+
+      var output = manifest.toJSON()
+      // console.log(output)
+      var manifest2 = new Manifest(output)
+      assert.equal(typeof(output), 'string')
+      assert(manifest2.valid)
+      assert(!manifest2.funky)
+      assert(!manifest2.junk)
+    })
+
+
+
   })
 
   describe(".getAddonsPrices()", function() {

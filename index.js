@@ -43,8 +43,9 @@ var Manifest = module.exports = (function() {
   Manifest.prototype.toJSON = function() {
     // Can't stringify `this`, so rebuild self
     var out = {}
+    var validProps = Object.keys(require('./schema').properties)
     for (key in this) {
-      if (this.hasOwnProperty(key)) {
+      if (this.hasOwnProperty(key) && validProps.indexOf(key) > -1) {
         out[key] = this[key]
       }
     }
@@ -63,16 +64,6 @@ var Manifest = module.exports = (function() {
       url = "http://github-raw-cors-proxy.herokuapp.com/" + url + "/blob/master/app.json"
     }
     console.log('fetch url', url)
-
-    // var raw = ""
-    // http.get(url, function (res) {
-    //   res.on('data', function (buf) {
-    //     raw += buf
-    //   })
-    //   res.on('end', function () {
-    //     cb(null, new Manifest(raw))
-    //   })
-    // })
 
     request.get(url, function(res){
       cb(null, new Manifest(res.body))

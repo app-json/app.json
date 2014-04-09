@@ -27,7 +27,7 @@ module.exports = {
       allowEmpty: false
     },
     success_url: {
-      description: "A string specifying where to redirect the user once the app is deployed.",
+      description: "A URL specifying where to redirect the user once their new app is deployed. If value is a fully-qualified URL, the user should be redirected to that URL. If value is begins with a slash `/`, the user should be redirected to that path in their newly deployed app.",
       type: 'string',
       allowEmpty: false
     },
@@ -40,7 +40,7 @@ module.exports = {
       type: 'object'
     },
     addons: {
-      description: "An array of strings specifying Heroku addons to provision on the app before deploying.",
+      description: "An array of strings specifying Heroku addons to provision on the app before deploying. Each addon should be in the format `addon:plan`. If plan is omitted, that addon's default plan will be provisioned.",
       type: 'array'
     }
   }
