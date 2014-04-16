@@ -4,7 +4,7 @@
   "description": "Create and validate Heroku app.json manifests",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --watch",
+    "test": "mocha",
     "build": "bin/build"
   },
   "repository": {
@@ -22,7 +22,7 @@
   "homepage": "https://github.com/heroku/apps",
   "dependencies": {
     "revalidator": "^0.1.6",
-    "github-url-to-object": "^0.2.1",
+    "github-url-to-object": "^0.4.1",
     "superagent": "^0.17.0"
   },
   "devDependencies": {

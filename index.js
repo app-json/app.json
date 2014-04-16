@@ -62,7 +62,7 @@ var App = module.exports = (function() {
 
   App.fetch = function(url, cb) {
     if (!parseGithubURL(url)) {
-      return cb("not a validate github url: " + url)
+      return cb("Not a valid github URL: " + url)
     }
 
     var user = parseGithubURL(url).user
