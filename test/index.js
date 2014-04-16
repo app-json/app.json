@@ -1,84 +1,84 @@
 var assert = require("assert")
 var fs = require("fs")
-var Manifest = require("..")
-var manifest
+var App = require("..")
+var app
 var payload
 
-describe("Manifest", function() {
+describe("App", function() {
 
   beforeEach(function() {
-    manifest = null
+    app = null
     payload = JSON.parse(fs.readFileSync(__dirname + "/fixtures/app.json"))
   })
 
   describe("instantiation", function() {
 
     it("accepts a filename", function() {
-      manifest = new Manifest(__dirname + "/fixtures/app.json")
-      assert(manifest.valid)
+      app = new App(__dirname + "/fixtures/app.json")
+      assert(app.valid)
     })
 
     it("accepts a JSON string", function() {
-      manifest = new Manifest(JSON.stringify(payload))
-      assert(manifest.valid)
+      app = new App(JSON.stringify(payload))
+      assert(app.valid)
     })
 
     it("accepts a JavaScript object", function() {
-      manifest = new Manifest(payload)
-      assert(manifest.valid)
+      app = new App(payload)
+      assert(app.valid)
     })
 
   })
 
   describe("validation", function() {
 
-    it("returns null for .errors if manifest is valid", function() {
-      manifest = new Manifest(payload)
-      assert(manifest.valid)
-      assert.equal(manifest.errors, null)
+    it("returns null for .errors if app is valid", function() {
+      app = new App(payload)
+      assert(app.valid)
+      assert.equal(app.errors, null)
     })
 
     it("requires name", function() {
       delete payload.name
-      manifest = new Manifest(payload)
-      assert(!manifest.valid)
-      assert.equal(manifest.errors.length, 1)
-      assert.equal(manifest.errors[0].property, 'name')
+      app = new App(payload)
+      assert(!app.valid)
+      assert.equal(app.errors.length, 1)
+      assert.equal(app.errors[0].property, 'name')
     })
 
     it("does not allow empty-string name", function() {
       payload.name = ""
-      manifest = new Manifest(payload)
-      assert(!manifest.valid)
-      assert.equal(manifest.errors.length, 1)
-      assert.equal(manifest.errors[0].property, 'name')
-      assert.equal(manifest.errors[0].message, 'is required')
+      app = new App(payload)
+      assert(!app.valid)
+      assert.equal(app.errors.length, 1)
+      assert.equal(app.errors[0].property, 'name')
+      assert.equal(app.errors[0].message, 'is required')
     })
 
     it("validates website url", function() {
       payload.website = "not-a-url.com"
-      manifest = new Manifest(payload)
-      assert(!manifest.valid)
-      assert.equal(manifest.errors.length, 1)
-      assert.equal(manifest.errors[0].message, 'is not a valid url')
+      app = new App(payload)
+      assert(!app.valid)
+      assert.equal(app.errors.length, 1)
+      assert.equal(app.errors[0].message, 'is not a valid url')
     })
 
     it("validates repository url", function() {
       payload.repository = "not-a-url.com"
-      manifest = new Manifest(payload)
-      assert(!manifest.valid)
-      assert.equal(manifest.errors.length, 1)
-      assert.equal(manifest.errors[0].property, 'repository')
-      assert.equal(manifest.errors[0].message, 'is not a valid url')
+      app = new App(payload)
+      assert(!app.valid)
+      assert.equal(app.errors.length, 1)
+      assert.equal(app.errors[0].property, 'repository')
+      assert.equal(app.errors[0].message, 'is not a valid url')
     })
 
     it("validates logo url", function() {
       payload.logo = "not-a-url.com"
-      manifest = new Manifest(payload)
-      assert(!manifest.valid)
-      assert.equal(manifest.errors.length, 1)
-      assert.equal(manifest.errors[0].property, 'logo')
-      assert.equal(manifest.errors[0].message, 'is not a valid url')
+      app = new App(payload)
+      assert(!app.valid)
+      assert.equal(app.errors.length, 1)
+      assert.equal(app.errors[0].property, 'logo')
+      assert.equal(app.errors[0].message, 'is not a valid url')
     })
 
   })
@@ -86,30 +86,30 @@ describe("Manifest", function() {
   describe(".toJSON()", function() {
 
     it("render pretty JSON", function() {
-      manifest = new Manifest(payload)
-      assert(manifest.valid)
-      var output = manifest.toJSON()
-      var manifest2 = new Manifest(output)
+      app = new App(payload)
+      assert(app.valid)
+      var output = app.toJSON()
+      var app2 = new App(output)
       assert.equal(typeof(output), 'string')
-      assert(manifest2.valid)
-      assert.equal(manifest.name, manifest2.name)
+      assert(app2.valid)
+      assert.equal(app.name, app2.name)
     })
 
     it("ignores properties that are not part of the schema", function() {
       payload.funky = true
       payload.junk = "stuff"
 
-      manifest = new Manifest(payload)
-      assert(manifest.valid)
-      assert(manifest.funky)
-      assert(manifest.junk)
+      app = new App(payload)
+      assert(app.valid)
+      assert(app.funky)
+      assert(app.junk)
 
-      var output = manifest.toJSON()
-      var manifest2 = new Manifest(output)
+      var output = app.toJSON()
+      var app2 = new App(output)
       assert.equal(typeof(output), 'string')
-      assert(manifest2.valid)
-      assert(!manifest2.funky)
-      assert(!manifest2.junk)
+      assert(app2.valid)
+      assert(!app2.funky)
+      assert(!app2.junk)
     })
 
 
@@ -122,9 +122,9 @@ describe("Manifest", function() {
         "openredis",
         "mongolab:shared-single-small"
       ]
-      manifest = new Manifest(payload)
-      assert(manifest.valid)
-      manifest.getAddonsPrices(function(err, addons) {
+      app = new App(payload)
+      assert(app.valid)
+      app.getAddonsPrices(function(err, addons) {
         assert(addons)
         assert(addons.totalPrice)
         assert(addons.totalPriceInCents)
@@ -134,40 +134,40 @@ describe("Manifest", function() {
 
   })
 
-  describe("Manifest.fetch()", function() {
+  describe("App.fetch()", function() {
 
     it("downloads remote manifests with github shorthand", function(done) {
-      Manifest.fetch('zeke/harp-slideshow-template', function(err, remoteManifest) {
-        assert(remoteManifest.valid)
-        assert.equal(remoteManifest.name, "Harp Slideshow")
+      App.fetch('zeke/harp-slideshow-template', function(err, remoteApp) {
+        assert(remoteApp.valid)
+        assert.equal(remoteApp.name, "Harp Slideshow")
         done()
       })
     })
 
     it("downloads remote manifests with fully-qualified github URLs", function(done) {
-      Manifest.fetch('https://github.com/heroku-examples/geosockets.git', function(err, remoteManifest) {
+      App.fetch('https://github.com/heroku-examples/geosockets.git', function(err, remoteApp) {
         if (err) console.error(err)
-        assert(remoteManifest.valid)
-        assert.equal(remoteManifest.name, "Geosockets")
+        assert(remoteApp.valid)
+        assert.equal(remoteApp.name, "Geosockets")
         done()
       })
     })
   })
 
-  describe("Manifest.example", function() {
+  describe("App.example", function() {
 
-    it("generates a manifest from example properties found in the schema", function() {
-      assert(Manifest.example)
+    it("builds an example manifest from properties found in the schema", function() {
+      assert(App.example)
     })
 
     it("is valid", function() {
-      assert(Manifest.example.valid)
+      assert(App.example.valid)
     })
 
     it("has expected properties", function() {
-      assert(Manifest.example.name)
-      assert(Manifest.example.description)
-      assert(Manifest.example.keywords)
+      assert(App.example.name)
+      assert(App.example.description)
+      assert(App.example.keywords)
     })
 
   })

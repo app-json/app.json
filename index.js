@@ -6,9 +6,9 @@ var parseGithubURL = require("github-url-to-object")
 
 var http = require('http')
 
-var Manifest = module.exports = (function() {
+var App = module.exports = (function() {
 
-  function Manifest(raw) {
+  function App(raw) {
 
     // If raw is a filename open it and parse it
     // If raw is a JSON string, parse it
@@ -38,11 +38,11 @@ var Manifest = module.exports = (function() {
     return this
   }
 
-  Manifest.prototype.validate = function() {
+  App.prototype.validate = function() {
     return revalidator.validate(this, schema)
   }
 
-  Manifest.prototype.toJSON = function() {
+  App.prototype.toJSON = function() {
     var out = {}
     var validProps = Object.keys(schema.properties)
     for (key in this) {
@@ -53,14 +53,14 @@ var Manifest = module.exports = (function() {
     return JSON.stringify(out, null, 2)
   }
 
-  Manifest.prototype.getAddonsPrices = function(cb) {
+  App.prototype.getAddonsPrices = function(cb) {
     var url = "https://concoction.herokuapp.com/?slugs=" + this.addons.join(",")
     request.get(url, function(res){
       cb(null, res.body)
     })
   }
 
-  Manifest.fetch = function(url, cb) {
+  App.fetch = function(url, cb) {
     if (!parseGithubURL(url)) {
       return cb("not a validate github url: " + url)
     }
@@ -70,17 +70,17 @@ var Manifest = module.exports = (function() {
     var proxy_url = "http://github-raw-cors-proxy.herokuapp.com/" + user + "/" + repo + "/blob/master/app.json"
 
     request.get(proxy_url, function(res){
-      cb(null, new Manifest(res.body))
+      cb(null, new App(res.body))
     })
 
   }
 
-  Manifest.example = {}
+  App.example = {}
   Object.keys(schema.properties).map(function(key){
-    Manifest.example[key] = schema.properties[key].example
+    App.example[key] = schema.properties[key].example
   })
-  Manifest.example = new Manifest(Manifest.example)
+  App.example = new App(App.example)
 
-  return Manifest
+  return App
 
 })()
