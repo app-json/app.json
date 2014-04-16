@@ -4,7 +4,7 @@
   "description": "A validator of Heroku app.json manifests",
   "main": "index.js",
   "scripts": {
-    "test": "mocha",
+    "test": "mocha --watch",
     "build": "bin/build"
   },
   "repository": {

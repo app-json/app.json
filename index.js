@@ -2,6 +2,8 @@ var fs = require("fs")
 var schema = require('./schema')
 var request = require('superagent')
 var revalidator = require('revalidator')
+var parseGithubURL = require("github-url-to-object")
+
 var http = require('http')
 
 var Manifest = module.exports = (function() {
@@ -41,9 +43,8 @@ var Manifest = module.exports = (function() {
   }
 
   Manifest.prototype.toJSON = function() {
-    // Can't stringify `this`, so rebuild self
     var out = {}
-    var validProps = Object.keys(require('./schema').properties)
+    var validProps = Object.keys(schema.properties)
     for (key in this) {
       if (this.hasOwnProperty(key) && validProps.indexOf(key) > -1) {
         out[key] = this[key]
@@ -60,16 +61,25 @@ var Manifest = module.exports = (function() {
   }
 
   Manifest.fetch = function(url, cb) {
-    if (!url.match(/^http:/)) {
-      url = "http://github-raw-cors-proxy.herokuapp.com/" + url + "/blob/master/app.json"
+    if (!parseGithubURL(url)) {
+      return cb("not a validate github url: " + url)
     }
-    console.log('fetch url', url)
 
-    request.get(url, function(res){
+    var user = parseGithubURL(url).user
+    var repo = parseGithubURL(url).repo
+    var proxy_url = "http://github-raw-cors-proxy.herokuapp.com/" + user + "/" + repo + "/blob/master/app.json"
+
+    request.get(proxy_url, function(res){
       cb(null, new Manifest(res.body))
     })
 
   }
+
+  Manifest.example = {}
+  Object.keys(schema.properties).map(function(key){
+    Manifest.example[key] = schema.properties[key].example
+  })
+  Manifest.example = new Manifest(Manifest.example)
 
   return Manifest
 

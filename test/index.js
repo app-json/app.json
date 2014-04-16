@@ -137,7 +137,7 @@ describe("Manifest", function() {
 
   describe("Manifest.fetch()", function() {
 
-    it("Manifest.fetch() downloads remote manifests with github shorthand", function(done) {
+    it("downloads remote manifests with github shorthand", function(done) {
       Manifest.fetch('zeke/harp-slideshow-template', function(err, remoteManifest) {
         assert(remoteManifest.valid)
         assert.equal(remoteManifest.name, "Harp Slideshow")
@@ -145,7 +145,32 @@ describe("Manifest", function() {
       })
     })
 
-    it("Manifest.fetch() downloads remote manifests with fully qualified github URLs")
+    it("downloads remote manifests with fully-qualified github URLs", function(done) {
+      Manifest.fetch('https://github.com/heroku-examples/geosockets.git', function(err, remoteManifest) {
+        if (err) console.error(err)
+        assert(remoteManifest.valid)
+        assert.equal(remoteManifest.name, "Geosockets")
+        done()
+      })
+    })
+  })
+
+
+  describe("Manifest.example", function() {
+
+    it("generates a manifest from example properties found in the schema", function() {
+      assert(Manifest.example)
+    })
+
+    it("is valid", function() {
+      assert(Manifest.example.valid)
+    })
+
+    it("has expected properties", function() {
+      assert(Manifest.example.name)
+      assert(Manifest.example.description)
+      assert(Manifest.example.keywords)
+    })
 
   })
 
