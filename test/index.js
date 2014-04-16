@@ -72,6 +72,15 @@ describe("Manifest", function() {
       assert.equal(manifest.errors[0].message, 'is not a valid url')
     })
 
+    it("validates logo url", function() {
+      payload.logo = "not-a-url.com"
+      manifest = new Manifest(payload)
+      assert(!manifest.valid)
+      assert.equal(manifest.errors.length, 1)
+      assert.equal(manifest.errors[0].property, 'logo')
+      assert.equal(manifest.errors[0].message, 'is not a valid url')
+    })
+
   })
 
   describe(".toJSON()", function() {
@@ -96,14 +105,12 @@ describe("Manifest", function() {
       assert(manifest.junk)
 
       var output = manifest.toJSON()
-      // console.log(output)
       var manifest2 = new Manifest(output)
       assert.equal(typeof(output), 'string')
       assert(manifest2.valid)
       assert(!manifest2.funky)
       assert(!manifest2.junk)
     })
-
 
 
   })

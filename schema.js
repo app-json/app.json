@@ -26,6 +26,12 @@ module.exports = {
       format: 'url',
       allowEmpty: false
     },
+    logo: {
+      description: "The location of the application's logo image. Can be an SVG or a PNG.",
+      type: 'string',
+      format: 'url',
+      allowEmpty: false
+    },
     success_url: {
       description: "A URL specifying where to redirect the user once their new app is deployed. If value is a fully-qualified URL, the user should be redirected to that URL. If value is begins with a slash `/`, the user should be redirected to that path in their newly deployed app.",
       type: 'string',
