@@ -134,7 +134,6 @@ describe("Manifest", function() {
 
   })
 
-
   describe("Manifest.fetch()", function() {
 
     it("downloads remote manifests with github shorthand", function(done) {
@@ -155,7 +154,6 @@ describe("Manifest", function() {
     })
   })
 
-
   describe("Manifest.example", function() {
 
     it("generates a manifest from example properties found in the schema", function() {
@@ -173,6 +171,5 @@ describe("Manifest", function() {
     })
 
   })
-
 
 })

@@ -119,6 +119,14 @@ Manifest.fetch('zeke/harp-slideshow-template', function(err, manifest) {
 })
 ```
 
+## Manifest.example
+
+Generates an example manifest from example content in the [schema](/schema.js).
+
+```js
+Manifest.example
+```
+
 ## Tests
 
 ```
