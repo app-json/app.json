@@ -7,14 +7,8 @@ var schema = require("./schema")
 
 var App = module.exports = (function() {
 
-  // App.schema = schema
-  // App.revalidator = revalidator
-
   function App(raw) {
 
-    // If raw is a filename open it and parse it
-    // If raw is a JSON string, parse it
-    // If raw is already an object, we're good
     if (typeof(raw) === 'string' && raw.match(/\.json$/i)) {
       raw = JSON.parse(fs.readFileSync(raw))
     } else if (typeof(raw) === 'string') {
@@ -56,8 +50,18 @@ var App = module.exports = (function() {
   }
 
   App.prototype.getAddonsPrices = function(cb) {
+
+    if (!this.addons || this.addons === []) {
+      return cb(null, {
+        plans: [],
+        totalPrice: "Free",
+        totalPriceInCents: 0
+      })
+    }
+
     var url = "https://concoction.herokuapp.com/?slugs=" + this.addons.join(",")
-    request.get(url, function(res){
+    request.get(url, function(err, res){
+      if (err) return cb(err)
       cb(null, res.body)
     })
   }

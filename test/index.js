@@ -1,5 +1,6 @@
 var assert = require("assert")
 var fs = require("fs")
+var util = require("util")
 var App = require("..")
 var app
 var payload
@@ -128,6 +129,20 @@ describe("App", function() {
         assert(addons)
         assert(addons.totalPrice)
         assert(addons.totalPriceInCents)
+        done()
+      })
+    })
+
+    it("returns a mocked response for apps that don't have addons", function(done) {
+      delete payload.addons
+      app = new App(payload)
+      assert(app.valid)
+      app.getAddonsPrices(function(err, addons) {
+        assert(addons)
+        assert.equal(addons.totalPrice, "Free")
+        assert.equal(addons.totalPriceInCents, 0)
+        assert(util.isArray(addons.plans))
+        assert.equal(addons.plans.length, 0)
         done()
       })
     })
