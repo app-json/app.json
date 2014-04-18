@@ -1,10 +1,9 @@
 var fs = require("fs")
-var schema = require('./schema')
+var http = require('http')
 var request = require('superagent')
 var revalidator = require('revalidator')
 var parseGithubURL = require("github-url-to-object")
-
-var http = require('http')
+var schema = JSON.parse(fs.readFileSync('./schema.json').toString())
 
 var App = module.exports = (function() {
 
