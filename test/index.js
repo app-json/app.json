@@ -46,14 +46,14 @@ describe("App", function() {
       assert.equal(app.errors[0].property, 'name')
     })
 
-    it("does not allow empty-string name", function() {
-      payload.name = ""
-      app = new App(payload)
-      assert(!app.valid)
-      assert.equal(app.errors.length, 1)
-      assert.equal(app.errors[0].property, 'name')
-      assert.equal(app.errors[0].message, 'is required')
-    })
+    // it("does not allow empty-string name", function() {
+    //   payload.name = "null"
+    //   app = new App(payload)
+    //   assert(!app.valid)
+    //   assert.equal(app.errors.length, 1)
+    //   assert.equal(app.errors[0].property, 'name')
+    //   assert.equal(app.errors[0].message, 'is required')
+    // })
 
     it("validates website url", function() {
       payload.website = "not-a-url.com"

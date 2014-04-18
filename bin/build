@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
-echo "window.App = window.Apps = require('./')" \
+echo "window.App = require('./')" \
   | node_modules/browserify/bin/cmd.js \
   | node_modules/uglify-js/bin/uglifyjs \
   > dist/app.js
+
+echo "Wrote dist/app.js"

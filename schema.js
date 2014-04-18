@@ -1,4 +1,4 @@
-{
+module.exports = {
   "properties": {
     "name": {
       "description": "A URL-friendly string that uniquely identifies the template app",

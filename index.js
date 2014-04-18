@@ -3,9 +3,12 @@ var http = require('http')
 var request = require('superagent')
 var revalidator = require('revalidator')
 var parseGithubURL = require("github-url-to-object")
-var schema = JSON.parse(fs.readFileSync('./schema.json').toString())
+var schema = require("./schema")
 
 var App = module.exports = (function() {
+
+  // App.schema = schema
+  // App.revalidator = revalidator
 
   function App(raw) {
 
