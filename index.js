@@ -1,4 +1,5 @@
 var fs = require("fs")
+var hogan = require("hogan.js")
 var http = require('http')
 var request = require('superagent')
 var revalidator = require('revalidator')
@@ -50,7 +51,7 @@ var App = module.exports = (function() {
   }
 
   App.prototype.getAddonsPrices = function(cb) {
-
+    // Assemble an empty API response
     if (!this.addons || this.addons === []) {
       return cb(null, {
         plans: [],
@@ -67,20 +68,32 @@ var App = module.exports = (function() {
   }
 
   App.fetch = function(url, cb) {
-    if (!parseGithubURL(url)) {
+    if (!parseGithubURL(url))
       return cb("Not a valid github URL: " + url)
-    }
 
     var user = parseGithubURL(url).user
     var repo = parseGithubURL(url).repo
-    var proxy_url = "http://github-raw-cors-proxy.herokuapp.com/" + user + "/" + repo + "/blob/master/app.json"
+    var proxy_url = "https://github-raw-cors-proxy.herokuapp.com/" + user + "/" + repo + "/blob/master/app.json"
 
     request.get(proxy_url, function(res){
       cb(null, new App(res.body))
     })
-
   }
 
+  // Hogan Templates: Server vs Browser
+  if (module.parent) {
+    App.templates = {
+      app: hogan.compile(fs.readFileSync(__dirname + '/templates/app.mustache').toString()),
+      build: hogan.compile(fs.readFileSync(__dirname + '/templates/build.mustache').toString())
+    }
+  } else {
+    App.templates = {
+      app: require('./templates/app.mustache'),
+      build: require('./templates/build.mustache')
+    }
+  }
+
+  // Assemble an example app with properties from the schema
   App.example = {}
   Object.keys(schema.properties).map(function(key){
     App.example[key] = schema.properties[key].example

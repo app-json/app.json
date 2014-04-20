@@ -1,0 +1,36 @@
+<li class="app">
+
+  <a class="logo activator">
+    <img src="{{logo}}">
+  </a>
+
+  <div class="meta">
+
+    <h2><a class="activator">{{name}}</a></h2>
+
+    <div class="drawer">
+
+      {{#description}}
+        <p>{{description}}</p>
+      {{/description}}
+
+      {{#repository}}
+        <a href="{{repository}}" class="repository">{{repository}}</a>
+      {{/repository}}
+
+      {{#website}}
+        <a href="{{website}}" class="website">{{website}}</a>
+      {{/website}}
+
+      <form class="deploy">
+        <input type="hidden" name="source" value="{{repository}}">
+        <input type="submit" value="Deploy for {{prices.totalPrice}}">
+      </form>
+
+      <div class="output"></div>
+
+    </div>
+
+  </div>
+
+</li>

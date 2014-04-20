@@ -1,6 +1,7 @@
 var assert = require("assert")
 var fs = require("fs")
 var util = require("util")
+var cheerio = require('cheerio')
 var App = require("..")
 var app
 var payload
@@ -96,7 +97,7 @@ describe("App", function() {
       assert.equal(app.name, app2.name)
     })
 
-    it("ignores properties that are not part of the schema", function() {
+    it("ignores properties that are not in the schema", function() {
       payload.funky = true
       payload.junk = "stuff"
 
@@ -118,7 +119,7 @@ describe("App", function() {
 
   describe(".getAddonsPrices()", function() {
 
-    it("fetches a remote list of addons and their total Price", function(done) {
+    it("fetches a remote list of addons and their total price", function(done) {
       payload.addons = [
         "openredis",
         "mongolab:shared-single-small"
@@ -171,7 +172,7 @@ describe("App", function() {
 
   describe("App.example", function() {
 
-    it("builds an example manifest from properties found in the schema", function() {
+    it("builds an example app from properties in the schema", function() {
       assert(App.example)
     })
 
@@ -183,6 +184,30 @@ describe("App", function() {
       assert(App.example.name)
       assert(App.example.description)
       assert(App.example.keywords)
+    })
+
+  })
+
+  describe("App.templates", function() {
+
+    it("is an object", function() {
+      assert(App.templates)
+      assert.equal(typeof(App.templates), "object")
+    })
+
+    it("has an app template", function() {
+      assert(App.templates.app)
+    })
+
+    it("has a build template", function() {
+      assert(App.templates)
+      assert(App.templates.build)
+    })
+
+    it("has a render() method that generates HTML", function() {
+      var rendered = App.templates.app.render(App.example)
+      $ = cheerio.load(rendered)
+      assert.equal($('h2').text(), App.example.name);
     })
 
   })

@@ -1,0 +1,13 @@
+{{#app}}
+  <p>
+    Your app is deploying to
+    <a href="https://{{app.name}}.herokuapp.com">{{app.name}}.herokuapp.com</a>,
+    and will be ready soon.
+  </p>
+{{/app}}
+
+{{^app}}
+  <p class="error">
+    Build failed. {{message}}
+  </p>
+{{/app}}

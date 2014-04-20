@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 echo "window.App = require('./')" \
-  | node_modules/browserify/bin/cmd.js \
+  | node_modules/browserify/bin/cmd.js --transform browserify-hogan \
   | node_modules/uglify-js/bin/uglifyjs \
   > dist/app.js
 
