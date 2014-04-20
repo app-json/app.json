@@ -170,6 +170,15 @@ describe("App", function() {
     })
   })
 
+  describe("App.schema", function() {
+
+    it("exposes the schema", function() {
+      assert(App.schema)
+      assert(App.schema.properties)
+    })
+
+  })
+
   describe("App.example", function() {
 
     it("builds an example app from properties in the schema", function() {

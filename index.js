@@ -100,6 +100,8 @@ var App = module.exports = (function() {
   })
   App.example = new App(App.example)
 
+  App.schema = schema
+
   return App
 
 })()
