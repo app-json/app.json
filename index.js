@@ -67,6 +67,10 @@ var App = module.exports = (function() {
     })
   }
 
+  App.new = function(raw) {
+    return new App(raw)
+  }
+
   App.fetch = function(url, cb) {
     if (!parseGithubURL(url))
       return cb("Not a valid github URL: " + url)
@@ -76,21 +80,35 @@ var App = module.exports = (function() {
     var proxy_url = "https://github-raw-cors-proxy.herokuapp.com/" + user + "/" + repo + "/blob/master/app.json"
 
     request.get(proxy_url, function(res){
-      cb(null, new App(res.body))
+      cb(null, App.new(res.body))
     })
   }
 
-  // Hogan Templates: Server vs Browser
+  // Hogan Templates FTW
+  App.templates = {}
+  // // fs.readdirSync('./templates').forEach(function(filename){
+  // var list = ['app.mustache', 'build.mustache', 'schema.mustache']
+  // list.forEach(function(filename){
+  //   var name = filename.replace(/\.\w+$/, '')
+  //
+  //   // Server vs Browser
+  //   if (module.parent) {
+  //     console.log('server')
+  //     App.templates[name] = hogan.compile(fs.readFileSync('./templates/' + filename).toString())
+  //   } else {
+  //     console.log('browser')
+  //     App.templates[name] = require('.templates/'+filename)
+  //   }
+  // })
+
   if (module.parent) {
-    App.templates = {
-      app: hogan.compile(fs.readFileSync(__dirname + '/templates/app.mustache').toString()),
-      build: hogan.compile(fs.readFileSync(__dirname + '/templates/build.mustache').toString())
-    }
+    App.templates.app = hogan.compile(fs.readFileSync('./templates/app.mustache').toString())
+    App.templates.build = hogan.compile(fs.readFileSync('./templates/build.mustache').toString())
+    App.templates.schema = hogan.compile(fs.readFileSync('./templates/schema.mustache').toString())
   } else {
-    App.templates = {
-      app: require('./templates/app.mustache'),
-      build: require('./templates/build.mustache')
-    }
+    App.templates.app = require('./templates/app.mustache')
+    App.templates.build = require('./templates/build.mustache')
+    App.templates.schema = require('./templates/schema.mustache')
   }
 
   // Assemble an example app with properties from the schema

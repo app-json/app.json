@@ -1,8 +1,14 @@
 #!/usr/bin/env bash
 
 echo "window.App = require('./')" \
-  | node_modules/browserify/bin/cmd.js --transform browserify-hogan \
-  | node_modules/uglify-js/bin/uglifyjs \
+  | node_modules/browserify/bin/cmd.js --transform browserify-hogan --transform brfs \
   > dist/app.js
 
 echo "Wrote dist/app.js"
+
+echo "window.App = require('./')" \
+  | node_modules/browserify/bin/cmd.js --transform browserify-hogan --transform brfs \
+  | node_modules/uglify-js/bin/uglifyjs \
+  > dist/app.min.js
+
+echo "Wrote dist/app.min.js"

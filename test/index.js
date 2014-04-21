@@ -13,20 +13,20 @@ describe("App", function() {
     payload = JSON.parse(fs.readFileSync(__dirname + "/fixtures/app.json"))
   })
 
-  describe("instantiation", function() {
+  describe("App.new", function() {
 
     it("accepts a filename", function() {
-      app = new App(__dirname + "/fixtures/app.json")
+      app = App.new(__dirname + "/fixtures/app.json")
       assert(app.valid)
     })
 
     it("accepts a JSON string", function() {
-      app = new App(JSON.stringify(payload))
+      app = App.new(JSON.stringify(payload))
       assert(app.valid)
     })
 
     it("accepts a JavaScript object", function() {
-      app = new App(payload)
+      app = App.new(payload)
       assert(app.valid)
     })
 
@@ -35,14 +35,14 @@ describe("App", function() {
   describe("validation", function() {
 
     it("returns null for .errors if app is valid", function() {
-      app = new App(payload)
+      app = App.new(payload)
       assert(app.valid)
       assert.equal(app.errors, null)
     })
 
     it("requires name", function() {
       delete payload.name
-      app = new App(payload)
+      app = App.new(payload)
       assert(!app.valid)
       assert.equal(app.errors.length, 1)
       assert.equal(app.errors[0].property, 'name')
@@ -50,7 +50,7 @@ describe("App", function() {
 
     // it("does not allow empty-string name", function() {
     //   payload.name = "null"
-    //   app = new App(payload)
+    //   app = App.new(payload)
     //   assert(!app.valid)
     //   assert.equal(app.errors.length, 1)
     //   assert.equal(app.errors[0].property, 'name')
@@ -59,7 +59,7 @@ describe("App", function() {
 
     it("validates website url", function() {
       payload.website = "not-a-url.com"
-      app = new App(payload)
+      app = App.new(payload)
       assert(!app.valid)
       assert.equal(app.errors.length, 1)
       assert.equal(app.errors[0].message, 'is not a valid url')
@@ -67,7 +67,7 @@ describe("App", function() {
 
     it("validates repository url", function() {
       payload.repository = "not-a-url.com"
-      app = new App(payload)
+      app = App.new(payload)
       assert(!app.valid)
       assert.equal(app.errors.length, 1)
       assert.equal(app.errors[0].property, 'repository')
@@ -76,7 +76,7 @@ describe("App", function() {
 
     it("validates logo url", function() {
       payload.logo = "not-a-url.com"
-      app = new App(payload)
+      app = App.new(payload)
       assert(!app.valid)
       assert.equal(app.errors.length, 1)
       assert.equal(app.errors[0].property, 'logo')
@@ -88,10 +88,10 @@ describe("App", function() {
   describe(".toJSON()", function() {
 
     it("render pretty JSON", function() {
-      app = new App(payload)
+      app = App.new(payload)
       assert(app.valid)
       var output = app.toJSON()
-      var app2 = new App(output)
+      var app2 = App.new(output)
       assert.equal(typeof(output), 'string')
       assert(app2.valid)
       assert.equal(app.name, app2.name)
@@ -101,13 +101,13 @@ describe("App", function() {
       payload.funky = true
       payload.junk = "stuff"
 
-      app = new App(payload)
+      app = App.new(payload)
       assert(app.valid)
       assert(app.funky)
       assert(app.junk)
 
       var output = app.toJSON()
-      var app2 = new App(output)
+      var app2 = App.new(output)
       assert.equal(typeof(output), 'string')
       assert(app2.valid)
       assert(!app2.funky)
@@ -124,7 +124,7 @@ describe("App", function() {
         "openredis",
         "mongolab:shared-single-small"
       ]
-      app = new App(payload)
+      app = App.new(payload)
       assert(app.valid)
       app.getAddonsPrices(function(err, addons) {
         assert(addons)
@@ -136,7 +136,7 @@ describe("App", function() {
 
     it("returns a mocked response for apps that don't have addons", function(done) {
       delete payload.addons
-      app = new App(payload)
+      app = App.new(payload)
       assert(app.valid)
       app.getAddonsPrices(function(err, addons) {
         assert(addons)
@@ -172,9 +172,23 @@ describe("App", function() {
 
   describe("App.schema", function() {
 
-    it("exposes the schema", function() {
+    it("exposes the schema as an object", function() {
       assert(App.schema)
+
+    })
+
+    it("contains a key-value properties object", function() {
       assert(App.schema.properties)
+      assert(App.schema.properties.name)
+      assert(App.schema.properties.description)
+      assert(App.schema.properties.keywords)
+    })
+
+    it("contains a template-friendly array of properties", function() {
+      assert(App.schema.array)
+      assert(App.schema.array[0].name)
+      assert(App.schema.array[0].description)
+      assert(App.schema.array[0].requiredOrOptional)
     })
 
   })
@@ -204,21 +218,39 @@ describe("App", function() {
       assert.equal(typeof(App.templates), "object")
     })
 
-    it("has an app template", function() {
-      assert(App.templates.app)
+    describe("app", function() {
+
+      it("exists", function() {
+        assert(App.templates.app)
+      })
+
+      it("renders app name in an H2 tag", function() {
+        $ = cheerio.load(App.templates.app.render(App.example))
+        assert.equal($('h2').text(), App.example.name);
+      })
+
     })
 
-    it("has a build template", function() {
-      assert(App.templates)
-      assert(App.templates.build)
+    describe("build", function() {
+
+      it("exists", function() {
+        assert(App.templates.build)
+      })
+
     })
 
-    it("has a render() method that generates HTML", function() {
-      var rendered = App.templates.app.render(App.example)
-      $ = cheerio.load(rendered)
-      assert.equal($('h2').text(), App.example.name);
+    describe("schema", function() {
+
+      it("exists", function() {
+        assert(App.templates.schema)
+      })
+
+      it("has a title H1 tag", function() {
+        $ = cheerio.load(App.templates.schema.render(App.schema))
+        assert.equal($('h1').text(), "app.json Schema");
+      })
+
     })
 
   })
-
 })

@@ -1,4 +1,4 @@
-module.exports = {
+var schema = {
   "properties": {
     "name": {
       "description": "A URL-friendly string that uniquely identifies the template app",
@@ -74,3 +74,13 @@ module.exports = {
     }
   }
 }
+
+// Coerce properties into a template-friendly format
+schema.array = Object.keys(schema.properties).map(function(name) {
+  var prop = schema.properties[name]
+  prop.name = name
+  prop.requiredOrOptional = prop.required ? "required" : "optional"
+  return prop
+})
+
+module.exports = schema
