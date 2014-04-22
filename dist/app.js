@@ -57,9 +57,11 @@ var App = module.exports = (function() {
   }
 
   App.prototype.getAddonPrices = function(cb) {
-    App.addons.mix(this.addons, function(err, mix){
+    _this = this
+    App.addons.getPrices(this.addons, function(err, prices){
       if (err) return cb(err)
-      cb(null, mix)
+      _this.prices = prices
+      cb(null, prices)
     })
   }
 
@@ -122,8 +124,27 @@ var async = require('async')
 var superagent = require('superagent')
 var addons = module.exports = {}
 
-function formatPrice(price) {
-  return (price == 0) ? "Free" : "$" + price/100 + "/mo"
+addons.getPrices = function(slugs, cb) {
+
+  // Assemble an empty API response
+  if (!slugs || slugs === []) {
+    return cb(null, {
+      plans: [],
+      totalPrice: "Free",
+      totalPriceInCents: 0
+    })
+  }
+
+  async.map(slugs, addons.getPlan, function(err, plans) {
+    if (err) return cb(err)
+    var prices = {}
+    prices.totalPriceInCents = plans.reduce(function(sum, plan) {
+      return plan.price.cents + sum
+    }, 0)
+    prices.totalPrice = formatPrice(prices.totalPriceInCents)
+    prices.plans = plans
+    cb(null, prices)
+  })
 }
 
 addons.getPlan = function(slug, cb) {
@@ -162,27 +183,8 @@ addons.getPlan = function(slug, cb) {
 
 }
 
-addons.mix = function(slugs, cb) {
-
-  // Assemble an empty API response
-  if (!slugs || slugs === []) {
-    return cb(null, {
-      plans: [],
-      totalPrice: "Free",
-      totalPriceInCents: 0
-    })
-  }
-
-  async.map(slugs, addons.getPlan, function(err, plans) {
-    if (err) return cb(err)
-    var mix = {}
-    mix.totalPriceInCents = plans.reduce(function(sum, plan) {
-      return plan.price.cents + sum
-    }, 0)
-    mix.totalPrice = formatPrice(mix.totalPriceInCents)
-    mix.plans = plans
-    cb(null, mix)
-  })
+function formatPrice(price) {
+  return (price == 0) ? "Free" : "$" + price/100 + "/mo"
 }
 
 },{"async":4,"superagent":37}],4:[function(require,module,exports){
