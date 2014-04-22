@@ -103,10 +103,9 @@ Returns an array of error objects if invalid:
 
 Return a pretty JSON string representation of the manifest, without any superfluous properties.
 
-### app.getAddonsPrices(callback)
+### app.getAddonPrices(callback)
 
-Make a web request to [concoction](https://github.com/zeke/concoction) for a
-list of addon prices.
+Fetch pricing data about the app's required addons by hitting the Heroku Platform API.
 
 ## Tests
 

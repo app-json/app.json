@@ -1,5 +1,5 @@
-var assert = require("assert")
 var fs = require("fs")
+var assert = require("assert")
 var util = require("util")
 var cheerio = require('cheerio')
 var marked = require('marked')
@@ -118,7 +118,7 @@ describe("App", function() {
 
   })
 
-  describe(".getAddonsPrices()", function() {
+  describe(".getAddonPrices()", function() {
 
     it("fetches a remote list of addons and their total price", function(done) {
       payload.addons = [
@@ -127,10 +127,23 @@ describe("App", function() {
       ]
       app = App.new(payload)
       assert(app.valid)
-      app.getAddonsPrices(function(err, addons) {
-        assert(addons)
-        assert(addons.totalPrice)
-        assert(addons.totalPriceInCents)
+      app.getAddonPrices(function(err, prices) {
+        assert(prices)
+        assert(prices.totalPrice)
+        assert(prices.totalPriceInCents)
+        done()
+      })
+    })
+
+    it("attaches a prices property to the app object", function(done) {
+      payload.addons = [
+        "openredis",
+        "mongolab:shared-single-small"
+      ]
+      app = App.new(payload)
+      assert(app.valid)
+      app.getAddonPrices(function(err, prices) {
+        assert(app.prices)
         done()
       })
     })
@@ -139,12 +152,12 @@ describe("App", function() {
       delete payload.addons
       app = App.new(payload)
       assert(app.valid)
-      app.getAddonsPrices(function(err, addons) {
-        assert(addons)
-        assert.equal(addons.totalPrice, "Free")
-        assert.equal(addons.totalPriceInCents, 0)
-        assert(util.isArray(addons.plans))
-        assert.equal(addons.plans.length, 0)
+      app.getAddonPrices(function(err, prices) {
+        assert(prices)
+        assert.equal(prices.totalPrice, "Free")
+        assert.equal(prices.totalPriceInCents, 0)
+        assert(util.isArray(prices.plans))
+        assert.equal(prices.plans.length, 0)
         done()
       })
     })

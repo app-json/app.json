@@ -28,7 +28,9 @@
     "superagent": "^0.17.0",
     "browserify-hogan": "^0.1.2",
     "hogan.js": "^2.0.0",
-    "brfs": "^1.0.2"
+    "brfs": "^1.0.2",
+    "async": "^0.7.0",
+    "heroku-client": "^1.2.0"
   },
   "devDependencies": {
     "mocha": "^1.18.0",

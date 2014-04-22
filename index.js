@@ -1,9 +1,10 @@
 var fs = require("fs")
 var hogan = require("hogan.js")
 var http = require('http')
-var request = require('superagent')
+var superagent = require('superagent')
 var revalidator = require('revalidator')
 var parseGithubURL = require("github-url-to-object")
+var addons = require("./lib/addons")
 var schema = require("./schema")
 
 var App = module.exports = (function() {
@@ -50,20 +51,12 @@ var App = module.exports = (function() {
     return JSON.stringify(out, null, 2)
   }
 
-  App.prototype.getAddonsPrices = function(cb) {
-    // Assemble an empty API response
-    if (!this.addons || this.addons === []) {
-      return cb(null, {
-        plans: [],
-        totalPrice: "Free",
-        totalPriceInCents: 0
-      })
-    }
-
-    var url = "https://concoction.herokuapp.com/?slugs=" + this.addons.join(",")
-    request.get(url, function(err, res){
+  App.prototype.getAddonPrices = function(cb) {
+    _this = this
+    App.addons.getPrices(this.addons, function(err, prices){
       if (err) return cb(err)
-      cb(null, res.body)
+      _this.prices = prices
+      cb(null, prices)
     })
   }
 
@@ -79,7 +72,7 @@ var App = module.exports = (function() {
     var repo = parseGithubURL(url).repo
     var proxy_url = "https://github-raw-cors-proxy.herokuapp.com/" + user + "/" + repo + "/blob/master/app.json"
 
-    request.get(proxy_url, function(res){
+    superagent.get(proxy_url, function(res){
       cb(null, App.new(res.body))
     })
   }
@@ -113,6 +106,7 @@ var App = module.exports = (function() {
 
   App.example = new App(schema.example)
 
+  App.addons = addons
   App.schema = schema
 
   return App
