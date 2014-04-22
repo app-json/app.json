@@ -6,7 +6,8 @@
   "scripts": {
     "postinstall": "npm test",
     "test": "mocha",
-    "build": "bin/build"
+    "build": "bin/build",
+    "doc": "bin/doc"
   },
   "repository": {
     "type": "git",
@@ -33,6 +34,7 @@
     "mocha": "^1.18.0",
     "browserify": "^3.38.0",
     "uglify-js": "^2.4.13",
-    "cheerio": "^0.15.0"
+    "cheerio": "^0.15.0",
+    "marked": "^0.3.2"
   }
 }

@@ -102,21 +102,16 @@ var App = module.exports = (function() {
   // })
 
   if (module.parent) {
-    App.templates.app = hogan.compile(fs.readFileSync('./templates/app.mustache').toString())
-    App.templates.build = hogan.compile(fs.readFileSync('./templates/build.mustache').toString())
-    App.templates.schema = hogan.compile(fs.readFileSync('./templates/schema.mustache').toString())
+    App.templates.app = hogan.compile(fs.readFileSync('./templates/app.mustache.html').toString())
+    App.templates.build = hogan.compile(fs.readFileSync('./templates/build.mustache.html').toString())
+    App.templates.schema = hogan.compile(fs.readFileSync('./templates/schema.mustache.html').toString())
   } else {
-    App.templates.app = require('./templates/app.mustache')
-    App.templates.build = require('./templates/build.mustache')
-    App.templates.schema = require('./templates/schema.mustache')
+    App.templates.app = require('./templates/app.mustache.html')
+    App.templates.build = require('./templates/build.mustache.html')
+    App.templates.schema = require('./templates/schema.mustache.html')
   }
 
-  // Assemble an example app with properties from the schema
-  App.example = {}
-  Object.keys(schema.properties).map(function(key){
-    App.example[key] = schema.properties[key].example
-  })
-  App.example = new App(App.example)
+  App.example = new App(schema.example)
 
   App.schema = schema
 

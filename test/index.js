@@ -2,6 +2,7 @@ var assert = require("assert")
 var fs = require("fs")
 var util = require("util")
 var cheerio = require('cheerio')
+var marked = require('marked')
 var App = require("..")
 var app
 var payload
@@ -184,11 +185,11 @@ describe("App", function() {
       assert(App.schema.properties.keywords)
     })
 
-    it("contains a template-friendly array of properties", function() {
-      assert(App.schema.array)
-      assert(App.schema.array[0].name)
-      assert(App.schema.array[0].description)
-      assert(App.schema.array[0].requiredOrOptional)
+    it("exposes a decorator object for template-friendly rendering", function() {
+      assert(App.schema.decorator)
+      assert(App.schema.decorator[0].name)
+      assert(App.schema.decorator[0].description)
+      assert(App.schema.decorator[0].requiredOrOptional)
     })
 
   })
@@ -245,11 +246,10 @@ describe("App", function() {
         assert(App.templates.schema)
       })
 
-      it("has a title H1 tag", function() {
-        $ = cheerio.load(App.templates.schema.render(App.schema))
+      it("produces github-formatted markdown intead of HTML", function() {
+        $ = cheerio.load(marked(App.templates.schema.render(App.schema)))
         assert.equal($('h1').text(), "app.json Schema");
       })
-
     })
 
   })

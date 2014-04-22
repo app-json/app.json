@@ -109,19 +109,14 @@ var App = module.exports = (function() {
   if (module.parent) {
     App.templates.app = hogan.compile(Buffer("PGxpIGNsYXNzPSJhcHAiPgoKICA8YSBjbGFzcz0ibG9nbyBhY3RpdmF0b3IiPgogICAgPGltZyBzcmM9Int7bG9nb319Ij4KICA8L2E+CgogIDxkaXYgY2xhc3M9Im1ldGEiPgoKICAgIDxoMj48YSBjbGFzcz0iYWN0aXZhdG9yIj57e25hbWV9fTwvYT48L2gyPgoKICAgIDxkaXYgY2xhc3M9ImRyYXdlciI+CgogICAgICB7eyNkZXNjcmlwdGlvbn19CiAgICAgICAgPHA+e3tkZXNjcmlwdGlvbn19PC9wPgogICAgICB7ey9kZXNjcmlwdGlvbn19CgogICAgICB7eyNyZXBvc2l0b3J5fX0KICAgICAgICA8YSBocmVmPSJ7e3JlcG9zaXRvcnl9fSIgY2xhc3M9InJlcG9zaXRvcnkiPnt7cmVwb3NpdG9yeX19PC9hPgogICAgICB7ey9yZXBvc2l0b3J5fX0KCiAgICAgIHt7I3dlYnNpdGV9fQogICAgICAgIDxhIGhyZWY9Int7d2Vic2l0ZX19IiBjbGFzcz0id2Vic2l0ZSI+e3t3ZWJzaXRlfX08L2E+CiAgICAgIHt7L3dlYnNpdGV9fQoKICAgICAgPGZvcm0gY2xhc3M9ImRlcGxveSI+CiAgICAgICAgPGlucHV0IHR5cGU9ImhpZGRlbiIgbmFtZT0ic291cmNlIiB2YWx1ZT0ie3tyZXBvc2l0b3J5fX0iPgogICAgICAgIDxpbnB1dCB0eXBlPSJzdWJtaXQiIHZhbHVlPSJEZXBsb3kgZm9yIHt7cHJpY2VzLnRvdGFsUHJpY2V9fSI+CiAgICAgIDwvZm9ybT4KCiAgICAgIDxkaXYgY2xhc3M9Im91dHB1dCI+PC9kaXY+CgogICAgPC9kaXY+CgogIDwvZGl2PgoKPC9saT4K","base64").toString())
     App.templates.build = hogan.compile(Buffer("e3sjYXBwfX0KICA8cD4KICAgIFlvdXIgYXBwIGlzIGRlcGxveWluZyB0bwogICAgPGEgaHJlZj0iaHR0cHM6Ly97e2FwcC5uYW1lfX0uaGVyb2t1YXBwLmNvbSI+e3thcHAubmFtZX19Lmhlcm9rdWFwcC5jb208L2E+LAogICAgYW5kIHdpbGwgYmUgcmVhZHkgc29vbi4KICA8L3A+Cnt7L2FwcH19Cgp7e15hcHB9fQogIDxwIGNsYXNzPSJlcnJvciI+CiAgICBCdWlsZCBmYWlsZWQuIHt7bWVzc2FnZX19CiAgPC9wPgp7ey9hcHB9fQo=","base64").toString())
-    App.templates.schema = hogan.compile(Buffer("PGgxPmFwcC5qc29uIFNjaGVtYTwvaDE+Cgo8dWwgY2xhc3M9InByb3BlcnRpZXMiPgogIHt7I2FycmF5fX0KICAgIDxsaSBjbGFzcz0icHJvcGVydHkge3tyZXF1aXJlZE9yT3B0aW9uYWx9fSI+CiAgICAgIDxoMj57e25hbWV9fTwvaDI+CiAgICAgIDxwPnt7dHlwZX19PC9wPgogICAgICA8cD57e3JlcXVpcmVkT3JPcHRpb25hbH19PC9wPgogICAgICA8cD57e2Rlc2NyaXB0aW9ufX08L3A+CiAgICAgIDxwPnt7ZXhhbXBsZX19PC9wPgogICAgPGxpPgogIHt7L2FycmF5fX0KPC91bD4K","base64").toString())
+    App.templates.schema = hogan.compile(Buffer("YXBwLmpzb24gU2NoZW1hCgp7eyNkZWNvcmF0b3J9fQojIyB7e25hbWV9fQoKe3t0eXBlfX0sIHt7cmVxdWlyZWRPck9wdGlvbmFsfX0KCnt7ZGVzY3JpcHRpb259fQoKYGBganNvbgp7e3tleGFtcGxlSlNPTn19fQpgYGAKe3svZGVjb3JhdG9yfX0K","base64").toString())
   } else {
-    App.templates.app = require('./templates/app.mustache')
-    App.templates.build = require('./templates/build.mustache')
-    App.templates.schema = require('./templates/schema.mustache')
+    App.templates.app = require('./templates/app.mustache.html')
+    App.templates.build = require('./templates/build.mustache.html')
+    App.templates.schema = require('./templates/schema.mustache.html')
   }
 
-  // Assemble an example app with properties from the schema
-  App.example = {}
-  Object.keys(schema.properties).map(function(key){
-    App.example[key] = schema.properties[key].example
-  })
-  App.example = new App(App.example)
+  App.example = new App(schema.example)
 
   App.schema = schema
 
@@ -130,7 +125,7 @@ var App = module.exports = (function() {
 })()
 
 }).call(this,require("buffer").Buffer)
-},{"./schema":38,"./templates/app.mustache":39,"./templates/build.mustache":40,"./templates/schema.mustache":41,"buffer":4,"fs":3,"github-url-to-object":29,"hogan.js":32,"http":8,"revalidator":34,"superagent":35}],3:[function(require,module,exports){
+},{"./schema":38,"./templates/app.mustache.html":39,"./templates/build.mustache.html":40,"./templates/schema.mustache.html":41,"buffer":4,"fs":3,"github-url-to-object":29,"hogan.js":32,"http":8,"revalidator":34,"superagent":35}],3:[function(require,module,exports){
 
 },{}],4:[function(require,module,exports){
 /*!
@@ -8612,7 +8607,7 @@ var schema = {
       "example": {"postdeploy": "bundle exec rake bootstrap"}
     },
     "env": {
-      "description": "A key-value object for environment variables, or config vars in Heroku parlance.",
+      "description": "A key-value object for environment variables, or config vars in Heroku parlance. Keys are the names of the environment variables.\n\nValues can be strings or objects. If the value is a string, it will be used and the user will not be prompted to specify a different value. If the value is an object, it defines specific requirements for that variable:\n\ndescription - a human-friendly blurb about what the value is for and how to determine what it should be\ndefault - a default value to use if no override value is provided\ngenerator - a string representing a function to call to generate the value, such as cookie secret\nrequired - a boolean. Default is false.",
       "type": "object",
       "example": {
         "BUILDPACK_URL": "https://github.com/stomita/heroku-buildpack-phantomjs",
@@ -8637,11 +8632,22 @@ var schema = {
   }
 }
 
+// Assemble an example schema
+schema.example = {}
+Object.keys(schema.properties).map(function(key){
+  schema.example[key] = schema.properties[key].example
+})
+
 // Coerce properties into a template-friendly format
-schema.array = Object.keys(schema.properties).map(function(name) {
+schema.decorator = Object.keys(schema.properties).map(function(name) {
   var prop = schema.properties[name]
   prop.name = name
   prop.requiredOrOptional = prop.required ? "required" : "optional"
+  // prop.exampleJSON = "{\n\"" + prop.name + "\": \"" + JSON.stringify(prop.example, null, 2) + "\"\n}"
+
+  var jsonDoc = {}
+  jsonDoc[prop.name] = prop.example
+  prop.exampleJSON = JSON.stringify(jsonDoc, null, 2)
   return prop
 })
 
@@ -8652,5 +8658,5 @@ var t = new (require('hogan.js/lib/template')).Template(function(c,p,i){var _=th
 },{"hogan.js/lib/template":33}],40:[function(require,module,exports){
 var t = new (require('hogan.js/lib/template')).Template(function(c,p,i){var _=this;_.b(i=i||"");if(_.s(_.f("app",c,p,1),c,p,0,8,160,"{{ }}")){_.rs(c,p,function(c,p,_){_.b("  <p>");_.b("\n" + i);_.b("    Your app is deploying to");_.b("\n" + i);_.b("    <a href=\"https://");_.b(_.v(_.d("app.name",c,p,0)));_.b(".herokuapp.com\">");_.b(_.v(_.d("app.name",c,p,0)));_.b(".herokuapp.com</a>,");_.b("\n" + i);_.b("    and will be ready soon.");_.b("\n" + i);_.b("  </p>");_.b("\n");});c.pop();}_.b("\n" + i);if(!_.s(_.f("app",c,p,1),c,p,1,0,0,"")){_.b("  <p class=\"error\">");_.b("\n" + i);_.b("    Build failed. ");_.b(_.v(_.f("message",c,p,0)));_.b("\n" + i);_.b("  </p>");_.b("\n");};return _.fl();;});module.exports = {  render: function () { return t.render.apply(t, arguments); },  r: function () { return t.r.apply(t, arguments); },  ri: function () { return t.ri.apply(t, arguments); }};
 },{"hogan.js/lib/template":33}],41:[function(require,module,exports){
-var t = new (require('hogan.js/lib/template')).Template(function(c,p,i){var _=this;_.b(i=i||"");_.b("<h1>app.json Schema</h1>");_.b("\n" + i);_.b("\n" + i);_.b("<ul class=\"properties\">");_.b("\n" + i);if(_.s(_.f("array",c,p,1),c,p,0,62,259,"{{ }}")){_.rs(c,p,function(c,p,_){_.b("    <li class=\"property ");_.b(_.v(_.f("requiredOrOptional",c,p,0)));_.b("\">");_.b("\n" + i);_.b("      <h2>");_.b(_.v(_.f("name",c,p,0)));_.b("</h2>");_.b("\n" + i);_.b("      <p>");_.b(_.v(_.f("type",c,p,0)));_.b("</p>");_.b("\n" + i);_.b("      <p>");_.b(_.v(_.f("requiredOrOptional",c,p,0)));_.b("</p>");_.b("\n" + i);_.b("      <p>");_.b(_.v(_.f("description",c,p,0)));_.b("</p>");_.b("\n" + i);_.b("      <p>");_.b(_.v(_.f("example",c,p,0)));_.b("</p>");_.b("\n" + i);_.b("    <li>");_.b("\n");});c.pop();}_.b("</ul>");_.b("\n");return _.fl();;});module.exports = {  render: function () { return t.render.apply(t, arguments); },  r: function () { return t.r.apply(t, arguments); },  ri: function () { return t.ri.apply(t, arguments); }};
+var t = new (require('hogan.js/lib/template')).Template(function(c,p,i){var _=this;_.b(i=i||"");_.b("app.json Schema");_.b("\n" + i);_.b("\n" + i);if(_.s(_.f("decorator",c,p,1),c,p,0,31,126,"{{ }}")){_.rs(c,p,function(c,p,_){_.b("## ");_.b(_.v(_.f("name",c,p,0)));_.b("\n" + i);_.b("\n" + i);_.b(_.v(_.f("type",c,p,0)));_.b(", ");_.b(_.v(_.f("requiredOrOptional",c,p,0)));_.b("\n" + i);_.b("\n" + i);_.b(_.v(_.f("description",c,p,0)));_.b("\n" + i);_.b("\n" + i);_.b("```json");_.b("\n" + i);_.b(_.t(_.f("exampleJSON",c,p,0)));_.b("\n" + i);_.b("```");_.b("\n");});c.pop();}return _.fl();;});module.exports = {  render: function () { return t.render.apply(t, arguments); },  r: function () { return t.r.apply(t, arguments); },  ri: function () { return t.ri.apply(t, arguments); }};
 },{"hogan.js/lib/template":33}]},{},[1])

@@ -1,0 +1,16 @@
+#!/usr/bin/env node
+
+var fs = require("fs")
+var marked = require('marked')
+var App = require('..')
+var out = App.templates.schema.render(App.schema)
+
+fs.writeFile("./dist/schema.md", out, function(err) {
+  if (err) return console.error(err)
+  console.log("Wrote dist/schema.md")
+
+  fs.writeFile("./dist/schema.html", marked(out), function(err) {
+    if (err) return console.error(err)
+    console.log("Wrote dist/schema.html")
+  })
+})
