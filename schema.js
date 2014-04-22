@@ -1,7 +1,7 @@
 var schema = {
   "properties": {
     "name": {
-      "description": "A URL-friendly string that uniquely identifies the template app",
+      "description": "A URL-friendly string that uniquely identifies the template app.",
       "type": "string",
       "required": true,
       "allowEmpty": false,
@@ -13,7 +13,7 @@ var schema = {
       "example": "This app does one little thing, and does it well."
     },
     "keywords": {
-      "description": "An array of strings, to avoid space-vs-comma ambiguity.",
+      "description": "An array of strings describing the app.",
       "type": "array",
       "example": ["productivity", "HTML5", "scalpel"]
     },
@@ -32,7 +32,7 @@ var schema = {
       "example": "https://github.com/jane-doe/small-sharp-tool"
     },
     "logo": {
-      "description": "The location of the application's logo image. Can be an SVG or a PNG.",
+      "description": "The URL of the application's logo image. It's dimensions should be square. Format can be SVG or PNG.",
       "type": "string",
       "format": "url",
       "allowEmpty": false,

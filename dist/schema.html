@@ -36,7 +36,7 @@ variables, addons, and other information required to run apps on Heroku. This do
 <h2 id="the-schema">The Schema</h2>
 <h3 id="name">name</h3>
 <p>string, required</p>
-<p>A URL-friendly string that uniquely identifies the template app</p>
+<p>A URL-friendly string that uniquely identifies the template app.</p>
 <pre><code class="lang-json">{
   &quot;name&quot;: &quot;small-sharp-tool&quot;
 }
@@ -50,7 +50,7 @@ variables, addons, and other information required to run apps on Heroku. This do
 </code></pre>
 <h3 id="keywords">keywords</h3>
 <p>array, optional</p>
-<p>An array of strings, to avoid space-vs-comma ambiguity.</p>
+<p>An array of strings describing the app.</p>
 <pre><code class="lang-json">{
   &quot;keywords&quot;: [
     &quot;productivity&quot;,
@@ -75,7 +75,7 @@ variables, addons, and other information required to run apps on Heroku. This do
 </code></pre>
 <h3 id="logo">logo</h3>
 <p>string, optional</p>
-<p>The location of the application&#39;s logo image. Can be an SVG or a PNG.</p>
+<p>The URL of the application&#39;s logo image. It&#39;s dimensions should be square. Format can be SVG or PNG.</p>
 <pre><code class="lang-json">{
   &quot;logo&quot;: &quot;https://jane-doe.github.io/small-sharp-tool/logo.svg&quot;
 }

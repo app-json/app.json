@@ -43,7 +43,7 @@ variables, addons, and other information required to run apps on Heroku. This do
 
 string, required
 
-A URL-friendly string that uniquely identifies the template app
+A URL-friendly string that uniquely identifies the template app.
 
 ```json
 {
@@ -65,7 +65,7 @@ A brief summary of the app: what it does, who it&#39;s for, why it exists, etc.
 
 array, optional
 
-An array of strings, to avoid space-vs-comma ambiguity.
+An array of strings describing the app.
 
 ```json
 {
@@ -102,7 +102,7 @@ The location of the application&#39;s source code. Can be a git URL, a GitHub UR
 
 string, optional
 
-The location of the application&#39;s logo image. Can be an SVG or a PNG.
+The URL of the application&#39;s logo image. It&#39;s dimensions should be square. Format can be SVG or PNG.
 
 ```json
 {
