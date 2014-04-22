@@ -1,7 +1,16 @@
-app.json Schema
+`app.json` is a manifest format for describing web apps. It declares environment
+variables, addons, and other information required to run apps on Heroku. This document describes the schema in detail.
 
-{{#decorator}}
-## {{name}}
+## Example app.json
+
+```json
+{{{exampleJSON}}}
+```
+
+## The Schema
+
+{{#propertiesArray}}
+### {{name}}
 
 {{type}}, {{requiredOrOptional}}
 
@@ -10,4 +19,4 @@ app.json Schema
 ```json
 {{{exampleJSON}}}
 ```
-{{/decorator}}
+{{/propertiesArray}}

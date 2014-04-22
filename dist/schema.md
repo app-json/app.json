@@ -1,6 +1,45 @@
-# app.json Schema
+`app.json` is a manifest format for describing web apps. It declares environment
+variables, addons, and other information required to run apps on Heroku. This document describes the schema in detail.
 
-## name
+## Example app.json
+
+```json
+{
+  "name": "small-sharp-tool",
+  "description": "This app does one little thing, and does it well.",
+  "keywords": [
+    "productivity",
+    "HTML5",
+    "scalpel"
+  ],
+  "website": "https://jane-doe.github.io/small-sharp-tool",
+  "repository": "https://github.com/jane-doe/small-sharp-tool",
+  "logo": "https://jane-doe.github.io/small-sharp-tool/logo.svg",
+  "success_url": "/welcome",
+  "scripts": {
+    "postdeploy": "bundle exec rake bootstrap"
+  },
+  "env": {
+    "BUILDPACK_URL": "https://github.com/stomita/heroku-buildpack-phantomjs",
+    "SECRET_TOKEN": {
+      "description": "A secret key for verifying the integrity of signed cookies.",
+      "generator": "secret"
+    },
+    "WEB_CONCURRENCY": {
+      "description": "The number of processes to run.",
+      "default": "5"
+    }
+  },
+  "addons": [
+    "openredis",
+    "mongolab:shared-single-small"
+  ]
+}
+```
+
+## The Schema
+
+### name
 
 string, required
 
@@ -11,7 +50,7 @@ A URL-friendly string that uniquely identifies the template app
   "name": "small-sharp-tool"
 }
 ```
-## description
+### description
 
 string, optional
 
@@ -22,7 +61,7 @@ A brief summary of the app: what it does, who it&#39;s for, why it exists, etc.
   "description": "This app does one little thing, and does it well."
 }
 ```
-## keywords
+### keywords
 
 array, optional
 
@@ -37,7 +76,7 @@ An array of strings, to avoid space-vs-comma ambiguity.
   ]
 }
 ```
-## website
+### website
 
 string, optional
 
@@ -48,7 +87,7 @@ The project&#39;s website, if there is one.
   "website": "https://jane-doe.github.io/small-sharp-tool"
 }
 ```
-## repository
+### repository
 
 string, optional
 
@@ -59,7 +98,7 @@ The location of the application&#39;s source code. Can be a git URL, a GitHub UR
   "repository": "https://github.com/jane-doe/small-sharp-tool"
 }
 ```
-## logo
+### logo
 
 string, optional
 
@@ -70,7 +109,7 @@ The location of the application&#39;s logo image. Can be an SVG or a PNG.
   "logo": "https://jane-doe.github.io/small-sharp-tool/logo.svg"
 }
 ```
-## success_url
+### success_url
 
 string, optional
 
@@ -81,7 +120,7 @@ A URL specifying where to redirect the user once their new app is deployed. If v
   "success_url": "/welcome"
 }
 ```
-## scripts
+### scripts
 
 object, optional
 
@@ -94,7 +133,7 @@ A key-value object specifying scripts or shell commands to execute at different 
   }
 }
 ```
-## env
+### env
 
 object, optional
 
@@ -122,7 +161,7 @@ required - a boolean. Default is false.
   }
 }
 ```
-## addons
+### addons
 
 array, optional
 

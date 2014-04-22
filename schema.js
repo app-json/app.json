@@ -81,12 +81,14 @@ Object.keys(schema.properties).map(function(key){
   schema.example[key] = schema.properties[key].example
 })
 
-// Coerce properties into a template-friendly format
-schema.decorator = Object.keys(schema.properties).map(function(name) {
+// Assemble a template-ready stringified version of the schema
+schema.exampleJSON = JSON.stringify(schema.example, null, 2)
+
+// Coerce schema properties into a template-friendly format
+schema.propertiesArray = Object.keys(schema.properties).map(function(name) {
   var prop = schema.properties[name]
   prop.name = name
   prop.requiredOrOptional = prop.required ? "required" : "optional"
-  // prop.exampleJSON = "{\n\"" + prop.name + "\": \"" + JSON.stringify(prop.example, null, 2) + "\"\n}"
 
   var jsonDoc = {}
   jsonDoc[prop.name] = prop.example

@@ -185,11 +185,17 @@ describe("App", function() {
       assert(App.schema.properties.keywords)
     })
 
-    it("exposes a decorator object for template-friendly rendering", function() {
-      assert(App.schema.decorator)
-      assert(App.schema.decorator[0].name)
-      assert(App.schema.decorator[0].description)
-      assert(App.schema.decorator[0].requiredOrOptional)
+
+    it("exposes properties as an array for template-friendly rendering", function() {
+      assert(App.schema.propertiesArray)
+      assert(App.schema.propertiesArray[0].name)
+      assert(App.schema.propertiesArray[0].description)
+      assert(App.schema.propertiesArray[0].requiredOrOptional)
+    })
+
+    it("exposes an exampleJSON property for use in documentation", function() {
+      assert(App.schema.exampleJSON)
+      assert.equal(typeof(App.schema.exampleJSON), "string")
     })
 
   })
@@ -248,7 +254,8 @@ describe("App", function() {
 
       it("produces github-formatted markdown intead of HTML", function() {
         $ = cheerio.load(marked(App.templates.schema.render(App.schema)))
-        assert.equal($('h1').text(), "app.json Schema");
+        assert.equal($('h2').first().text(), "Example app.json")
+        assert.equal($('h2').last().text(), "The Schema")
       })
     })
 

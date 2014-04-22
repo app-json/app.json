@@ -1,19 +1,54 @@
-<h1 id="app-json-schema">app.json Schema</h1>
-<h2 id="name">name</h2>
+<p><code>app.json</code> is a manifest format for describing web apps. It declares environment
+variables, addons, and other information required to run apps on Heroku. This document describes the schema in detail.</p>
+<h2 id="example-app-json">Example app.json</h2>
+<pre><code class="lang-json">{
+  &quot;name&quot;: &quot;small-sharp-tool&quot;,
+  &quot;description&quot;: &quot;This app does one little thing, and does it well.&quot;,
+  &quot;keywords&quot;: [
+    &quot;productivity&quot;,
+    &quot;HTML5&quot;,
+    &quot;scalpel&quot;
+  ],
+  &quot;website&quot;: &quot;https://jane-doe.github.io/small-sharp-tool&quot;,
+  &quot;repository&quot;: &quot;https://github.com/jane-doe/small-sharp-tool&quot;,
+  &quot;logo&quot;: &quot;https://jane-doe.github.io/small-sharp-tool/logo.svg&quot;,
+  &quot;success_url&quot;: &quot;/welcome&quot;,
+  &quot;scripts&quot;: {
+    &quot;postdeploy&quot;: &quot;bundle exec rake bootstrap&quot;
+  },
+  &quot;env&quot;: {
+    &quot;BUILDPACK_URL&quot;: &quot;https://github.com/stomita/heroku-buildpack-phantomjs&quot;,
+    &quot;SECRET_TOKEN&quot;: {
+      &quot;description&quot;: &quot;A secret key for verifying the integrity of signed cookies.&quot;,
+      &quot;generator&quot;: &quot;secret&quot;
+    },
+    &quot;WEB_CONCURRENCY&quot;: {
+      &quot;description&quot;: &quot;The number of processes to run.&quot;,
+      &quot;default&quot;: &quot;5&quot;
+    }
+  },
+  &quot;addons&quot;: [
+    &quot;openredis&quot;,
+    &quot;mongolab:shared-single-small&quot;
+  ]
+}
+</code></pre>
+<h2 id="the-schema">The Schema</h2>
+<h3 id="name">name</h3>
 <p>string, required</p>
 <p>A URL-friendly string that uniquely identifies the template app</p>
 <pre><code class="lang-json">{
   &quot;name&quot;: &quot;small-sharp-tool&quot;
 }
 </code></pre>
-<h2 id="description">description</h2>
+<h3 id="description">description</h3>
 <p>string, optional</p>
 <p>A brief summary of the app: what it does, who it&#39;s for, why it exists, etc.</p>
 <pre><code class="lang-json">{
   &quot;description&quot;: &quot;This app does one little thing, and does it well.&quot;
 }
 </code></pre>
-<h2 id="keywords">keywords</h2>
+<h3 id="keywords">keywords</h3>
 <p>array, optional</p>
 <p>An array of strings, to avoid space-vs-comma ambiguity.</p>
 <pre><code class="lang-json">{
@@ -24,35 +59,35 @@
   ]
 }
 </code></pre>
-<h2 id="website">website</h2>
+<h3 id="website">website</h3>
 <p>string, optional</p>
 <p>The project&#39;s website, if there is one.</p>
 <pre><code class="lang-json">{
   &quot;website&quot;: &quot;https://jane-doe.github.io/small-sharp-tool&quot;
 }
 </code></pre>
-<h2 id="repository">repository</h2>
+<h3 id="repository">repository</h3>
 <p>string, optional</p>
 <p>The location of the application&#39;s source code. Can be a git URL, a GitHub URL, or a tarball URL.</p>
 <pre><code class="lang-json">{
   &quot;repository&quot;: &quot;https://github.com/jane-doe/small-sharp-tool&quot;
 }
 </code></pre>
-<h2 id="logo">logo</h2>
+<h3 id="logo">logo</h3>
 <p>string, optional</p>
 <p>The location of the application&#39;s logo image. Can be an SVG or a PNG.</p>
 <pre><code class="lang-json">{
   &quot;logo&quot;: &quot;https://jane-doe.github.io/small-sharp-tool/logo.svg&quot;
 }
 </code></pre>
-<h2 id="success_url">success_url</h2>
+<h3 id="success_url">success_url</h3>
 <p>string, optional</p>
 <p>A URL specifying where to redirect the user once their new app is deployed. If value is a fully-qualified URL, the user should be redirected to that URL. If value is begins with a slash <code>/</code>, the user should be redirected to that path in their newly deployed app.</p>
 <pre><code class="lang-json">{
   &quot;success_url&quot;: &quot;/welcome&quot;
 }
 </code></pre>
-<h2 id="scripts">scripts</h2>
+<h3 id="scripts">scripts</h3>
 <p>object, optional</p>
 <p>A key-value object specifying scripts or shell commands to execute at different stages in the build/release process.</p>
 <pre><code class="lang-json">{
@@ -61,7 +96,7 @@
   }
 }
 </code></pre>
-<h2 id="env">env</h2>
+<h3 id="env">env</h3>
 <p>object, optional</p>
 <p>A key-value object for environment variables, or config vars in Heroku parlance. Keys are the names of the environment variables.</p>
 <p>Values can be strings or objects. If the value is a string, it will be used and the user will not be prompted to specify a different value. If the value is an object, it defines specific requirements for that variable:</p>
@@ -83,7 +118,7 @@ required - a boolean. Default is false.</p>
   }
 }
 </code></pre>
-<h2 id="addons">addons</h2>
+<h3 id="addons">addons</h3>
 <p>array, optional</p>
 <p>An array of strings specifying Heroku addons to provision on the app before deploying. Each addon should be in the format <code>addon:plan</code>. If plan is omitted, that addon&#39;s default plan will be provisioned.</p>
 <pre><code class="lang-json">{
