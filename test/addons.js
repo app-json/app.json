@@ -132,12 +132,10 @@ describe('addons.getPrices()', function(){
     var slugs = [
       'mongohq:sandbox',
       'redistogo',
-      'runscope:starter',
       'goinstant',
       'rollbar',
       'usersnap',
-      'bonsai:staging',
-      'newrelic:west'
+      'bonsai:staging'
     ]
 
     addons.getPrices(slugs, function(err, prices) {
