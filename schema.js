@@ -50,7 +50,7 @@ var schema = {
       "example": {"postdeploy": "bundle exec rake bootstrap"}
     },
     "env": {
-      "description": "A key-value object for environment variables, or config vars in Heroku parlance. Keys are the names of the environment variables.\n\nValues can be strings or objects. If the value is a string, it will be used and the user will not be prompted to specify a different value. If the value is an object, it defines specific requirements for that variable:\n\ndescription - a human-friendly blurb about what the value is for and how to determine what it should be\ndefault - a default value to use if no override value is provided\ngenerator - a string representing a function to call to generate the value, such as cookie secret\nrequired - a boolean. Default is false.",
+      "description": "A key-value object for environment variables, or config vars in Heroku parlance. Keys are the names of the environment variables.\n\nValues can be strings or objects. If the value is a string, it will be used and the user will not be prompted to specify a different value. If the value is an object, it defines specific requirements for that variable:\n\ndescription - a human-friendly blurb about what the value is for and how to determine what it should be\nvalue - a default value to use\ngenerator - a string representing a function to call to generate the value, such as cookie secret",
       "type": "object",
       "example": {
         "BUILDPACK_URL": "https://github.com/stomita/heroku-buildpack-phantomjs",

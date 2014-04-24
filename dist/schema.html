@@ -35,22 +35,19 @@ variables, addons, and other information required to run apps on Heroku. This do
 </code></pre>
 <h2 id="the-schema">The Schema</h2>
 <h3 id="name">name</h3>
-<p>string, required</p>
-<p>A URL-friendly string that uniquely identifies the template app.</p>
+<p>A URL-friendly string that uniquely identifies the template app. <em>required string</em></p>
 <pre><code class="lang-json">{
   &quot;name&quot;: &quot;small-sharp-tool&quot;
 }
 </code></pre>
 <h3 id="description">description</h3>
-<p>string, optional</p>
-<p>A brief summary of the app: what it does, who it&#39;s for, why it exists, etc.</p>
+<p>A brief summary of the app: what it does, who it&#39;s for, why it exists, etc. <em>optional string</em></p>
 <pre><code class="lang-json">{
   &quot;description&quot;: &quot;This app does one little thing, and does it well.&quot;
 }
 </code></pre>
 <h3 id="keywords">keywords</h3>
-<p>array, optional</p>
-<p>An array of strings describing the app.</p>
+<p>An array of strings describing the app. <em>optional array</em></p>
 <pre><code class="lang-json">{
   &quot;keywords&quot;: [
     &quot;productivity&quot;,
@@ -60,36 +57,31 @@ variables, addons, and other information required to run apps on Heroku. This do
 }
 </code></pre>
 <h3 id="website">website</h3>
-<p>string, optional</p>
-<p>The project&#39;s website, if there is one.</p>
+<p>The project&#39;s website, if there is one. <em>optional string</em></p>
 <pre><code class="lang-json">{
   &quot;website&quot;: &quot;https://jane-doe.github.io/small-sharp-tool&quot;
 }
 </code></pre>
 <h3 id="repository">repository</h3>
-<p>string, optional</p>
-<p>The location of the application&#39;s source code. Can be a git URL, a GitHub URL, or a tarball URL.</p>
+<p>The location of the application&#39;s source code. Can be a git URL, a GitHub URL, or a tarball URL. <em>optional string</em></p>
 <pre><code class="lang-json">{
   &quot;repository&quot;: &quot;https://github.com/jane-doe/small-sharp-tool&quot;
 }
 </code></pre>
 <h3 id="logo">logo</h3>
-<p>string, optional</p>
-<p>The URL of the application&#39;s logo image. It&#39;s dimensions should be square. Format can be SVG or PNG.</p>
+<p>The URL of the application&#39;s logo image. It&#39;s dimensions should be square. Format can be SVG or PNG. <em>optional string</em></p>
 <pre><code class="lang-json">{
   &quot;logo&quot;: &quot;https://jane-doe.github.io/small-sharp-tool/logo.svg&quot;
 }
 </code></pre>
 <h3 id="success_url">success_url</h3>
-<p>string, optional</p>
-<p>A URL specifying where to redirect the user once their new app is deployed. If value is a fully-qualified URL, the user should be redirected to that URL. If value is begins with a slash <code>/</code>, the user should be redirected to that path in their newly deployed app.</p>
+<p>A URL specifying where to redirect the user once their new app is deployed. If value is a fully-qualified URL, the user should be redirected to that URL. If value is begins with a slash <code>/</code>, the user should be redirected to that path in their newly deployed app. <em>optional string</em></p>
 <pre><code class="lang-json">{
   &quot;success_url&quot;: &quot;/welcome&quot;
 }
 </code></pre>
 <h3 id="scripts">scripts</h3>
-<p>object, optional</p>
-<p>A key-value object specifying scripts or shell commands to execute at different stages in the build/release process.</p>
+<p>A key-value object specifying scripts or shell commands to execute at different stages in the build/release process. <em>optional object</em></p>
 <pre><code class="lang-json">{
   &quot;scripts&quot;: {
     &quot;postdeploy&quot;: &quot;bundle exec rake bootstrap&quot;
@@ -97,13 +89,11 @@ variables, addons, and other information required to run apps on Heroku. This do
 }
 </code></pre>
 <h3 id="env">env</h3>
-<p>object, optional</p>
 <p>A key-value object for environment variables, or config vars in Heroku parlance. Keys are the names of the environment variables.</p>
 <p>Values can be strings or objects. If the value is a string, it will be used and the user will not be prompted to specify a different value. If the value is an object, it defines specific requirements for that variable:</p>
 <p>description - a human-friendly blurb about what the value is for and how to determine what it should be
-default - a default value to use if no override value is provided
-generator - a string representing a function to call to generate the value, such as cookie secret
-required - a boolean. Default is false.</p>
+value - a default value to use
+generator - a string representing a function to call to generate the value, such as cookie secret <em>optional object</em></p>
 <pre><code class="lang-json">{
   &quot;env&quot;: {
     &quot;BUILDPACK_URL&quot;: &quot;https://github.com/stomita/heroku-buildpack-phantomjs&quot;,
@@ -119,8 +109,7 @@ required - a boolean. Default is false.</p>
 }
 </code></pre>
 <h3 id="addons">addons</h3>
-<p>array, optional</p>
-<p>An array of strings specifying Heroku addons to provision on the app before deploying. Each addon should be in the format <code>addon:plan</code>. If plan is omitted, that addon&#39;s default plan will be provisioned.</p>
+<p>An array of strings specifying Heroku addons to provision on the app before deploying. Each addon should be in the format <code>addon:plan</code>. If plan is omitted, that addon&#39;s default plan will be provisioned. <em>optional array</em></p>
 <pre><code class="lang-json">{
   &quot;addons&quot;: [
     &quot;openredis&quot;,
