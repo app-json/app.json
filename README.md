@@ -1,6 +1,6 @@
 # apps
 
-[apps](https://www.npmjs.org/package/apps) is a node module for creating and validating Heroku app.json files. It works in node.js and the browser.
+[apps](https://www.npmjs.org/package/apps) is a node module for creating and validating Heroku app.json files. It works in node.js and the browser, and also has a CLI.
 
 ## Schema
 
@@ -10,11 +10,11 @@ specification and is validated with the awesome
 
 See the schema at [schema.js](/schema.js).
 
-## Usage
+## Installation and Usage
 
-### With Node.js or Browserify
+### Programmatic usage with Node.js or Browserify
 
-Download the module from npm:
+Download the module from npm and save it to your package.json:
 
 ```sh
 npm install apps --save
@@ -26,11 +26,38 @@ Require it in your script:
 var App = require("apps")
 ```
 
-### In Browser (without Browserify)
+### Usage in the Browser (without Browserify)
 
 If browserify isn't your thing, use the pre-compiled browser-ready bundle in
 [dist/app.js](/dist/app.js). Include this file in your html page and it will create
 `window.App` for you.
+
+### Usage on the Command Line
+
+To use this module on the command line, you'll need to install it globally using npm:
+
+```sh
+npm install apps --global
+```
+
+Now you can run `app` or `apps` from any directory:
+
+```sh
+$ app
+
+  Usage: app [options] [command]
+
+  Commands:
+
+    schema [options]       Write the app.json schema to STDOUT
+
+  Options:
+
+    -h, --help     output usage information
+    -V, --version  output the version number
+
+  Use 'app <command> --help' to get more information about a specific command.
+```
 
 ## Class Methods
 
