@@ -35,10 +35,11 @@ describe("App", function() {
 
   describe("validation", function() {
 
-    it("returns null for .errors if app is valid", function() {
+    it("returns an empty array for .errors if app is valid", function() {
       app = App.new(payload)
       assert(app.valid)
-      assert.equal(app.errors, null)
+      assert(util.isArray(app.errors))
+      assert.equal(app.errors.length, 0)
     })
 
     it("requires name", function() {

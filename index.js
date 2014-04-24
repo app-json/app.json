@@ -28,9 +28,7 @@ var App = module.exports = (function() {
     })
 
     this.__defineGetter__("errors", function(){
-      var e = this.validate().errors
-      if (e.length === 0) return null
-      return e
+      return this.validate().errors
     })
 
     return this
