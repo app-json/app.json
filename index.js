@@ -1,3 +1,4 @@
+'use strict'
 var fs = require("fs")
 var hogan = require("hogan.js")
 var http = require('http')
@@ -10,6 +11,7 @@ var schema = require("./schema")
 var App = module.exports = (function() {
 
   function App(raw) {
+    var key
 
     if (typeof(raw) === 'string' && raw.match(/\.json$/i)) {
       raw = JSON.parse(fs.readFileSync(raw))
@@ -39,6 +41,7 @@ var App = module.exports = (function() {
   }
 
   App.prototype.toJSON = function() {
+    var key
     var out = {}
     var validProps = Object.keys(schema.properties)
     for (key in this) {
@@ -50,7 +53,7 @@ var App = module.exports = (function() {
   }
 
   App.prototype.getAddonPrices = function(cb) {
-    _this = this
+    var _this = this
     App.addons.getPrices(this.addons, function(err, prices){
       if (err) return cb(err)
       _this.prices = prices
