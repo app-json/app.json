@@ -1,6 +1,6 @@
 {
   "name": "apps",
-  "version": "0.8.2",
+  "version": "0.8.3",
   "description": "Create, validate, and render Heroku app.json manifests",
   "main": "index.js",
   "bin": {
@@ -34,14 +34,14 @@
     "brfs": "^1.0.2",
     "async": "^0.7.0",
     "heroku-client": "^1.2.0",
-    "commander": "^2.2.0"
+    "commander": "^2.2.0",
+    "marked": "^0.3.2"
   },
   "devDependencies": {
     "mocha": "^1.18.0",
     "browserify": "^3.38.0",
     "uglify-js": "^2.4.13",
     "cheerio": "^0.15.0",
-    "marked": "^0.3.2",
     "nixt": "^0.3.0"
   }
 }
