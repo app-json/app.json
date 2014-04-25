@@ -1,6 +1,6 @@
 {
   "name": "apps",
-  "version": "0.8.1",
+  "version": "0.8.2",
   "description": "Create, validate, and render Heroku app.json manifests",
   "main": "index.js",
   "bin": {
