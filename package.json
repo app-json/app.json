@@ -1,12 +1,12 @@
 {
   "name": "app.json",
-  "version": "0.8.4",
+  "version": "0.8.5",
   "description": "Create, validate, and render Heroku app.json manifests",
   "main": "index.js",
   "bin": {
-    "app.json": "./bin/apps",
-    "app": "./bin/apps",
-    "apps": "./bin/apps"
+    "app.json": "./bin/app",
+    "app": "./bin/app",
+    "apps": "./bin/app"
   },
   "scripts": {
     "test": "mocha",
