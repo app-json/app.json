@@ -1,12 +1,12 @@
 'use strict'
 var fs = require("fs")
+var http = require("http")
 var hogan = require("hogan.js")
-var http = require('http')
-var superagent = require('superagent')
-var revalidator = require('revalidator')
+var superagent = require("superagent")
+var revalidator = require("revalidator")
 var parseGithubURL = require("github-url-to-object")
 var addons = require("./lib/addons")
-var schema = require("./schema")
+var schema = require("./lib/schema")
 
 var App = module.exports = (function() {
 
@@ -80,21 +80,6 @@ var App = module.exports = (function() {
 
   // Hogan Templates FTW
   App.templates = {}
-  // // fs.readdirSync('./templates').forEach(function(filename){
-  // var list = ['app.mustache', 'build.mustache', 'schema.mustache']
-  // list.forEach(function(filename){
-  //   var name = filename.replace(/\.\w+$/, '')
-  //
-  //   // Server vs Browser
-  //   if (module.parent) {
-  //     console.log('server')
-  //     App.templates[name] = hogan.compile(fs.readFileSync('./templates/' + filename).toString())
-  //   } else {
-  //     console.log('browser')
-  //     App.templates[name] = require('.templates/'+filename)
-  //   }
-  // })
-
   if (module.parent) {
     App.templates.app = hogan.compile(fs.readFileSync(__dirname + '/templates/app.mustache.html').toString())
     App.templates.build = hogan.compile(fs.readFileSync(__dirname + '/templates/build.mustache.html').toString())
@@ -106,7 +91,6 @@ var App = module.exports = (function() {
   }
 
   App.example = new App(schema.example)
-
   App.addons = addons
   App.schema = schema
 
