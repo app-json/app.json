@@ -13,10 +13,18 @@ var App = module.exports = (function() {
   function App(raw) {
     var key
 
-    if (typeof(raw) === 'string' && raw.match(/\.json$/i)) {
-      raw = JSON.parse(fs.readFileSync(raw))
-    } else if (typeof(raw) === 'string') {
-      raw = JSON.parse(raw)
+    if (typeof(raw) === 'string') {
+
+      // Filename?
+      if (raw.match(/\.json$/i)) {
+        raw = fs.readFileSync(raw)
+      }
+
+      try {
+        raw = JSON.parse(raw)
+      } catch(err) {
+        throw new Error("Malformed JSON")
+      }
     }
 
     for (key in raw) {

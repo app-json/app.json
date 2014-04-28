@@ -31,6 +31,25 @@ describe("App", function() {
       assert(app.valid)
     })
 
+    it("throws a semi-helpful error when given a filename with malformed JSON", function() {
+      assert.throws(
+        function() {
+          App.new(__dirname + "/fixtures/malformed-app.json")
+        },
+        /malformed JSON/i
+      )
+    })
+
+    it("throws a semi-helpful error when given a malformed JSON string", function() {
+
+      assert.throws(
+        function() {
+          App.new(fs.readFileSync(__dirname + "/fixtures/malformed-app.json").toString())
+        },
+        /malformed JSON/i
+      )
+    })
+
   })
 
   describe("validation", function() {

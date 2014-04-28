@@ -1,0 +1,84 @@
+#!/usr/bin/env node
+
+var fs = require("fs")
+var path = require("path")
+var program = require("commander")
+var marked = require("marked")
+var title = require("to-title-case")
+var pkg = require("../package.json")
+var App = require("..")
+
+program
+  .version(pkg.version)
+
+program
+  .command("init")
+  .description("Create an app.json for the current directory's app")
+  .action(function(program){
+
+    var app = App.new()
+    app.name = title(path.basename(process.cwd()))
+    app.description = "TODO: Add a short blurb about " + app.name
+    app.keywords = ["small", "sharp", "tool"]
+    app.env = {"SITE_TITLE": app.name}
+    app.addons = []
+
+    fs.writeFile(process.cwd() + "/app.json", app.toJSON(), function(err) {
+      if (err) console.error(err)
+      console.log("Created app.json")
+    })
+  })
+
+program
+  .command("validate")
+  .description("Validate the app.json file in the current directory")
+  .action(function(program){
+    var manifest = process.cwd() + "/app.json"
+    if (fs.existsSync(manifest)) {
+
+      try {
+        JSON.parse(fs.readFileSync(manifest).toString())
+      } catch(err) {
+        return console.error("Found an app.json file, but it's invalid JSON.")
+      }
+
+      var app = App.new(manifest)
+
+      if (app.valid) {
+        console.log("\nYour app.json file is valid!\n")
+        console.log(app.toJSON())
+      } else {
+        console.log("Found an app.json file, but it's got some issues:")
+        console.log(app.errors.split("\n"))
+      }
+    } else {
+      console.log("No app.json found. Use `app init` to create one.")
+    }
+  })
+
+program
+  .command("schema")
+  .option('--markdown', 'Write the schema in markdown format')
+  .option('--html', 'Write the schema in HTML format')
+  .description("Write the app.json schema to STDOUT")
+  .action(function(program){
+    if (program.markdown) {
+      process.stdout.write(App.templates.schema.render(App.schema))
+    } else if (program.html) {
+      process.stdout.write(marked(App.templates.schema.render(App.schema)))
+    } else {
+      process.stdout.write(JSON.stringify(App.schema.properties, null, 2))
+    }
+  })
+
+// Print this after the generated help text
+program.on("--help", function(){
+  console.log("  Use 'app <command> --help' to get more information about a specific command.")
+  console.log('')
+})
+
+program.parse(process.argv)
+
+if(program.args.length < 1){
+  program.help()
+}

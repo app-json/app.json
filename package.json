@@ -4,9 +4,9 @@
   "description": "Create, validate, and render Heroku app.json manifests",
   "main": "index.js",
   "bin": {
-    "app.json": "./bin/app",
-    "app": "./bin/app",
-    "apps": "./bin/app"
+    "app.json": "./bin/cli",
+    "app": "./bin/cli",
+    "apps": "./bin/cli"
   },
   "scripts": {
     "test": "mocha",
@@ -36,7 +36,8 @@
     "async": "^0.7.0",
     "heroku-client": "^1.2.0",
     "commander": "^2.2.0",
-    "marked": "^0.3.2"
+    "marked": "^0.3.2",
+    "to-title-case": "^0.1.4"
   },
   "devDependencies": {
     "mocha": "^1.18.0",

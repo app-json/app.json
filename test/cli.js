@@ -7,7 +7,7 @@ describe("CLI", function() {
 
     it("outputs usage", function(done) {
       nixt()
-        .run('./bin/app')
+        .run('./bin/cli')
         .stdout(/usage/i)
         .end(done)
     })
@@ -30,7 +30,7 @@ describe("CLI", function() {
             return new Error("JSON doesn't match schema", result)
           }
         })
-        .run('./bin/app schema')
+        .run('./bin/cli schema')
         // .exist('/tmp/app/schema.json')
         .end(done)
     })
@@ -43,7 +43,7 @@ describe("CLI", function() {
             return new Error("Expected to find markdown in output")
           }
         })
-        .run('./bin/app schema --markdown')
+        .run('./bin/cli schema --markdown')
         .end(done)
     })
 
@@ -55,7 +55,7 @@ describe("CLI", function() {
             return new Error("Expected to find HTML in output")
           }
         })
-        .run('./bin/app schema --html')
+        .run('./bin/cli schema --html')
         .end(done)
     })
 
