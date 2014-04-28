@@ -3,6 +3,17 @@ var App = require('..')
 
 describe("CLI", function() {
 
+  describe("app", function() {
+
+    it("outputs usage", function(done) {
+      nixt()
+        .run('./bin/app')
+        .stdout(/usage/i)
+        .end(done)
+    })
+
+  })
+
   describe("app schema", function() {
 
     beforeEach(function(done){
@@ -19,7 +30,7 @@ describe("CLI", function() {
             return new Error("JSON doesn't match schema", result)
           }
         })
-        .run('./bin/apps schema')
+        .run('./bin/app schema')
         // .exist('/tmp/app/schema.json')
         .end(done)
     })
@@ -32,7 +43,7 @@ describe("CLI", function() {
             return new Error("Expected to find markdown in output")
           }
         })
-        .run('./bin/apps schema --markdown')
+        .run('./bin/app schema --markdown')
         .end(done)
     })
 
@@ -44,7 +55,7 @@ describe("CLI", function() {
             return new Error("Expected to find HTML in output")
           }
         })
-        .run('./bin/apps schema --html')
+        .run('./bin/app schema --html')
         .end(done)
     })
 
