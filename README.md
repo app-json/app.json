@@ -1,14 +1,15 @@
-# apps
+# app.json
 
-[apps](https://www.npmjs.org/package/apps) is a node module for creating and validating Heroku app.json files. It works in node.js and the browser, and also has a CLI.
+`app.json` is a manifest format for describing web apps. It's a file in the root
+directory of an app that describes the app's build requirements, environment variables, addons,
+and other information.
 
-## Schema
+This repository contains the source for an npm module called
+[app.json](https://www.npmjs.org/package/app.json), which has many facets:
 
-The app.json schema is defined using the [JSON Schema](http://json-schema.org/)
-specification and is validated with the awesome
-[revalidator](https://github.com/flatiron/revalidator#readme) node module.
-
-See the schema at [schema.js](/schema.js).
+- A JavaScript interface for creating, validating, and consuming app.json manifests.
+- A module that is designed to work in browsers and Node.js.
+- A CLI for creating manifests and producing schema documentation.
 
 ## Installation and Usage
 
@@ -17,13 +18,13 @@ See the schema at [schema.js](/schema.js).
 Download the module from npm and save it to your package.json:
 
 ```sh
-npm install apps --save
+npm install app.json --save
 ```
 
 Require it in your script:
 
 ```js
-var App = require("apps")
+var App = require("app.json")
 ```
 
 ### Usage in the Browser (without Browserify)
@@ -37,10 +38,10 @@ If browserify isn't your thing, use the pre-compiled browser-ready bundle in
 To use this module on the command line, you'll need to install it globally using npm:
 
 ```sh
-npm install apps --global
+npm install app.json --global
 ```
 
-Now you can run `app` or `apps` from any directory:
+Now you can run `app` or `app.json` from any directory:
 
 ```sh
 $ app
@@ -58,6 +59,14 @@ $ app
 
   Use 'app <command> --help' to get more information about a specific command.
 ```
+
+## Schema
+
+The app.json schema is defined using the [JSON Schema](http://json-schema.org/)
+specification and is validated with the
+[revalidator](https://github.com/flatiron/revalidator#readme) node module. View
+the [raw schema](/lib/schema.js) or the auto-generated [app.json
+Schema Documentation](https://devcenter.heroku.com/articles/app-json-schema?preview=1) on Heroku Dev Center.
 
 ## Class Methods
 

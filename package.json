@@ -4,6 +4,7 @@
   "description": "Create, validate, and render Heroku app.json manifests",
   "main": "index.js",
   "bin": {
+    "app.json": "./bin/apps",
     "app": "./bin/apps",
     "apps": "./bin/apps"
   },
@@ -14,7 +15,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/heroku/apps"
+    "url": "https://github.com/heroku/app.json"
   },
   "keywords": [
     "app.json"
@@ -22,9 +23,9 @@
   "author": "Zeke Sikelianos <zeke@sikelianos.com> (http://zeke.sikelianos.com/)",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/heroku/apps/issues"
+    "url": "https://github.com/heroku/app.json/issues"
   },
-  "homepage": "https://github.com/heroku/apps",
+  "homepage": "https://github.com/heroku/app.json",
   "dependencies": {
     "revalidator": "https://github.com/facundoolano/revalidator/tarball/e0ff0e79a9ab4421705a5bfbe1c7dc092c0132f9",
     "github-url-to-object": "^0.4.1",
