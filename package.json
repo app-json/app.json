@@ -26,7 +26,7 @@
   },
   "homepage": "https://github.com/heroku/apps",
   "dependencies": {
-    "revalidator": "https://github.com/facundoolano/revalidator/tarball/master",
+    "revalidator": "https://github.com/facundoolano/revalidator/tarball/e0ff0e79a9ab4421705a5bfbe1c7dc092c0132f9",
     "github-url-to-object": "^0.4.1",
     "superagent": "^0.17.0",
     "browserify-hogan": "^0.1.2",
