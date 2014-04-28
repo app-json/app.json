@@ -15,6 +15,9 @@ program
   .command("init")
   .description("Create an app.json for the current directory's app")
   .action(function(program){
+    if (fs.existsSync(process.cwd() + "/app.json")) {
+      return console.log("This directory already contains an app.json. Run `app validate` to verify it.")
+    }
 
     var app = App.new()
     app.name = title(path.basename(process.cwd()))
