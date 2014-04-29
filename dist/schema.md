@@ -15,7 +15,6 @@ variables, addons, and other information required to run apps on Heroku. This do
   "website": "https://small-sharp-tool.com/",
   "repository": "https://github.com/jane-doe/small-sharp-tool",
   "logo": "https://small-sharp-tool.com/logo.svg",
-  "success_url": "/welcome",
   "scripts": {
     "postdeploy": "bundle exec rake bootstrap"
   },
@@ -97,18 +96,9 @@ The URL of the application&#39;s logo image. Dimensions should be square. Format
   "logo": "https://small-sharp-tool.com/logo.svg"
 }
 ```
-### success_url
-
-A URL specifying where to redirect the user once their new app is deployed. If value is a fully-qualified URL, the user should be redirected to that URL. If value is begins with a slash `/`, the user should be redirected to that path in their newly deployed app. *optional string*
-
-```json
-{
-  "success_url": "/welcome"
-}
-```
 ### scripts
 
-A key-value object specifying scripts or shell commands to execute at different stages in the build/release process. *optional object*
+A key-value object specifying scripts or shell commands to execute at different stages in the build/release process. Currently, `postdeploy` is the only supported script. *optional object*
 
 ```json
 {
@@ -144,7 +134,7 @@ generator - a string representing a function to call to generate the value, such
 ```
 ### addons
 
-An array of strings specifying Heroku addons to provision on the app before deploying. Each addon should be in the format `addon:plan`. If plan is omitted, that addon&#39;s default plan will be provisioned. *optional array*
+An array of strings specifying Heroku addons to provision on the app before deploying. Each addon should be in the format `addon:plan` or `addon`. If plan is omitted, that addon&#39;s default plan will be provisioned. *optional array*
 
 ```json
 {

@@ -12,7 +12,6 @@ variables, addons, and other information required to run apps on Heroku. This do
   &quot;website&quot;: &quot;https://small-sharp-tool.com/&quot;,
   &quot;repository&quot;: &quot;https://github.com/jane-doe/small-sharp-tool&quot;,
   &quot;logo&quot;: &quot;https://small-sharp-tool.com/logo.svg&quot;,
-  &quot;success_url&quot;: &quot;/welcome&quot;,
   &quot;scripts&quot;: {
     &quot;postdeploy&quot;: &quot;bundle exec rake bootstrap&quot;
   },
@@ -74,14 +73,8 @@ variables, addons, and other information required to run apps on Heroku. This do
   &quot;logo&quot;: &quot;https://small-sharp-tool.com/logo.svg&quot;
 }
 </code></pre>
-<h3 id="success_url">success_url</h3>
-<p>A URL specifying where to redirect the user once their new app is deployed. If value is a fully-qualified URL, the user should be redirected to that URL. If value is begins with a slash <code>/</code>, the user should be redirected to that path in their newly deployed app. <em>optional string</em></p>
-<pre><code class="lang-json">{
-  &quot;success_url&quot;: &quot;/welcome&quot;
-}
-</code></pre>
 <h3 id="scripts">scripts</h3>
-<p>A key-value object specifying scripts or shell commands to execute at different stages in the build/release process. <em>optional object</em></p>
+<p>A key-value object specifying scripts or shell commands to execute at different stages in the build/release process. Currently, <code>postdeploy</code> is the only supported script. <em>optional object</em></p>
 <pre><code class="lang-json">{
   &quot;scripts&quot;: {
     &quot;postdeploy&quot;: &quot;bundle exec rake bootstrap&quot;
@@ -109,7 +102,7 @@ generator - a string representing a function to call to generate the value, such
 }
 </code></pre>
 <h3 id="addons">addons</h3>
-<p>An array of strings specifying Heroku addons to provision on the app before deploying. Each addon should be in the format <code>addon:plan</code>. If plan is omitted, that addon&#39;s default plan will be provisioned. <em>optional array</em></p>
+<p>An array of strings specifying Heroku addons to provision on the app before deploying. Each addon should be in the format <code>addon:plan</code> or <code>addon</code>. If plan is omitted, that addon&#39;s default plan will be provisioned. <em>optional array</em></p>
 <pre><code class="lang-json">{
   &quot;addons&quot;: [
     &quot;openredis&quot;,
