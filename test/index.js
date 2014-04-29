@@ -61,12 +61,21 @@ describe("App", function() {
       assert.equal(app.errors.length, 0)
     })
 
-    it("requires name", function() {
-      delete payload.name
+    it("doesn't allow a blank string for name", function() {
+      payload.name = ""
       app = App.new(payload)
       assert(!app.valid)
       assert.equal(app.errors.length, 1)
       assert.equal(app.errors[0].property, 'name')
+    })
+
+    it("requires name to be at least three characters", function() {
+      payload.name = "Hi"
+      app = App.new(payload)
+      assert(!app.valid)
+      assert.equal(app.errors.length, 1)
+      assert.equal(app.errors[0].property, 'name')
+      assert.equal(app.errors[0].message, 'is too short (minimum is 3 characters)')
     })
 
     // it("does not allow empty-string name", function() {

@@ -3,23 +3,33 @@ window.App = require('./')
 
 },{"./":2}],2:[function(require,module,exports){
 (function (Buffer){
+'use strict'
 var fs = require("fs")
+var http = require("http")
 var hogan = require("hogan.js")
-var http = require('http')
-var superagent = require('superagent')
-var revalidator = require('revalidator')
+var superagent = require("superagent")
+var revalidator = require("revalidator")
 var parseGithubURL = require("github-url-to-object")
 var addons = require("./lib/addons")
-var schema = require("./schema")
+var schema = require("./lib/schema")
 
 var App = module.exports = (function() {
 
   function App(raw) {
+    var key
 
-    if (typeof(raw) === 'string' && raw.match(/\.json$/i)) {
-      raw = JSON.parse(fs.readFileSync(raw))
-    } else if (typeof(raw) === 'string') {
-      raw = JSON.parse(raw)
+    if (typeof(raw) === 'string') {
+
+      // Filename?
+      if (raw.match(/\.json$/i)) {
+        raw = fs.readFileSync(raw)
+      }
+
+      try {
+        raw = JSON.parse(raw)
+      } catch(err) {
+        throw new Error("Malformed JSON")
+      }
     }
 
     for (key in raw) {
@@ -33,9 +43,7 @@ var App = module.exports = (function() {
     })
 
     this.__defineGetter__("errors", function(){
-      var e = this.validate().errors
-      if (e.length === 0) return null
-      return e
+      return this.validate().errors
     })
 
     return this
@@ -46,6 +54,7 @@ var App = module.exports = (function() {
   }
 
   App.prototype.toJSON = function() {
+    var key
     var out = {}
     var validProps = Object.keys(schema.properties)
     for (key in this) {
@@ -57,7 +66,7 @@ var App = module.exports = (function() {
   }
 
   App.prototype.getAddonPrices = function(cb) {
-    _this = this
+    var _this = this
     App.addons.getPrices(this.addons, function(err, prices){
       if (err) return cb(err)
       _this.prices = prices
@@ -84,25 +93,10 @@ var App = module.exports = (function() {
 
   // Hogan Templates FTW
   App.templates = {}
-  // // fs.readdirSync('./templates').forEach(function(filename){
-  // var list = ['app.mustache', 'build.mustache', 'schema.mustache']
-  // list.forEach(function(filename){
-  //   var name = filename.replace(/\.\w+$/, '')
-  //
-  //   // Server vs Browser
-  //   if (module.parent) {
-  //     console.log('server')
-  //     App.templates[name] = hogan.compile(fs.readFileSync('./templates/' + filename).toString())
-  //   } else {
-  //     console.log('browser')
-  //     App.templates[name] = require('.templates/'+filename)
-  //   }
-  // })
-
   if (module.parent) {
-    App.templates.app = hogan.compile(Buffer("PGxpIGNsYXNzPSJhcHAiPgoKICA8YSBjbGFzcz0ibG9nbyBhY3RpdmF0b3IiPgogICAgPGltZyBzcmM9Int7bG9nb319Ij4KICA8L2E+CgogIDxkaXYgY2xhc3M9Im1ldGEiPgoKICAgIDxoMj48YSBjbGFzcz0iYWN0aXZhdG9yIj57e25hbWV9fTwvYT48L2gyPgoKICAgIDxkaXYgY2xhc3M9ImRyYXdlciI+CgogICAgICB7eyNkZXNjcmlwdGlvbn19CiAgICAgICAgPHA+e3tkZXNjcmlwdGlvbn19PC9wPgogICAgICB7ey9kZXNjcmlwdGlvbn19CgogICAgICB7eyNyZXBvc2l0b3J5fX0KICAgICAgICA8YSBocmVmPSJ7e3JlcG9zaXRvcnl9fSIgY2xhc3M9InJlcG9zaXRvcnkiPnt7cmVwb3NpdG9yeX19PC9hPgogICAgICB7ey9yZXBvc2l0b3J5fX0KCiAgICAgIHt7I3dlYnNpdGV9fQogICAgICAgIDxhIGhyZWY9Int7d2Vic2l0ZX19IiBjbGFzcz0id2Vic2l0ZSI+e3t3ZWJzaXRlfX08L2E+CiAgICAgIHt7L3dlYnNpdGV9fQoKICAgICAgPGZvcm0gY2xhc3M9ImRlcGxveSI+CiAgICAgICAgPGlucHV0IHR5cGU9ImhpZGRlbiIgbmFtZT0ic291cmNlIiB2YWx1ZT0ie3tyZXBvc2l0b3J5fX0iPgogICAgICAgIDxpbnB1dCB0eXBlPSJzdWJtaXQiIHZhbHVlPSJEZXBsb3kgZm9yIHt7cHJpY2VzLnRvdGFsUHJpY2V9fSI+CiAgICAgIDwvZm9ybT4KCiAgICAgIDxkaXYgY2xhc3M9Im91dHB1dCI+PC9kaXY+CgogICAgPC9kaXY+CgogIDwvZGl2PgoKPC9saT4K","base64").toString())
+    App.templates.app = hogan.compile(Buffer("PGxpIGNsYXNzPSJhcHAiPgoKICA8YSBjbGFzcz0ibG9nbyBhY3RpdmF0b3IiPgogICAgPGltZyBzcmM9Int7bG9nb319Ij4KICA8L2E+CgogIDxkaXYgY2xhc3M9Im1ldGEiPgoKICAgIDxoMj48YSBjbGFzcz0iYWN0aXZhdG9yIj57e25hbWV9fTwvYT48L2gyPgoKICAgIDxkaXYgY2xhc3M9ImRyYXdlciI+CgogICAgICB7eyNkZXNjcmlwdGlvbn19CiAgICAgICAgPHA+e3tkZXNjcmlwdGlvbn19PC9wPgogICAgICB7ey9kZXNjcmlwdGlvbn19CgogICAgICB7eyNyZXBvc2l0b3J5fX0KICAgICAgICA8YSBocmVmPSJ7e3JlcG9zaXRvcnl9fSIgY2xhc3M9InJlcG9zaXRvcnkiPnt7cmVwb3NpdG9yeX19PC9hPgogICAgICB7ey9yZXBvc2l0b3J5fX0KCiAgICAgIHt7I3dlYnNpdGV9fQogICAgICAgIDxhIGhyZWY9Int7d2Vic2l0ZX19IiBjbGFzcz0id2Vic2l0ZSI+e3t3ZWJzaXRlfX08L2E+CiAgICAgIHt7L3dlYnNpdGV9fQoKICAgICAge3sjcHJpY2VzfX0KICAgICAgICA8aDM+QWRkb25zPC9oMz4KICAgICAgICA8dWwgY2xhc3M9ImFkZG9ucyI+CiAgICAgICAgICB7eyNwbGFuc319CiAgICAgICAgICAgIDxsaT4KICAgICAgICAgICAgICA8YSBocmVmPSJodHRwczovL2FkZG9ucy5oZXJva3UuY29tL3t7bmFtZX19Ij4KICAgICAgICAgICAgICAgIDxpbWcgc3JjPSJ7e2xvZ299fSI+CiAgICAgICAgICAgICAgICA8c3BhbiBjbGFzcz0iZGVzY3JpcHRpb24iPnt7ZGVzY3JpcHRpb259fTwvc3Bhbj4KICAgICAgICAgICAgICAgIDxzcGFuIGNsYXNzPSJwcmljZSI+e3twcmV0dHlQcmljZX19PC9zcGFuPgogICAgICAgICAgICAgIDwvYT4KICAgICAgICAgICAgPC9saT4KICAgICAgICAgIHt7L3BsYW5zfX0KICAgICAgICA8L3VsPgogICAgICB7ey9wcmljZXN9fQoKICAgICAgPGZvcm0gY2xhc3M9ImRlcGxveSI+CiAgICAgICAgPGlucHV0IHR5cGU9ImhpZGRlbiIgbmFtZT0ic291cmNlIiB2YWx1ZT0ie3tyZXBvc2l0b3J5fX0iPgogICAgICAgIDxpbnB1dCB0eXBlPSJzdWJtaXQiIHZhbHVlPSJEZXBsb3kgZm9yIHt7cHJpY2VzLnRvdGFsUHJpY2V9fSI+CiAgICAgIDwvZm9ybT4KCiAgICAgIDxkaXYgY2xhc3M9Im91dHB1dCI+PC9kaXY+CgogICAgPC9kaXY+CgogIDwvZGl2PgoKPC9saT4K","base64").toString())
     App.templates.build = hogan.compile(Buffer("e3sjYXBwfX0KICA8cD4KICAgIFlvdXIgYXBwIGlzIGRlcGxveWluZyB0bwogICAgPGEgaHJlZj0iaHR0cHM6Ly97e2FwcC5uYW1lfX0uaGVyb2t1YXBwLmNvbSI+e3thcHAubmFtZX19Lmhlcm9rdWFwcC5jb208L2E+LAogICAgYW5kIHdpbGwgYmUgcmVhZHkgc29vbi4KICA8L3A+Cnt7L2FwcH19Cgp7e15hcHB9fQogIDxwIGNsYXNzPSJlcnJvciI+CiAgICBCdWlsZCBmYWlsZWQuIHt7bWVzc2FnZX19CiAgPC9wPgp7ey9hcHB9fQo=","base64").toString())
-    App.templates.schema = hogan.compile(Buffer("YGFwcC5qc29uYCBpcyBhIG1hbmlmZXN0IGZvcm1hdCBmb3IgZGVzY3JpYmluZyB3ZWIgYXBwcy4gSXQgZGVjbGFyZXMgZW52aXJvbm1lbnQKdmFyaWFibGVzLCBhZGRvbnMsIGFuZCBvdGhlciBpbmZvcm1hdGlvbiByZXF1aXJlZCB0byBydW4gYXBwcyBvbiBIZXJva3UuIFRoaXMgZG9jdW1lbnQgZGVzY3JpYmVzIHRoZSBzY2hlbWEgaW4gZGV0YWlsLgoKIyMgRXhhbXBsZSBhcHAuanNvbgoKYGBganNvbgp7e3tleGFtcGxlSlNPTn19fQpgYGAKCiMjIFRoZSBTY2hlbWEKCnt7I3Byb3BlcnRpZXNBcnJheX19CiMjIyB7e25hbWV9fQoKe3t0eXBlfX0sIHt7cmVxdWlyZWRPck9wdGlvbmFsfX0KCnt7ZGVzY3JpcHRpb259fQoKYGBganNvbgp7e3tleGFtcGxlSlNPTn19fQpgYGAKe3svcHJvcGVydGllc0FycmF5fX0K","base64").toString())
+    App.templates.schema = hogan.compile(Buffer("YGFwcC5qc29uYCBpcyBhIG1hbmlmZXN0IGZvcm1hdCBmb3IgZGVzY3JpYmluZyB3ZWIgYXBwcy4gSXQgZGVjbGFyZXMgZW52aXJvbm1lbnQKdmFyaWFibGVzLCBhZGRvbnMsIGFuZCBvdGhlciBpbmZvcm1hdGlvbiByZXF1aXJlZCB0byBydW4gYXBwcyBvbiBIZXJva3UuIFRoaXMgZG9jdW1lbnQgZGVzY3JpYmVzIHRoZSBzY2hlbWEgaW4gZGV0YWlsLgoKIyMgRXhhbXBsZSBhcHAuanNvbgoKYGBganNvbgp7e3tleGFtcGxlSlNPTn19fQpgYGAKCiMjIFRoZSBTY2hlbWEKCnt7I3Byb3BlcnRpZXNBcnJheX19CiMjIyB7e25hbWV9fQoKe3tkZXNjcmlwdGlvbn19ICp7e3JlcXVpcmVkT3JPcHRpb25hbH19IHt7dHlwZX19KgoKYGBganNvbgp7e3tleGFtcGxlSlNPTn19fQpgYGAKe3svcHJvcGVydGllc0FycmF5fX0K","base64").toString())
   } else {
     App.templates.app = require('./templates/app.mustache.html')
     App.templates.build = require('./templates/build.mustache.html')
@@ -110,7 +104,6 @@ var App = module.exports = (function() {
   }
 
   App.example = new App(schema.example)
-
   App.addons = addons
   App.schema = schema
 
@@ -119,7 +112,8 @@ var App = module.exports = (function() {
 })()
 
 }).call(this,require("buffer").Buffer)
-},{"./lib/addons":3,"./schema":40,"./templates/app.mustache.html":41,"./templates/build.mustache.html":42,"./templates/schema.mustache.html":43,"buffer":6,"fs":5,"github-url-to-object":31,"hogan.js":34,"http":10,"revalidator":36,"superagent":37}],3:[function(require,module,exports){
+},{"./lib/addons":3,"./lib/schema":4,"./templates/app.mustache.html":41,"./templates/build.mustache.html":42,"./templates/schema.mustache.html":43,"buffer":7,"fs":6,"github-url-to-object":32,"hogan.js":35,"http":11,"revalidator":37,"superagent":38}],3:[function(require,module,exports){
+'use strict'
 var async = require('async')
 var superagent = require('superagent')
 var addons = module.exports = {}
@@ -187,7 +181,108 @@ function formatPrice(price) {
   return (price == 0) ? "Free" : "$" + price/100 + "/mo"
 }
 
-},{"async":4,"superagent":37}],4:[function(require,module,exports){
+},{"async":5,"superagent":38}],4:[function(require,module,exports){
+'use strict'
+var schema = {
+  "properties": {
+    "name": {
+      "description": "A URL-friendly string that uniquely identifies the template app.",
+      "type": "string",
+      "allowEmpty": false,
+      "example": "small-sharp-tool"
+    },
+    "description": {
+      "description": "A brief summary of the app: what it does, who it's for, why it exists, etc.",
+      "type": "string",
+      "example": "This app does one little thing, and does it well."
+    },
+    "keywords": {
+      "description": "An array of strings describing the app.",
+      "type": "array",
+      "example": ["productivity", "HTML5", "scalpel"]
+    },
+    "website": {
+      "description": "The project's website, if there is one.",
+      "type": "string",
+      "format": "url",
+      "allowEmpty": false,
+      "example": "https://jane-doe.github.io/small-sharp-tool"
+    },
+    "repository": {
+      "description": "The location of the application's source code. Can be a git URL, a GitHub URL, or a tarball URL.",
+      "type": "string",
+      "format": "url",
+      "allowEmpty": false,
+      "example": "https://github.com/jane-doe/small-sharp-tool"
+    },
+    "logo": {
+      "description": "The URL of the application's logo image. It's dimensions should be square. Format can be SVG or PNG.",
+      "type": "string",
+      "format": "url",
+      "allowEmpty": false,
+      "example": "https://jane-doe.github.io/small-sharp-tool/logo.svg"
+    },
+    "success_url": {
+      "description": "A URL specifying where to redirect the user once their new app is deployed. If value is a fully-qualified URL, the user should be redirected to that URL. If value is begins with a slash `/`, the user should be redirected to that path in their newly deployed app.",
+      "type": "string",
+      "allowEmpty": false,
+      "example": "/welcome"
+    },
+    "scripts": {
+      "description": "A key-value object specifying scripts or shell commands to execute at different stages in the build/release process.",
+      "type": "object",
+      "example": {"postdeploy": "bundle exec rake bootstrap"}
+    },
+    "env": {
+      "description": "A key-value object for environment variables, or config vars in Heroku parlance. Keys are the names of the environment variables.\n\nValues can be strings or objects. If the value is a string, it will be used and the user will not be prompted to specify a different value. If the value is an object, it defines specific requirements for that variable:\n\ndescription - a human-friendly blurb about what the value is for and how to determine what it should be\nvalue - a default value to use\ngenerator - a string representing a function to call to generate the value, such as cookie secret",
+      "type": "object",
+      "example": {
+        "BUILDPACK_URL": "https://github.com/stomita/heroku-buildpack-phantomjs",
+        "SECRET_TOKEN": {
+          "description": "A secret key for verifying the integrity of signed cookies.",
+          "generator": "secret"
+        },
+        "WEB_CONCURRENCY": {
+          "description": "The number of processes to run.",
+          "default": "5"
+        }
+      }
+    },
+    "addons": {
+      "description": "An array of strings specifying Heroku addons to provision on the app before deploying. Each addon should be in the format `addon:plan`. If plan is omitted, that addon's default plan will be provisioned.",
+      "type": "array",
+      "example": [
+        "openredis",
+        "mongolab:shared-single-small"
+      ]
+    }
+  }
+}
+
+// Assemble an example schema
+schema.example = {}
+Object.keys(schema.properties).map(function(key){
+  schema.example[key] = schema.properties[key].example
+})
+
+// Assemble a template-ready stringified version of the schema
+schema.exampleJSON = JSON.stringify(schema.example, null, 2)
+
+// Coerce schema properties into a template-friendly format
+schema.propertiesArray = Object.keys(schema.properties).map(function(name) {
+  var prop = schema.properties[name]
+  prop.name = name
+  prop.requiredOrOptional = prop.required ? "required" : "optional"
+
+  var jsonDoc = {}
+  jsonDoc[prop.name] = prop.example
+  prop.exampleJSON = JSON.stringify(jsonDoc, null, 2)
+  return prop
+})
+
+module.exports = schema
+
+},{}],5:[function(require,module,exports){
 (function (process){
 /*jshint onevar: false, indent:4 */
 /*global setImmediate: false, setTimeout: false, console: false */
@@ -1233,10 +1328,10 @@ function formatPrice(price) {
 
 }());
 
-}).call(this,require("/Users/zeke/code/hero/apps/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"))
-},{"/Users/zeke/code/hero/apps/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":15}],5:[function(require,module,exports){
+}).call(this,require("/Users/zeke/code/hero/app.json/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"))
+},{"/Users/zeke/code/hero/app.json/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":16}],6:[function(require,module,exports){
 
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 /*!
  * The buffer module from node.js, for the browser.
  *
@@ -2347,7 +2442,7 @@ function assert (test, message) {
   if (!test) throw new Error(message || 'Failed assertion')
 }
 
-},{"base64-js":7,"ieee754":8}],7:[function(require,module,exports){
+},{"base64-js":8,"ieee754":9}],8:[function(require,module,exports){
 var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 
 ;(function (exports) {
@@ -2470,7 +2565,7 @@ var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 	module.exports.fromByteArray = uint8ToBase64
 }())
 
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 exports.read = function(buffer, offset, isLE, mLen, nBytes) {
   var e, m,
       eLen = nBytes * 8 - mLen - 1,
@@ -2556,7 +2651,7 @@ exports.write = function(buffer, value, offset, isLE, mLen, nBytes) {
   buffer[offset + i - d] |= s * 128;
 };
 
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -2858,7 +2953,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],10:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 var http = module.exports;
 var EventEmitter = require('events').EventEmitter;
 var Request = require('./lib/request');
@@ -2997,7 +3092,7 @@ http.STATUS_CODES = {
     510 : 'Not Extended',               // RFC 2774
     511 : 'Network Authentication Required' // RFC 6585
 };
-},{"./lib/request":11,"events":9,"url":28}],11:[function(require,module,exports){
+},{"./lib/request":12,"events":10,"url":29}],12:[function(require,module,exports){
 var Stream = require('stream');
 var Response = require('./response');
 var Base64 = require('Base64');
@@ -3188,7 +3283,7 @@ var indexOf = function (xs, x) {
     return -1;
 };
 
-},{"./response":12,"Base64":13,"inherits":14,"stream":21}],12:[function(require,module,exports){
+},{"./response":13,"Base64":14,"inherits":15,"stream":22}],13:[function(require,module,exports){
 var Stream = require('stream');
 var util = require('util');
 
@@ -3310,7 +3405,7 @@ var isArray = Array.isArray || function (xs) {
     return Object.prototype.toString.call(xs) === '[object Array]';
 };
 
-},{"stream":21,"util":30}],13:[function(require,module,exports){
+},{"stream":22,"util":31}],14:[function(require,module,exports){
 ;(function () {
 
   var object = typeof exports != 'undefined' ? exports : this; // #8: web workers
@@ -3372,7 +3467,7 @@ var isArray = Array.isArray || function (xs) {
 
 }());
 
-},{}],14:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -3397,7 +3492,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -3459,7 +3554,7 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],16:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 (function (global){
 /*! http://mths.be/punycode v1.2.4 by @mathias */
 ;(function(root) {
@@ -3970,7 +4065,7 @@ process.chdir = function (dir) {
 }(this));
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],17:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -4056,7 +4151,7 @@ var isArray = Array.isArray || function (xs) {
   return Object.prototype.toString.call(xs) === '[object Array]';
 };
 
-},{}],18:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -4143,13 +4238,13 @@ var objectKeys = Object.keys || function (obj) {
   return res;
 };
 
-},{}],19:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 'use strict';
 
 exports.decode = exports.parse = require('./decode');
 exports.encode = exports.stringify = require('./encode');
 
-},{"./decode":17,"./encode":18}],20:[function(require,module,exports){
+},{"./decode":18,"./encode":19}],21:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -4223,7 +4318,7 @@ function onend() {
   });
 }
 
-},{"./readable.js":24,"./writable.js":26,"inherits":14,"process/browser.js":22}],21:[function(require,module,exports){
+},{"./readable.js":25,"./writable.js":27,"inherits":15,"process/browser.js":23}],22:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -4352,7 +4447,7 @@ Stream.prototype.pipe = function(dest, options) {
   return dest;
 };
 
-},{"./duplex.js":20,"./passthrough.js":23,"./readable.js":24,"./transform.js":25,"./writable.js":26,"events":9,"inherits":14}],22:[function(require,module,exports){
+},{"./duplex.js":21,"./passthrough.js":24,"./readable.js":25,"./transform.js":26,"./writable.js":27,"events":10,"inherits":15}],23:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -4407,7 +4502,7 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],23:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -4450,7 +4545,7 @@ PassThrough.prototype._transform = function(chunk, encoding, cb) {
   cb(null, chunk);
 };
 
-},{"./transform.js":25,"inherits":14}],24:[function(require,module,exports){
+},{"./transform.js":26,"inherits":15}],25:[function(require,module,exports){
 (function (process){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -5386,8 +5481,8 @@ function indexOf (xs, x) {
   return -1;
 }
 
-}).call(this,require("/Users/zeke/code/hero/apps/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"))
-},{"./index.js":21,"/Users/zeke/code/hero/apps/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":15,"buffer":6,"events":9,"inherits":14,"process/browser.js":22,"string_decoder":27}],25:[function(require,module,exports){
+}).call(this,require("/Users/zeke/code/hero/app.json/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"))
+},{"./index.js":22,"/Users/zeke/code/hero/app.json/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":16,"buffer":7,"events":10,"inherits":15,"process/browser.js":23,"string_decoder":28}],26:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -5593,7 +5688,7 @@ function done(stream, er) {
   return stream.push(null);
 }
 
-},{"./duplex.js":20,"inherits":14}],26:[function(require,module,exports){
+},{"./duplex.js":21,"inherits":15}],27:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -5981,7 +6076,7 @@ function endWritable(stream, state, cb) {
   state.ended = true;
 }
 
-},{"./index.js":21,"buffer":6,"inherits":14,"process/browser.js":22}],27:[function(require,module,exports){
+},{"./index.js":22,"buffer":7,"inherits":15,"process/browser.js":23}],28:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -6174,7 +6269,7 @@ function base64DetectIncompleteChar(buffer) {
   return incomplete;
 }
 
-},{"buffer":6}],28:[function(require,module,exports){
+},{"buffer":7}],29:[function(require,module,exports){
 /*jshint strict:true node:true es5:true onevar:true laxcomma:true laxbreak:true eqeqeq:true immed:true latedef:true*/
 (function () {
   "use strict";
@@ -6807,14 +6902,14 @@ function parseHost(host) {
 
 }());
 
-},{"punycode":16,"querystring":19}],29:[function(require,module,exports){
+},{"punycode":17,"querystring":20}],30:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],30:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -7403,8 +7498,8 @@ function hasOwnProperty(obj, prop) {
   return Object.prototype.hasOwnProperty.call(obj, prop);
 }
 
-}).call(this,require("/Users/zeke/code/hero/apps/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":29,"/Users/zeke/code/hero/apps/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":15,"inherits":14}],31:[function(require,module,exports){
+}).call(this,require("/Users/zeke/code/hero/app.json/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"./support/isBuffer":30,"/Users/zeke/code/hero/app.json/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":16,"inherits":15}],32:[function(require,module,exports){
 var isUrl = require('is-url')
 
 module.exports = function(url) {
@@ -7427,7 +7522,7 @@ module.exports = function(url) {
 
 };
 
-},{"is-url":32}],32:[function(require,module,exports){
+},{"is-url":33}],33:[function(require,module,exports){
 /**
  * Expose `isUrl`.
  */
@@ -7453,7 +7548,7 @@ function isUrl (string) {
   return matcher.test(string);
 }
 
-},{}],33:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 /*
  *  Copyright 2011 Twitter, Inc.
  *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -7799,7 +7894,7 @@ function isUrl (string) {
   };
 })(typeof exports !== 'undefined' ? exports : Hogan);
 
-},{}],34:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 /*
  *  Copyright 2011 Twitter, Inc.
  *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -7820,7 +7915,7 @@ function isUrl (string) {
 var Hogan = require('./compiler');
 Hogan.Template = require('./template').Template;
 module.exports = Hogan; 
-},{"./compiler":33,"./template":35}],35:[function(require,module,exports){
+},{"./compiler":34,"./template":36}],36:[function(require,module,exports){
 /*
  *  Copyright 2011 Twitter, Inc.
  *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -8063,7 +8158,7 @@ var Hogan = {};
 })(typeof exports !== 'undefined' ? exports : Hogan);
 
 
-},{}],36:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 (function (exports) {
   exports.validate = validate;
   exports.mixin = mixin;
@@ -8474,7 +8569,7 @@ var Hogan = {};
 
 })(typeof module === 'object' && module && module.exports ? module.exports : window);
 
-},{}],37:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 /**
  * Module dependencies.
  */
@@ -9480,7 +9575,7 @@ request.put = function(url, data, fn){
 
 module.exports = request;
 
-},{"emitter":38,"reduce":39}],38:[function(require,module,exports){
+},{"emitter":39,"reduce":40}],39:[function(require,module,exports){
 
 /**
  * Expose `Emitter`.
@@ -9638,7 +9733,7 @@ Emitter.prototype.hasListeners = function(event){
   return !! this.listeners(event).length;
 };
 
-},{}],39:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 
 /**
  * Reduce `arr` with `fn`.
@@ -9663,111 +9758,10 @@ module.exports = function(arr, fn, initial){
   
   return curr;
 };
-},{}],40:[function(require,module,exports){
-var schema = {
-  "properties": {
-    "name": {
-      "description": "A URL-friendly string that uniquely identifies the template app.",
-      "type": "string",
-      "required": true,
-      "allowEmpty": false,
-      "example": "small-sharp-tool"
-    },
-    "description": {
-      "description": "A brief summary of the app: what it does, who it's for, why it exists, etc.",
-      "type": "string",
-      "example": "This app does one little thing, and does it well."
-    },
-    "keywords": {
-      "description": "An array of strings describing the app.",
-      "type": "array",
-      "example": ["productivity", "HTML5", "scalpel"]
-    },
-    "website": {
-      "description": "The project's website, if there is one.",
-      "type": "string",
-      "format": "url",
-      "allowEmpty": false,
-      "example": "https://jane-doe.github.io/small-sharp-tool"
-    },
-    "repository": {
-      "description": "The location of the application's source code. Can be a git URL, a GitHub URL, or a tarball URL.",
-      "type": "string",
-      "format": "url",
-      "allowEmpty": false,
-      "example": "https://github.com/jane-doe/small-sharp-tool"
-    },
-    "logo": {
-      "description": "The URL of the application's logo image. It's dimensions should be square. Format can be SVG or PNG.",
-      "type": "string",
-      "format": "url",
-      "allowEmpty": false,
-      "example": "https://jane-doe.github.io/small-sharp-tool/logo.svg"
-    },
-    "success_url": {
-      "description": "A URL specifying where to redirect the user once their new app is deployed. If value is a fully-qualified URL, the user should be redirected to that URL. If value is begins with a slash `/`, the user should be redirected to that path in their newly deployed app.",
-      "type": "string",
-      "allowEmpty": false,
-      "example": "/welcome"
-    },
-    "scripts": {
-      "description": "A key-value object specifying scripts or shell commands to execute at different stages in the build/release process.",
-      "type": "object",
-      "example": {"postdeploy": "bundle exec rake bootstrap"}
-    },
-    "env": {
-      "description": "A key-value object for environment variables, or config vars in Heroku parlance. Keys are the names of the environment variables.\n\nValues can be strings or objects. If the value is a string, it will be used and the user will not be prompted to specify a different value. If the value is an object, it defines specific requirements for that variable:\n\ndescription - a human-friendly blurb about what the value is for and how to determine what it should be\nvalue - a default value to use\ngenerator - a string representing a function to call to generate the value, such as cookie secret",
-      "type": "object",
-      "example": {
-        "BUILDPACK_URL": "https://github.com/stomita/heroku-buildpack-phantomjs",
-        "SECRET_TOKEN": {
-          "description": "A secret key for verifying the integrity of signed cookies.",
-          "generator": "secret"
-        },
-        "WEB_CONCURRENCY": {
-          "description": "The number of processes to run.",
-          "default": "5"
-        }
-      }
-    },
-    "addons": {
-      "description": "An array of strings specifying Heroku addons to provision on the app before deploying. Each addon should be in the format `addon:plan`. If plan is omitted, that addon's default plan will be provisioned.",
-      "type": "array",
-      "example": [
-        "openredis",
-        "mongolab:shared-single-small"
-      ]
-    }
-  }
-}
-
-// Assemble an example schema
-schema.example = {}
-Object.keys(schema.properties).map(function(key){
-  schema.example[key] = schema.properties[key].example
-})
-
-// Assemble a template-ready stringified version of the schema
-schema.exampleJSON = JSON.stringify(schema.example, null, 2)
-
-// Coerce schema properties into a template-friendly format
-schema.propertiesArray = Object.keys(schema.properties).map(function(name) {
-  var prop = schema.properties[name]
-  prop.name = name
-  prop.requiredOrOptional = prop.required ? "required" : "optional"
-
-  var jsonDoc = {}
-  jsonDoc[prop.name] = prop.example
-  prop.exampleJSON = JSON.stringify(jsonDoc, null, 2)
-  return prop
-})
-
-module.exports = schema
-
 },{}],41:[function(require,module,exports){
-var t = new (require('hogan.js/lib/template')).Template(function(c,p,i){var _=this;_.b(i=i||"");_.b("<li class=\"app\">");_.b("\n" + i);_.b("\n" + i);_.b("  <a class=\"logo activator\">");_.b("\n" + i);_.b("    <img src=\"");_.b(_.v(_.f("logo",c,p,0)));_.b("\">");_.b("\n" + i);_.b("  </a>");_.b("\n" + i);_.b("\n" + i);_.b("  <div class=\"meta\">");_.b("\n" + i);_.b("\n" + i);_.b("    <h2><a class=\"activator\">");_.b(_.v(_.f("name",c,p,0)));_.b("</a></h2>");_.b("\n" + i);_.b("\n" + i);_.b("    <div class=\"drawer\">");_.b("\n" + i);_.b("\n" + i);if(_.s(_.f("description",c,p,1),c,p,0,198,236,"{{ }}")){_.rs(c,p,function(c,p,_){_.b("        <p>");_.b(_.v(_.f("description",c,p,0)));_.b("</p>");_.b("\n");});c.pop();}_.b("\n" + i);if(_.s(_.f("repository",c,p,1),c,p,0,275,353,"{{ }}")){_.rs(c,p,function(c,p,_){_.b("        <a href=\"");_.b(_.v(_.f("repository",c,p,0)));_.b("\" class=\"repository\">");_.b(_.v(_.f("repository",c,p,0)));_.b("</a>");_.b("\n");});c.pop();}_.b("\n" + i);if(_.s(_.f("website",c,p,1),c,p,0,388,457,"{{ }}")){_.rs(c,p,function(c,p,_){_.b("        <a href=\"");_.b(_.v(_.f("website",c,p,0)));_.b("\" class=\"website\">");_.b(_.v(_.f("website",c,p,0)));_.b("</a>");_.b("\n");});c.pop();}_.b("\n" + i);_.b("      <form class=\"deploy\">");_.b("\n" + i);_.b("        <input type=\"hidden\" name=\"source\" value=\"");_.b(_.v(_.f("repository",c,p,0)));_.b("\">");_.b("\n" + i);_.b("        <input type=\"submit\" value=\"Deploy for ");_.b(_.v(_.d("prices.totalPrice",c,p,0)));_.b("\">");_.b("\n" + i);_.b("      </form>");_.b("\n" + i);_.b("\n" + i);_.b("      <div class=\"output\"></div>");_.b("\n" + i);_.b("\n" + i);_.b("    </div>");_.b("\n" + i);_.b("\n" + i);_.b("  </div>");_.b("\n" + i);_.b("\n" + i);_.b("</li>");_.b("\n");return _.fl();;});module.exports = {  render: function () { return t.render.apply(t, arguments); },  r: function () { return t.r.apply(t, arguments); },  ri: function () { return t.ri.apply(t, arguments); }};
-},{"hogan.js/lib/template":35}],42:[function(require,module,exports){
+var t = new (require('hogan.js/lib/template')).Template(function(c,p,i){var _=this;_.b(i=i||"");_.b("<li class=\"app\">");_.b("\n" + i);_.b("\n" + i);_.b("  <a class=\"logo activator\">");_.b("\n" + i);_.b("    <img src=\"");_.b(_.v(_.f("logo",c,p,0)));_.b("\">");_.b("\n" + i);_.b("  </a>");_.b("\n" + i);_.b("\n" + i);_.b("  <div class=\"meta\">");_.b("\n" + i);_.b("\n" + i);_.b("    <h2><a class=\"activator\">");_.b(_.v(_.f("name",c,p,0)));_.b("</a></h2>");_.b("\n" + i);_.b("\n" + i);_.b("    <div class=\"drawer\">");_.b("\n" + i);_.b("\n" + i);if(_.s(_.f("description",c,p,1),c,p,0,198,236,"{{ }}")){_.rs(c,p,function(c,p,_){_.b("        <p>");_.b(_.v(_.f("description",c,p,0)));_.b("</p>");_.b("\n");});c.pop();}_.b("\n" + i);if(_.s(_.f("repository",c,p,1),c,p,0,275,353,"{{ }}")){_.rs(c,p,function(c,p,_){_.b("        <a href=\"");_.b(_.v(_.f("repository",c,p,0)));_.b("\" class=\"repository\">");_.b(_.v(_.f("repository",c,p,0)));_.b("</a>");_.b("\n");});c.pop();}_.b("\n" + i);if(_.s(_.f("website",c,p,1),c,p,0,388,457,"{{ }}")){_.rs(c,p,function(c,p,_){_.b("        <a href=\"");_.b(_.v(_.f("website",c,p,0)));_.b("\" class=\"website\">");_.b(_.v(_.f("website",c,p,0)));_.b("</a>");_.b("\n");});c.pop();}_.b("\n" + i);if(_.s(_.f("prices",c,p,1),c,p,0,488,878,"{{ }}")){_.rs(c,p,function(c,p,_){_.b("        <h3>Addons</h3>");_.b("\n" + i);_.b("        <ul class=\"addons\">");_.b("\n" + i);if(_.s(_.f("plans",c,p,1),c,p,0,561,847,"{{ }}")){_.rs(c,p,function(c,p,_){_.b("            <li>");_.b("\n" + i);_.b("              <a href=\"https://addons.heroku.com/");_.b(_.v(_.f("name",c,p,0)));_.b("\">");_.b("\n" + i);_.b("                <img src=\"");_.b(_.v(_.f("logo",c,p,0)));_.b("\">");_.b("\n" + i);_.b("                <span class=\"description\">");_.b(_.v(_.f("description",c,p,0)));_.b("</span>");_.b("\n" + i);_.b("                <span class=\"price\">");_.b(_.v(_.f("prettyPrice",c,p,0)));_.b("</span>");_.b("\n" + i);_.b("              </a>");_.b("\n" + i);_.b("            </li>");_.b("\n");});c.pop();}_.b("        </ul>");_.b("\n");});c.pop();}_.b("\n" + i);_.b("      <form class=\"deploy\">");_.b("\n" + i);_.b("        <input type=\"hidden\" name=\"source\" value=\"");_.b(_.v(_.f("repository",c,p,0)));_.b("\">");_.b("\n" + i);_.b("        <input type=\"submit\" value=\"Deploy for ");_.b(_.v(_.d("prices.totalPrice",c,p,0)));_.b("\">");_.b("\n" + i);_.b("      </form>");_.b("\n" + i);_.b("\n" + i);_.b("      <div class=\"output\"></div>");_.b("\n" + i);_.b("\n" + i);_.b("    </div>");_.b("\n" + i);_.b("\n" + i);_.b("  </div>");_.b("\n" + i);_.b("\n" + i);_.b("</li>");_.b("\n");return _.fl();;});module.exports = {  render: function () { return t.render.apply(t, arguments); },  r: function () { return t.r.apply(t, arguments); },  ri: function () { return t.ri.apply(t, arguments); }};
+},{"hogan.js/lib/template":36}],42:[function(require,module,exports){
 var t = new (require('hogan.js/lib/template')).Template(function(c,p,i){var _=this;_.b(i=i||"");if(_.s(_.f("app",c,p,1),c,p,0,8,160,"{{ }}")){_.rs(c,p,function(c,p,_){_.b("  <p>");_.b("\n" + i);_.b("    Your app is deploying to");_.b("\n" + i);_.b("    <a href=\"https://");_.b(_.v(_.d("app.name",c,p,0)));_.b(".herokuapp.com\">");_.b(_.v(_.d("app.name",c,p,0)));_.b(".herokuapp.com</a>,");_.b("\n" + i);_.b("    and will be ready soon.");_.b("\n" + i);_.b("  </p>");_.b("\n");});c.pop();}_.b("\n" + i);if(!_.s(_.f("app",c,p,1),c,p,1,0,0,"")){_.b("  <p class=\"error\">");_.b("\n" + i);_.b("    Build failed. ");_.b(_.v(_.f("message",c,p,0)));_.b("\n" + i);_.b("  </p>");_.b("\n");};return _.fl();;});module.exports = {  render: function () { return t.render.apply(t, arguments); },  r: function () { return t.r.apply(t, arguments); },  ri: function () { return t.ri.apply(t, arguments); }};
-},{"hogan.js/lib/template":35}],43:[function(require,module,exports){
-var t = new (require('hogan.js/lib/template')).Template(function(c,p,i){var _=this;_.b(i=i||"");_.b("`app.json` is a manifest format for describing web apps. It declares environment");_.b("\n" + i);_.b("variables, addons, and other information required to run apps on Heroku. This document describes the schema in detail.");_.b("\n" + i);_.b("\n" + i);_.b("## Example app.json");_.b("\n" + i);_.b("\n" + i);_.b("```json");_.b("\n" + i);_.b(_.t(_.f("exampleJSON",c,p,0)));_.b("\n" + i);_.b("```");_.b("\n" + i);_.b("\n" + i);_.b("## The Schema");_.b("\n" + i);_.b("\n" + i);if(_.s(_.f("propertiesArray",c,p,1),c,p,0,288,384,"{{ }}")){_.rs(c,p,function(c,p,_){_.b("### ");_.b(_.v(_.f("name",c,p,0)));_.b("\n" + i);_.b("\n" + i);_.b(_.v(_.f("type",c,p,0)));_.b(", ");_.b(_.v(_.f("requiredOrOptional",c,p,0)));_.b("\n" + i);_.b("\n" + i);_.b(_.v(_.f("description",c,p,0)));_.b("\n" + i);_.b("\n" + i);_.b("```json");_.b("\n" + i);_.b(_.t(_.f("exampleJSON",c,p,0)));_.b("\n" + i);_.b("```");_.b("\n");});c.pop();}return _.fl();;});module.exports = {  render: function () { return t.render.apply(t, arguments); },  r: function () { return t.r.apply(t, arguments); },  ri: function () { return t.ri.apply(t, arguments); }};
-},{"hogan.js/lib/template":35}]},{},[1])
+},{"hogan.js/lib/template":36}],43:[function(require,module,exports){
+var t = new (require('hogan.js/lib/template')).Template(function(c,p,i){var _=this;_.b(i=i||"");_.b("`app.json` is a manifest format for describing web apps. It declares environment");_.b("\n" + i);_.b("variables, addons, and other information required to run apps on Heroku. This document describes the schema in detail.");_.b("\n" + i);_.b("\n" + i);_.b("## Example app.json");_.b("\n" + i);_.b("\n" + i);_.b("```json");_.b("\n" + i);_.b(_.t(_.f("exampleJSON",c,p,0)));_.b("\n" + i);_.b("```");_.b("\n" + i);_.b("\n" + i);_.b("## The Schema");_.b("\n" + i);_.b("\n" + i);if(_.s(_.f("propertiesArray",c,p,1),c,p,0,288,384,"{{ }}")){_.rs(c,p,function(c,p,_){_.b("### ");_.b(_.v(_.f("name",c,p,0)));_.b("\n" + i);_.b("\n" + i);_.b(_.v(_.f("description",c,p,0)));_.b(" *");_.b(_.v(_.f("requiredOrOptional",c,p,0)));_.b(" ");_.b(_.v(_.f("type",c,p,0)));_.b("*");_.b("\n" + i);_.b("\n" + i);_.b("```json");_.b("\n" + i);_.b(_.t(_.f("exampleJSON",c,p,0)));_.b("\n" + i);_.b("```");_.b("\n");});c.pop();}return _.fl();;});module.exports = {  render: function () { return t.render.apply(t, arguments); },  r: function () { return t.r.apply(t, arguments); },  ri: function () { return t.ri.apply(t, arguments); }};
+},{"hogan.js/lib/template":36}]},{},[1])

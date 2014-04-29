@@ -5,16 +5,16 @@ variables, addons, and other information required to run apps on Heroku. This do
 
 ```json
 {
-  "name": "small-sharp-tool",
+  "name": "Small Sharp Tool",
   "description": "This app does one little thing, and does it well.",
   "keywords": [
     "productivity",
     "HTML5",
     "scalpel"
   ],
-  "website": "https://jane-doe.github.io/small-sharp-tool",
+  "website": "https://small-sharp-tool.com/",
   "repository": "https://github.com/jane-doe/small-sharp-tool",
-  "logo": "https://jane-doe.github.io/small-sharp-tool/logo.svg",
+  "logo": "https://small-sharp-tool.com/logo.svg",
   "success_url": "/welcome",
   "scripts": {
     "postdeploy": "bundle exec rake bootstrap"
@@ -41,11 +41,11 @@ variables, addons, and other information required to run apps on Heroku. This do
 
 ### name
 
-A URL-friendly string that uniquely identifies the template app. *required string*
+A clean and simple name to identify the template. *optional string*
 
 ```json
 {
-  "name": "small-sharp-tool"
+  "name": "Small Sharp Tool"
 }
 ```
 ### description
@@ -72,16 +72,16 @@ An array of strings describing the app. *optional array*
 ```
 ### website
 
-The project&#39;s website, if there is one. *optional string*
+The project&#39;s website. *optional string*
 
 ```json
 {
-  "website": "https://jane-doe.github.io/small-sharp-tool"
+  "website": "https://small-sharp-tool.com/"
 }
 ```
 ### repository
 
-The location of the application&#39;s source code. Can be a git URL, a GitHub URL, or a tarball URL. *optional string*
+The location of the application&#39;s source code. Can be a Git URL, a GitHub URL, or a tarball URL. *optional string*
 
 ```json
 {
@@ -90,11 +90,11 @@ The location of the application&#39;s source code. Can be a git URL, a GitHub UR
 ```
 ### logo
 
-The URL of the application&#39;s logo image. It&#39;s dimensions should be square. Format can be SVG or PNG. *optional string*
+The URL of the application&#39;s logo image. Dimensions should be square. Format can be SVG, PNG, or JPG. *optional string*
 
 ```json
 {
-  "logo": "https://jane-doe.github.io/small-sharp-tool/logo.svg"
+  "logo": "https://small-sharp-tool.com/logo.svg"
 }
 ```
 ### success_url

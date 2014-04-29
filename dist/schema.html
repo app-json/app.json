@@ -2,16 +2,16 @@
 variables, addons, and other information required to run apps on Heroku. This document describes the schema in detail.</p>
 <h2 id="example-app-json">Example app.json</h2>
 <pre><code class="lang-json">{
-  &quot;name&quot;: &quot;small-sharp-tool&quot;,
+  &quot;name&quot;: &quot;Small Sharp Tool&quot;,
   &quot;description&quot;: &quot;This app does one little thing, and does it well.&quot;,
   &quot;keywords&quot;: [
     &quot;productivity&quot;,
     &quot;HTML5&quot;,
     &quot;scalpel&quot;
   ],
-  &quot;website&quot;: &quot;https://jane-doe.github.io/small-sharp-tool&quot;,
+  &quot;website&quot;: &quot;https://small-sharp-tool.com/&quot;,
   &quot;repository&quot;: &quot;https://github.com/jane-doe/small-sharp-tool&quot;,
-  &quot;logo&quot;: &quot;https://jane-doe.github.io/small-sharp-tool/logo.svg&quot;,
+  &quot;logo&quot;: &quot;https://small-sharp-tool.com/logo.svg&quot;,
   &quot;success_url&quot;: &quot;/welcome&quot;,
   &quot;scripts&quot;: {
     &quot;postdeploy&quot;: &quot;bundle exec rake bootstrap&quot;
@@ -35,9 +35,9 @@ variables, addons, and other information required to run apps on Heroku. This do
 </code></pre>
 <h2 id="the-schema">The Schema</h2>
 <h3 id="name">name</h3>
-<p>A URL-friendly string that uniquely identifies the template app. <em>required string</em></p>
+<p>A clean and simple name to identify the template. <em>optional string</em></p>
 <pre><code class="lang-json">{
-  &quot;name&quot;: &quot;small-sharp-tool&quot;
+  &quot;name&quot;: &quot;Small Sharp Tool&quot;
 }
 </code></pre>
 <h3 id="description">description</h3>
@@ -57,21 +57,21 @@ variables, addons, and other information required to run apps on Heroku. This do
 }
 </code></pre>
 <h3 id="website">website</h3>
-<p>The project&#39;s website, if there is one. <em>optional string</em></p>
+<p>The project&#39;s website. <em>optional string</em></p>
 <pre><code class="lang-json">{
-  &quot;website&quot;: &quot;https://jane-doe.github.io/small-sharp-tool&quot;
+  &quot;website&quot;: &quot;https://small-sharp-tool.com/&quot;
 }
 </code></pre>
 <h3 id="repository">repository</h3>
-<p>The location of the application&#39;s source code. Can be a git URL, a GitHub URL, or a tarball URL. <em>optional string</em></p>
+<p>The location of the application&#39;s source code. Can be a Git URL, a GitHub URL, or a tarball URL. <em>optional string</em></p>
 <pre><code class="lang-json">{
   &quot;repository&quot;: &quot;https://github.com/jane-doe/small-sharp-tool&quot;
 }
 </code></pre>
 <h3 id="logo">logo</h3>
-<p>The URL of the application&#39;s logo image. It&#39;s dimensions should be square. Format can be SVG or PNG. <em>optional string</em></p>
+<p>The URL of the application&#39;s logo image. Dimensions should be square. Format can be SVG, PNG, or JPG. <em>optional string</em></p>
 <pre><code class="lang-json">{
-  &quot;logo&quot;: &quot;https://jane-doe.github.io/small-sharp-tool/logo.svg&quot;
+  &quot;logo&quot;: &quot;https://small-sharp-tool.com/logo.svg&quot;
 }
 </code></pre>
 <h3 id="success_url">success_url</h3>
