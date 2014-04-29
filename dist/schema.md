@@ -26,7 +26,7 @@ variables, addons, and other information required to run apps on Heroku. This do
     },
     "WEB_CONCURRENCY": {
       "description": "The number of processes to run.",
-      "default": "5"
+      "value": "5"
     }
   },
   "addons": [
@@ -109,13 +109,11 @@ A key-value object specifying scripts or shell commands to execute at different 
 ```
 ### env
 
-A key-value object for environment variables, or config vars in Heroku parlance. Keys are the names of the environment variables.
+A key-value object for environment variables, or [config vars](https://devcenter.heroku.com/articles/config-vars) in Heroku parlance. Keys are the names of the environment variables. Values can be strings or objects. If the value is a string, it will be used. If the value is an object, it defines specific requirements for that variable:
 
-Values can be strings or objects. If the value is a string, it will be used and the user will not be prompted to specify a different value. If the value is an object, it defines specific requirements for that variable:
-
-description - a human-friendly blurb about what the value is for and how to determine what it should be
-value - a default value to use
-generator - a string representing a function to call to generate the value, such as cookie secret *optional object*
+- `description`: a human-friendly blurb about what the value is for and how to determine what it should be
+- `value`: a default value to use. This should always be a string.
+- `generator`: a string representing a function to call to generate the value. Currently the only supported generator is `secret`, which generates a pseudo-random string of characters. *optional object*
 
 ```json
 {
@@ -127,7 +125,7 @@ generator - a string representing a function to call to generate the value, such
     },
     "WEB_CONCURRENCY": {
       "description": "The number of processes to run.",
-      "default": "5"
+      "value": "5"
     }
   }
 }

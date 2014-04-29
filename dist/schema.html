@@ -23,7 +23,7 @@ variables, addons, and other information required to run apps on Heroku. This do
     },
     &quot;WEB_CONCURRENCY&quot;: {
       &quot;description&quot;: &quot;The number of processes to run.&quot;,
-      &quot;default&quot;: &quot;5&quot;
+      &quot;value&quot;: &quot;5&quot;
     }
   },
   &quot;addons&quot;: [
@@ -82,11 +82,12 @@ variables, addons, and other information required to run apps on Heroku. This do
 }
 </code></pre>
 <h3 id="env">env</h3>
-<p>A key-value object for environment variables, or config vars in Heroku parlance. Keys are the names of the environment variables.</p>
-<p>Values can be strings or objects. If the value is a string, it will be used and the user will not be prompted to specify a different value. If the value is an object, it defines specific requirements for that variable:</p>
-<p>description - a human-friendly blurb about what the value is for and how to determine what it should be
-value - a default value to use
-generator - a string representing a function to call to generate the value, such as cookie secret <em>optional object</em></p>
+<p>A key-value object for environment variables, or <a href="https://devcenter.heroku.com/articles/config-vars">config vars</a> in Heroku parlance. Keys are the names of the environment variables. Values can be strings or objects. If the value is a string, it will be used. If the value is an object, it defines specific requirements for that variable:</p>
+<ul>
+<li><code>description</code>: a human-friendly blurb about what the value is for and how to determine what it should be</li>
+<li><code>value</code>: a default value to use. This should always be a string.</li>
+<li><code>generator</code>: a string representing a function to call to generate the value. Currently the only supported generator is <code>secret</code>, which generates a pseudo-random string of characters. <em>optional object</em></li>
+</ul>
 <pre><code class="lang-json">{
   &quot;env&quot;: {
     &quot;BUILDPACK_URL&quot;: &quot;https://github.com/stomita/heroku-buildpack-phantomjs&quot;,
@@ -96,7 +97,7 @@ generator - a string representing a function to call to generate the value, such
     },
     &quot;WEB_CONCURRENCY&quot;: {
       &quot;description&quot;: &quot;The number of processes to run.&quot;,
-      &quot;default&quot;: &quot;5&quot;
+      &quot;value&quot;: &quot;5&quot;
     }
   }
 }
