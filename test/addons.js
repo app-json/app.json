@@ -3,6 +3,7 @@ var util = require("util")
 var addons = require("../lib/addons")
 
 describe('addons.getPlan()', function(){
+  this.timeout(3000)
 
   it('accepts an addon:plan string', function(done){
     addons.getPlan('mongohq:ssd_1g_elastic', function(err, plan) {
@@ -43,6 +44,7 @@ describe('addons.getPlan()', function(){
 })
 
 describe('addons.getPrices()', function(){
+  this.timeout(3000)
 
   it('accepts an array and returns a prcies object', function(done){
     addons.getPrices(['mongohq:ssd_1g_elastic'], function(err, prices) {
