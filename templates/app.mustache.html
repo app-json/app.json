@@ -22,6 +22,21 @@
         <a href="{{website}}" class="website">{{website}}</a>
       {{/website}}
 
+      {{#prices}}
+        <h3>Addons</h3>
+        <ul class="addons">
+          {{#plans}}
+            <li>
+              <a href="https://addons.heroku.com/{{name}}">
+                <img src="{{logo}}">
+                <span class="description">{{description}}</span>
+                <span class="price">{{prettyPrice}}</span>
+              </a>
+            </li>
+          {{/plans}}
+        </ul>
+      {{/prices}}
+
       <form class="deploy">
         <input type="hidden" name="source" value="{{repository}}">
         <input type="submit" value="Deploy for {{prices.totalPrice}}">
