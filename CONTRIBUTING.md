@@ -1,11 +1,22 @@
-## Tests
+# Contibuting to app.json
+
+### Clone
+
+Fork the repo, or clone the canonical one:
+
+```sh
+git clone https://github.com/heroku/app.json
+cd app.json
+```
+
+### Test
 
 ```
 npm install
 npm test
 ```
 
-## Bundle
+### Bundle
 
 To prepare a browser-ready bundle, run the following:
 
@@ -16,7 +27,7 @@ npm run build
 # Wrote dist/app.min.js
 ```
 
-## Docs
+### Document
 
 Genarate human-friendly docs from the schema, copy the markdown to the system
 clipboard, and paste the updated schema doc into the [app-json-schema Dev Center
