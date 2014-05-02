@@ -7,7 +7,7 @@ and other information.
 This repository contains the source for an npm module called
 [app.json](https://www.npmjs.org/package/app.json), which has many facets:
 
-- A JavaScript interface for creating, validating, and consuming app.json manifests.
+- A JavaScript interface for creating, validating, and producing app.json manifests.
 - A module that is designed to work in browsers and Node.js.
 - A CLI for creating manifests and producing schema documentation.
 
@@ -35,21 +35,23 @@ If browserify isn't your thing, use the pre-compiled browser-ready bundle in
 
 ### Usage on the Command Line
 
-To use this module on the command line, you'll need to install it globally using npm:
+To use this module on the command line, install it globally using npm:
 
 ```sh
 npm install app.json --global
 ```
 
-Now you can run `app` or `app.json` from any directory:
+Now you can run `app.json` (or simply `app`) from any directory:
 
-```sh
-$ app
+```
+$ app.json
 
-  Usage: app [options] [command]
+  Usage: app.json [options] [command]
 
   Commands:
 
+    init                   Create an app.json for the current directory's app
+    validate               Validate the app.json file in the current directory
     schema [options]       Write the app.json schema to STDOUT
 
   Options:
@@ -110,7 +112,7 @@ App.fetch('zeke/harp-slideshow-template', function(err, manifest) {
 
 ### App.example
 
-Generates an example manifest from example content in the [schema](/schema.js).
+Generates an example manifest from `example` properties in the [schema](/schema.js).
 
 ```js
 App.example
@@ -124,9 +126,7 @@ A getter method that validates the app manifest and returns `true` or `false`
 
 ### app.errors
 
-Returns `null` if app manifest is valid.
-
-Returns an array of error objects if invalid:
+Returns an array of error objects:
 
 ```js
 [
@@ -134,6 +134,8 @@ Returns an array of error objects if invalid:
   {property: "website", message: "is not a valid url"}
 ]
 ```
+
+If the manifest is valid, an empty array is returned.
 
 ### app.toJSON()
 
