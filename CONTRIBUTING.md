@@ -16,6 +16,24 @@ npm install
 npm test
 ```
 
+### Develop
+
+To use the CLI from your local code instead of an installed node package:
+
+```sh
+npm remove app.json -g
+cd ~/my/copy/of/app.json
+npm link
+```
+
+Now when you run `app.json` in the shell, you're using your local code. To
+install the "real" thing later:
+
+```sh
+npm remove app.json -g
+npm install app.json -g
+```
+
 ### Bundle
 
 To prepare a browser-ready bundle, run the following:
