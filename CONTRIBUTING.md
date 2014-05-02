@@ -18,11 +18,11 @@ npm run build
 
 ## Docs
 
-Genarate human-friendly docs from the schema
+Genarate human-friendly docs from the schema, copy the markdown to the system
+clipboard, and paste the updated schema doc into the [app-json-schema Dev Center
+article](https://devcenter.heroku.com/admin/articles/edit/2061).
 
 ```sh
 npm run docs
-
-# Wrote dist/schema.md
-# Wrote dist/schema.html
+cat dist/schema.md | pbcopy
 ```

@@ -12,6 +12,7 @@ variables, addons, and other information required to run apps on Heroku. This do
   &quot;website&quot;: &quot;https://small-sharp-tool.com/&quot;,
   &quot;repository&quot;: &quot;https://github.com/jane-doe/small-sharp-tool&quot;,
   &quot;logo&quot;: &quot;https://small-sharp-tool.com/logo.svg&quot;,
+  &quot;success_url&quot;: &quot;/welcome&quot;,
   &quot;scripts&quot;: {
     &quot;postdeploy&quot;: &quot;bundle exec rake bootstrap&quot;
   },
@@ -73,6 +74,12 @@ variables, addons, and other information required to run apps on Heroku. This do
   &quot;logo&quot;: &quot;https://small-sharp-tool.com/logo.svg&quot;
 }
 </code></pre>
+<h3 id="success_url-optional-string-">success_url <em>(optional string)</em></h3>
+<p>A URL specifying where to redirect the user once their new app is deployed. If value is a fully-qualified URL, the user should be redirected to that URL. If value begins with a slash <code>/</code>, the user should be redirected to that path in their newly deployed app.</p>
+<pre><code class="lang-json">{
+  &quot;success_url&quot;: &quot;/welcome&quot;
+}
+</code></pre>
 <h3 id="scripts-optional-object-">scripts <em>(optional object)</em></h3>
 <p>A key-value object specifying scripts or shell commands to execute at different stages in the build/release process. Currently, <code>postdeploy</code> is the only supported script.</p>
 <pre><code class="lang-json">{
@@ -86,6 +93,7 @@ variables, addons, and other information required to run apps on Heroku. This do
 <ul>
 <li><code>description</code>: a human-friendly blurb about what the value is for and how to determine what it should be</li>
 <li><code>value</code>: a default value to use. This should always be a string.</li>
+<li><code>required</code>: A boolean indicating whether the given value is required for the app to function.</li>
 <li><code>generator</code>: a string representing a function to call to generate the value. Currently the only supported generator is <code>secret</code>, which generates a pseudo-random string of characters.</li>
 </ul>
 <pre><code class="lang-json">{
