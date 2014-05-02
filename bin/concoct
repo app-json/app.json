@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+
+concoct() {
+  host="https://nyata.herokuapp.com"
+  tarball_url="https://codeload.github.com/${1}/legacy.tar.gz/master"
+  token=$(heroku auth:token)
+
+  echo
+  echo "Concocting..."
+  echo $tarball_url
+
+  api_response=$(curl \
+    -u :$token \
+    -X POST \
+    --silent \
+    -H 'Content-Type: application/json' \
+    -d "{ \"source_blob\": { \"url\": \"$tarball_url\" } }" \
+    $host/app-setups)
+
+  echo
+  echo "API Response"
+  echo $api_response
+
+  echo
+  echo "Build ID"
+  build_id=$(echo $api_response | jq -r .id)
+  echo $build_id
+
+  echo
+  echo "Build Status URL"
+  status_url="$host/app-setups/$build_id"
+  echo $status_url
+
+  # status is a reserved word in bash
+  state="pending"
+  while [ $state == "pending" ]; do
+    status_response=$(curl \
+      -u :$token \
+      --silent \
+      -H 'Content-Type: application/json' \
+      $status_url)
+    state=$(echo $status_response | jq -r .status)
+    echo
+    echo "Status"
+    echo $status_response
+    sleep 1
+  done
+}
+
+concoct $1

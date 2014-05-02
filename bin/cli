@@ -74,6 +74,27 @@ program
     }
   })
 
+program
+  .command("concoct <repo>")
+  .description("Deploy an app from GitHub using a shorthand URL.")
+  .action(function(repo){
+    var concoctBin = path.resolve(__dirname, '../bin/concoct')
+    var go = require('child_process').spawn(concoctBin, [repo])
+
+    go.stdout.on('data', function (data) {
+      process.stdout.write(data.toString())
+    })
+
+    go.stderr.on('data', function (data) {
+      console.log(data.toString())
+    })
+
+    go.on('exit', function (code) {
+      console.log('child process exited with code ' + code)
+    })
+
+  })
+
 // Print this after the generated help text
 program.on("--help", function(){
   console.log("  Use 'app <command> --help' to get more information about a specific command.")

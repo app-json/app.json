@@ -53,6 +53,7 @@ $ app.json
     init                   Create an app.json for the current directory's app
     validate               Validate the app.json file in the current directory
     schema [options]       Write the app.json schema to STDOUT
+    concoct <repo>         Deploy an app from GitHub using a shorthand URL.
 
   Options:
 
