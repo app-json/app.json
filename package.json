@@ -37,7 +37,8 @@
     "heroku-client": "^1.2.0",
     "commander": "^2.2.0",
     "marked": "^0.3.2",
-    "to-title-case": "^0.1.4"
+    "to-title-case": "^0.1.4",
+    "clipboard": "^0.1.1"
   },
   "devDependencies": {
     "mocha": "^1.18.0",
