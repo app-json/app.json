@@ -47,7 +47,7 @@ describe("CLI", function() {
         .end(done)
     })
 
-    it("respects the --html option", function(done) {
+    it("respects the --html option, and creates linkable headings", function(done) {
       nixt()
         .expect(function(result) {
           if (!result.stdout.match("<h3 id=\"env\">env</h3>")) {
