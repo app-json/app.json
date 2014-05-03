@@ -39,27 +39,27 @@ variables, addons, and other information required to run apps on Heroku. This do
 
 ## The Schema
 
-### name *(optional string)*
+### name
 
-A clean and simple name to identify the template.
+A clean and simple name to identify the template. *(optional string)*
 
 ```json
 {
   "name": "Small Sharp Tool"
 }
 ```
-### description *(optional string)*
+### description
 
-A brief summary of the app: what it does, who it&#39;s for, why it exists, etc.
+A brief summary of the app: what it does, who it&#39;s for, why it exists, etc. *(optional string)*
 
 ```json
 {
   "description": "This app does one little thing, and does it well."
 }
 ```
-### keywords *(optional array)*
+### keywords
 
-An array of strings describing the app.
+An array of strings describing the app. *(optional array)*
 
 ```json
 {
@@ -70,45 +70,45 @@ An array of strings describing the app.
   ]
 }
 ```
-### website *(optional string)*
+### website
 
-The project&#39;s website.
+The project&#39;s website. *(optional string)*
 
 ```json
 {
   "website": "https://small-sharp-tool.com/"
 }
 ```
-### repository *(optional string)*
+### repository
 
-The location of the application&#39;s source code. Can be a Git URL, a GitHub URL, or a tarball URL.
+The location of the application&#39;s source code. Can be a Git URL, a GitHub URL, or a tarball URL. *(optional string)*
 
 ```json
 {
   "repository": "https://github.com/jane-doe/small-sharp-tool"
 }
 ```
-### logo *(optional string)*
+### logo
 
-The URL of the application&#39;s logo image. Dimensions should be square. Format can be SVG, PNG, or JPG.
+The URL of the application&#39;s logo image. Dimensions should be square. Format can be SVG, PNG, or JPG. *(optional string)*
 
 ```json
 {
   "logo": "https://small-sharp-tool.com/logo.svg"
 }
 ```
-### success_url *(optional string)*
+### success_url
 
-A URL specifying where to redirect the user once their new app is deployed. If value is a fully-qualified URL, the user should be redirected to that URL. If value begins with a slash `/`, the user should be redirected to that path in their newly deployed app.
+A URL specifying where to redirect the user once their new app is deployed. If value is a fully-qualified URL, the user should be redirected to that URL. If value begins with a slash `/`, the user should be redirected to that path in their newly deployed app. *(optional string)*
 
 ```json
 {
   "success_url": "/welcome"
 }
 ```
-### scripts *(optional object)*
+### scripts
 
-A key-value object specifying scripts or shell commands to execute at different stages in the build/release process. Currently, `postdeploy` is the only supported script.
+A key-value object specifying scripts or shell commands to execute at different stages in the build/release process. Currently, `postdeploy` is the only supported script. *(optional object)*
 
 ```json
 {
@@ -117,14 +117,14 @@ A key-value object specifying scripts or shell commands to execute at different 
   }
 }
 ```
-### env *(optional object)*
+### env
 
 A key-value object for environment variables, or [config vars](https://devcenter.heroku.com/articles/config-vars) in Heroku parlance. Keys are the names of the environment variables. Values can be strings or objects. If the value is a string, it will be used. If the value is an object, it defines specific requirements for that variable:
 
 - `description`: a human-friendly blurb about what the value is for and how to determine what it should be
 - `value`: a default value to use. This should always be a string.
 - `required`: A boolean indicating whether the given value is required for the app to function.
-- `generator`: a string representing a function to call to generate the value. Currently the only supported generator is `secret`, which generates a pseudo-random string of characters.
+- `generator`: a string representing a function to call to generate the value. Currently the only supported generator is `secret`, which generates a pseudo-random string of characters. *(optional object)*
 
 ```json
 {
@@ -141,9 +141,9 @@ A key-value object for environment variables, or [config vars](https://devcenter
   }
 }
 ```
-### addons *(optional array)*
+### addons
 
-An array of strings specifying Heroku addons to provision on the app before deploying. Each addon should be in the format `addon:plan` or `addon`. If plan is omitted, that addon&#39;s default plan will be provisioned.
+An array of strings specifying Heroku addons to provision on the app before deploying. Each addon should be in the format `addon:plan` or `addon`. If plan is omitted, that addon&#39;s default plan will be provisioned. *(optional array)*
 
 ```json
 {
