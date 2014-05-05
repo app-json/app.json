@@ -46,7 +46,7 @@ describe('addons.getPlan()', function(){
 describe('addons.getPrices()', function(){
   this.timeout(3000)
 
-  it('accepts an array and returns a prcies object', function(done){
+  it('accepts an array and returns an object', function(done){
     addons.getPrices(['mongohq:ssd_1g_elastic'], function(err, prices) {
       assert(typeof(prices) === "object")
       assert(!util.isArray(prices))
