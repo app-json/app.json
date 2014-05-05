@@ -45,10 +45,15 @@ npm run build
 # Wrote dist/app.min.js
 ```
 
-### Document
+### Schema Documentation
 
-Genarate human-friendly docs from the schema, copy the markdown to the system
-clipboard, and paste the updated schema doc into the [app-json-schema Dev Center
+The schema documentation is generated from these two files:
+
+- [templates/schema.mustache.html](/templates/schema.mustache.html)
+- [lib/schema.js](/lib/schema.js)
+
+Use the command below to genarate human-friendly docs from the schema and copy the markdown to the system
+clipboard. Then paste the updated schema doc into the [app-json-schema Dev Center
 article](https://devcenter.heroku.com/admin/articles/edit/2061).
 
 ```sh
