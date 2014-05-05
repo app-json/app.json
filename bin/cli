@@ -101,9 +101,9 @@ program
   })
 
 program
-  .command("validate <file>")
+  .command("validate")
   .description("Validate the app.json file in the current directory")
-  .action(function(file){
+  .action(function(program){
 
     // console.log(args)
 
