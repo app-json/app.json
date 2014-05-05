@@ -14,6 +14,14 @@ describe("CLI", function() {
 
   })
 
+  describe("app concoct <repo>", function() {
+
+  })
+
+  describe("app init", function() {
+
+  })
+
   describe("app schema", function() {
 
     beforeEach(function(done){
@@ -31,7 +39,6 @@ describe("CLI", function() {
           }
         })
         .run('./bin/cli schema')
-        // .exist('/tmp/app/schema.json')
         .end(done)
     })
 
@@ -58,6 +65,14 @@ describe("CLI", function() {
         .run('./bin/cli schema --html')
         .end(done)
     })
+
+  })
+
+  describe("app validate", function() {
+
+    it("outputs a nice message for valid app.json")
+
+    it("outputs a nasty message for an invalid app.json")
 
   })
 

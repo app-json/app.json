@@ -5,6 +5,8 @@ var path = require("path")
 var program = require("commander")
 var marked = require("marked")
 var title = require("to-title-case")
+var iniparser = require("iniparser")
+var flatten = require("flatten")
 var pkg = require("../package.json")
 var App = require("..")
 
@@ -23,19 +25,88 @@ program
     app.name = title(path.basename(process.cwd()))
     app.description = "TODO: Add a short blurb about " + app.name
     app.keywords = ["small", "sharp", "tool"]
-    app.env = {"SITE_TITLE": app.name}
     app.addons = []
 
-    fs.writeFile(process.cwd() + "/app.json", app.toJSON(), function(err) {
-      if (err) console.error(err)
-      console.log("Created app.json")
+    if (fs.existsSync(process.cwd() + "/.git")) {
+      var git = iniparser.parseString(fs.readFileSync(process.cwd() + "/.git/config").toString())
+    }
+
+    if (!git) {
+      fs.writeFile(process.cwd() + "/app.json", app.toJSON(), function(err) {
+        if (err) console.error(err)
+        console.log("Created app.json\n")
+        console.log(app.toJSON())
+      })
+      return;
+    }
+
+    var herokuRemotes = Object.keys(git).filter(function(key) {
+      return git[key].url && git[key].url.match("git@heroku.com")
     })
+
+    if (!herokuRemotes.length) {
+      fs.writeFile(process.cwd() + "/app.json", app.toJSON(), function(err) {
+        if (err) console.error(err)
+        console.log("Created app.json\n")
+        console.log(app.toJSON())
+      })
+      return;
+    }
+
+    var herokuAppName = git[herokuRemotes[0]].url.match(/git@heroku\.com:(.*)\.git/)[1]
+    // console.log(herokuAppName)
+
+    var herokuCreds = require('netrc')()['api.heroku.com']
+    var Heroku = require('heroku-client')
+    var heroku = new Heroku({token: herokuCreds.password})
+
+    console.log("\nFetching addons for " + herokuAppName)
+    heroku.get("/apps/" + herokuAppName + "/addons", function(err, addons) {
+      if (err) throw(err)
+      var addon_config_vars, env
+      app.addons = addons.map(function(addon) {
+        return addon.plan.name
+      })
+
+      addon_config_vars = flatten(addons.map(function(addon) {
+        return addon.config_vars
+      }))
+
+      console.log("Fetching environment variables for " + herokuAppName)
+      env = {}
+      return heroku.get("/apps/" + herokuAppName + "/config-vars", function(err, configVars) {
+        if (err) throw(err)
+        var k, v
+        for (k in configVars) {
+          v = configVars[k]
+          if (!(addon_config_vars.indexOf(k) > -1)) {
+            env[k] = v
+          }
+        }
+
+        if (Object.keys(env).length > 0) {
+          app.env = env;
+        }
+
+        fs.writeFile(process.cwd() + "/app.json", app.toJSON(), function(err) {
+          if (err) console.error(err)
+          console.log("Created app.json\n")
+          console.log(app.toJSON())
+        })
+
+      })
+    })
+
+
   })
 
 program
-  .command("validate")
+  .command("validate <file>")
   .description("Validate the app.json file in the current directory")
-  .action(function(program){
+  .action(function(file){
+
+    // console.log(args)
+
     var manifest = process.cwd() + "/app.json"
     if (fs.existsSync(manifest)) {
 
