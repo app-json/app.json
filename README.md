@@ -138,9 +138,9 @@ Returns an array of error objects:
 
 If the manifest is valid, an empty array is returned.
 
-### app.toJSON()
+### app.toJSON
 
-Return a pretty JSON string representation of the manifest, without any superfluous properties.
+Returns a pretty JSON string of the manifest, minus any undocumented properties.
 
 ### app.getAddonPrices(callback)
 

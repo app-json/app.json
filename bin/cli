@@ -41,10 +41,10 @@ program
     }
 
     if (!git) {
-      fs.writeFile(process.cwd() + "/app.json", app.toJSON(), function(err) {
+      fs.writeFile(process.cwd() + "/app.json", app.toJSON, function(err) {
         if (err) console.error(err)
         console.log("Created app.json\n")
-        console.log(app.toJSON())
+        console.log(app.toJSON)
       })
       return;
     }
@@ -54,10 +54,10 @@ program
     })
 
     if (!herokuRemotes.length) {
-      fs.writeFile(process.cwd() + "/app.json", app.toJSON(), function(err) {
+      fs.writeFile(process.cwd() + "/app.json", app.toJSON, function(err) {
         if (err) console.error(err)
         console.log("Created app.json\n")
-        console.log(app.toJSON())
+        console.log(app.toJSON)
       })
       return;
     }
@@ -97,10 +97,10 @@ program
           app.env = env;
         }
 
-        fs.writeFile(process.cwd() + "/app.json", app.toJSON(), function(err) {
+        fs.writeFile(process.cwd() + "/app.json", app.toJSON, function(err) {
           if (err) console.error(err)
           console.log("Created app.json\n")
-          console.log(app.toJSON())
+          console.log(app.toJSON)
         })
 
       })
@@ -129,7 +129,7 @@ program
 
       if (app.valid) {
         green("\nYour app.json file is valid!\n")
-        console.log(app.toJSON())
+        console.log(app.toJSON)
       } else {
         red("Found an app.json file, but it's got some issues:\n")
         console.error(app.errorString)

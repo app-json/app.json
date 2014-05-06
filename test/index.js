@@ -149,12 +149,12 @@ describe("App", function() {
 
   })
 
-  describe(".toJSON()", function() {
+  describe(".toJSON", function() {
 
-    it("render pretty JSON", function() {
+    it("returns a pretty JSON string", function() {
       app = App.new(payload)
       assert(app.valid)
-      var output = app.toJSON()
+      var output = app.toJSON
       var app2 = App.new(output)
       assert.equal(typeof(output), 'string')
       assert(app2.valid)
@@ -170,14 +170,13 @@ describe("App", function() {
       assert(app.funky)
       assert(app.junk)
 
-      var output = app.toJSON()
+      var output = app.toJSON
       var app2 = App.new(output)
       assert.equal(typeof(output), 'string')
       assert(app2.valid)
       assert(!app2.funky)
       assert(!app2.junk)
     })
-
 
   })
 

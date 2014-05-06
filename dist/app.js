@@ -39,30 +39,32 @@ var App = module.exports = (function() {
     }
 
     this.__defineGetter__("valid", function(){
-      return this.validate().valid
+      return revalidator.validate(this, schema).valid
     })
 
     this.__defineGetter__("errors", function(){
-      return this.validate().errors
+      return revalidator.validate(this, schema).errors
+    })
+
+    this.__defineGetter__("errorString", function(){
+      return this.errors.map(function(error) {
+        return ["-", error.property, error.message].join(" ")
+      }).join("\n")
+    })
+
+    this.__defineGetter__("toJSON", function(){
+      var key
+      var out = {}
+      var validProps = Object.keys(schema.properties)
+      for (key in this) {
+        if (this.hasOwnProperty(key) && validProps.indexOf(key) > -1) {
+          out[key] = this[key]
+        }
+      }
+      return JSON.stringify(out, null, 2)
     })
 
     return this
-  }
-
-  App.prototype.validate = function() {
-    return revalidator.validate(this, schema)
-  }
-
-  App.prototype.toJSON = function() {
-    var key
-    var out = {}
-    var validProps = Object.keys(schema.properties)
-    for (key in this) {
-      if (this.hasOwnProperty(key) && validProps.indexOf(key) > -1) {
-        out[key] = this[key]
-      }
-    }
-    return JSON.stringify(out, null, 2)
   }
 
   App.prototype.getAddonPrices = function(cb) {
@@ -96,7 +98,7 @@ var App = module.exports = (function() {
   if (module.parent) {
     App.templates.app = hogan.compile(Buffer("PGxpIGNsYXNzPSJhcHAiPgoKICA8YSBjbGFzcz0ibG9nbyBhY3RpdmF0b3IiPgogICAgPGltZyBzcmM9Int7bG9nb319Ij4KICA8L2E+CgogIDxkaXYgY2xhc3M9Im1ldGEiPgoKICAgIDxoMj48YSBjbGFzcz0iYWN0aXZhdG9yIj57e25hbWV9fTwvYT48L2gyPgoKICAgIDxkaXYgY2xhc3M9ImRyYXdlciI+CgogICAgICB7eyNkZXNjcmlwdGlvbn19CiAgICAgICAgPHA+e3tkZXNjcmlwdGlvbn19PC9wPgogICAgICB7ey9kZXNjcmlwdGlvbn19CgogICAgICB7eyNyZXBvc2l0b3J5fX0KICAgICAgICA8YSBocmVmPSJ7e3JlcG9zaXRvcnl9fSIgY2xhc3M9InJlcG9zaXRvcnkiPnt7cmVwb3NpdG9yeX19PC9hPgogICAgICB7ey9yZXBvc2l0b3J5fX0KCiAgICAgIHt7I3dlYnNpdGV9fQogICAgICAgIDxhIGhyZWY9Int7d2Vic2l0ZX19IiBjbGFzcz0id2Vic2l0ZSI+e3t3ZWJzaXRlfX08L2E+CiAgICAgIHt7L3dlYnNpdGV9fQoKICAgICAge3sjcHJpY2VzfX0KICAgICAgICA8aDM+QWRkb25zPC9oMz4KICAgICAgICA8dWwgY2xhc3M9ImFkZG9ucyI+CiAgICAgICAgICB7eyNwbGFuc319CiAgICAgICAgICAgIDxsaT4KICAgICAgICAgICAgICA8YSBocmVmPSJodHRwczovL2FkZG9ucy5oZXJva3UuY29tL3t7bmFtZX19Ij4KICAgICAgICAgICAgICAgIDxpbWcgc3JjPSJ7e2xvZ299fSI+CiAgICAgICAgICAgICAgICA8c3BhbiBjbGFzcz0iZGVzY3JpcHRpb24iPnt7ZGVzY3JpcHRpb259fTwvc3Bhbj4KICAgICAgICAgICAgICAgIDxzcGFuIGNsYXNzPSJwcmljZSI+e3twcmV0dHlQcmljZX19PC9zcGFuPgogICAgICAgICAgICAgIDwvYT4KICAgICAgICAgICAgPC9saT4KICAgICAgICAgIHt7L3BsYW5zfX0KICAgICAgICA8L3VsPgogICAgICB7ey9wcmljZXN9fQoKICAgICAgPGZvcm0gY2xhc3M9ImRlcGxveSI+CiAgICAgICAgPGlucHV0IHR5cGU9ImhpZGRlbiIgbmFtZT0ic291cmNlIiB2YWx1ZT0ie3tyZXBvc2l0b3J5fX0iPgogICAgICAgIDxpbnB1dCB0eXBlPSJzdWJtaXQiIHZhbHVlPSJEZXBsb3kgZm9yIHt7cHJpY2VzLnRvdGFsUHJpY2V9fSI+CiAgICAgIDwvZm9ybT4KCiAgICAgIDxkaXYgY2xhc3M9Im91dHB1dCI+PC9kaXY+CgogICAgPC9kaXY+CgogIDwvZGl2PgoKPC9saT4K","base64").toString())
     App.templates.build = hogan.compile(Buffer("e3sjYXBwfX0KICA8cD4KICAgIFlvdXIgYXBwIGlzIGRlcGxveWluZyB0bwogICAgPGEgaHJlZj0iaHR0cHM6Ly97e2FwcC5uYW1lfX0uaGVyb2t1YXBwLmNvbSI+e3thcHAubmFtZX19Lmhlcm9rdWFwcC5jb208L2E+LAogICAgYW5kIHdpbGwgYmUgcmVhZHkgc29vbi4KICA8L3A+Cnt7L2FwcH19Cgp7e15hcHB9fQogIDxwIGNsYXNzPSJlcnJvciI+CiAgICBCdWlsZCBmYWlsZWQuIHt7bWVzc2FnZX19CiAgPC9wPgp7ey9hcHB9fQo=","base64").toString())
-    App.templates.schema = hogan.compile(Buffer("YGFwcC5qc29uYCBpcyBhIG1hbmlmZXN0IGZvcm1hdCBmb3IgZGVzY3JpYmluZyB3ZWIgYXBwcy4gSXQgZGVjbGFyZXMgZW52aXJvbm1lbnQKdmFyaWFibGVzLCBhZGRvbnMsIGFuZCBvdGhlciBpbmZvcm1hdGlvbiByZXF1aXJlZCB0byBydW4gYXBwcyBvbiBIZXJva3UuIFRoaXMgZG9jdW1lbnQgZGVzY3JpYmVzIHRoZSBzY2hlbWEgaW4gZGV0YWlsLgoKIyMgRXhhbXBsZSBhcHAuanNvbgoKYGBganNvbgp7e3tleGFtcGxlSlNPTn19fQpgYGAKCiMjIFRoZSBTY2hlbWEKCnt7I3Byb3BlcnRpZXNBcnJheX19CiMjIyB7e25hbWV9fQoKe3tkZXNjcmlwdGlvbn19ICp7e3JlcXVpcmVkT3JPcHRpb25hbH19IHt7dHlwZX19KgoKYGBganNvbgp7e3tleGFtcGxlSlNPTn19fQpgYGAKe3svcHJvcGVydGllc0FycmF5fX0K","base64").toString())
+    App.templates.schema = hogan.compile(Buffer("YGFwcC5qc29uYCBpcyBhIG1hbmlmZXN0IGZvcm1hdCBmb3IgZGVzY3JpYmluZyB3ZWIgYXBwcy4gSXQgZGVjbGFyZXMgZW52aXJvbm1lbnQKdmFyaWFibGVzLCBhZGRvbnMsIGFuZCBvdGhlciBpbmZvcm1hdGlvbiByZXF1aXJlZCB0byBydW4gYXBwcyBvbiBIZXJva3UuIFRoaXMgZG9jdW1lbnQgZGVzY3JpYmVzIHRoZSBzY2hlbWEgaW4gZGV0YWlsLgoKIyMgRXhhbXBsZSBhcHAuanNvbgoKYGBganNvbgp7e3tleGFtcGxlSlNPTn19fQpgYGAKCiMjIFRoZSBTY2hlbWEKCnt7I3Byb3BlcnRpZXNBcnJheX19CgojIyMge3tuYW1lfX0KCiooe3t0eXBlfX0sIHt7cmVxdWlyZWRPck9wdGlvbmFsfX0pKiB7e2Rlc2NyaXB0aW9ufX0KCmBgYGpzb24Ke3t7ZXhhbXBsZUpTT059fX0KYGBgCgp7ey9wcm9wZXJ0aWVzQXJyYXl9fQo=","base64").toString())
   } else {
     App.templates.app = require('./templates/app.mustache.html')
     App.templates.build = require('./templates/build.mustache.html')
@@ -186,10 +188,12 @@ function formatPrice(price) {
 var schema = {
   "properties": {
     "name": {
-      "description": "A URL-friendly string that uniquely identifies the template app.",
+      "description": "A clean and simple name to identify the template.",
       "type": "string",
+      "minLength": 3,
+      "maxLength": 30,
       "allowEmpty": false,
-      "example": "small-sharp-tool"
+      "example": "Small Sharp Tool"
     },
     "description": {
       "description": "A brief summary of the app: what it does, who it's for, why it exists, etc.",
@@ -202,39 +206,39 @@ var schema = {
       "example": ["productivity", "HTML5", "scalpel"]
     },
     "website": {
-      "description": "The project's website, if there is one.",
+      "description": "The project's website.",
       "type": "string",
       "format": "url",
       "allowEmpty": false,
-      "example": "https://jane-doe.github.io/small-sharp-tool"
+      "example": "https://small-sharp-tool.com/"
     },
     "repository": {
-      "description": "The location of the application's source code. Can be a git URL, a GitHub URL, or a tarball URL.",
+      "description": "The location of the application's source code. Can be a Git URL, a GitHub URL, or a tarball URL.",
       "type": "string",
       "format": "url",
       "allowEmpty": false,
       "example": "https://github.com/jane-doe/small-sharp-tool"
     },
     "logo": {
-      "description": "The URL of the application's logo image. It's dimensions should be square. Format can be SVG or PNG.",
+      "description": "The URL of the application's logo image. Dimensions should be square. Format can be SVG, PNG, or JPG.",
       "type": "string",
       "format": "url",
       "allowEmpty": false,
-      "example": "https://jane-doe.github.io/small-sharp-tool/logo.svg"
+      "example": "https://small-sharp-tool.com/logo.svg"
     },
     "success_url": {
-      "description": "A URL specifying where to redirect the user once their new app is deployed. If value is a fully-qualified URL, the user should be redirected to that URL. If value is begins with a slash `/`, the user should be redirected to that path in their newly deployed app.",
+      "description": "A URL specifying where to redirect the user once their new app is deployed. If value is a fully-qualified URL, the user should be redirected to that URL. If value begins with a slash `/`, the user should be redirected to that path in their newly deployed app.",
       "type": "string",
       "allowEmpty": false,
       "example": "/welcome"
     },
     "scripts": {
-      "description": "A key-value object specifying scripts or shell commands to execute at different stages in the build/release process.",
+      "description": "A key-value object specifying scripts or shell commands to execute at different stages in the build/release process. Currently, `postdeploy` is the only supported script.",
       "type": "object",
       "example": {"postdeploy": "bundle exec rake bootstrap"}
     },
     "env": {
-      "description": "A key-value object for environment variables, or config vars in Heroku parlance. Keys are the names of the environment variables.\n\nValues can be strings or objects. If the value is a string, it will be used and the user will not be prompted to specify a different value. If the value is an object, it defines specific requirements for that variable:\n\ndescription - a human-friendly blurb about what the value is for and how to determine what it should be\nvalue - a default value to use\ngenerator - a string representing a function to call to generate the value, such as cookie secret",
+      "description": "A key-value object for environment variables, or [config vars](https://devcenter.heroku.com/articles/config-vars) in Heroku parlance. Keys are the names of the environment variables. Values can be strings or objects. If the value is a string, it will be used. If the value is an object, it defines specific requirements for that variable:\n\n- `description`: a human-friendly blurb about what the value is for and how to determine what it should be\n- `value`: a default value to use. This should always be a string.\n- `required`: A boolean indicating whether the given value is required for the app to function.\n- `generator`: a string representing a function to call to generate the value. Currently the only supported generator is `secret`, which generates a pseudo-random string of characters.",
       "type": "object",
       "example": {
         "BUILDPACK_URL": "https://github.com/stomita/heroku-buildpack-phantomjs",
@@ -244,12 +248,12 @@ var schema = {
         },
         "WEB_CONCURRENCY": {
           "description": "The number of processes to run.",
-          "default": "5"
+          "value": "5"
         }
       }
     },
     "addons": {
-      "description": "An array of strings specifying Heroku addons to provision on the app before deploying. Each addon should be in the format `addon:plan`. If plan is omitted, that addon's default plan will be provisioned.",
+      "description": "An array of strings specifying Heroku addons to provision on the app before deploying. Each addon should be in the format `addon:plan` or `addon`. If plan is omitted, that addon's default plan will be provisioned.",
       "type": "array",
       "example": [
         "openredis",
@@ -9763,5 +9767,5 @@ var t = new (require('hogan.js/lib/template')).Template(function(c,p,i){var _=th
 },{"hogan.js/lib/template":36}],42:[function(require,module,exports){
 var t = new (require('hogan.js/lib/template')).Template(function(c,p,i){var _=this;_.b(i=i||"");if(_.s(_.f("app",c,p,1),c,p,0,8,160,"{{ }}")){_.rs(c,p,function(c,p,_){_.b("  <p>");_.b("\n" + i);_.b("    Your app is deploying to");_.b("\n" + i);_.b("    <a href=\"https://");_.b(_.v(_.d("app.name",c,p,0)));_.b(".herokuapp.com\">");_.b(_.v(_.d("app.name",c,p,0)));_.b(".herokuapp.com</a>,");_.b("\n" + i);_.b("    and will be ready soon.");_.b("\n" + i);_.b("  </p>");_.b("\n");});c.pop();}_.b("\n" + i);if(!_.s(_.f("app",c,p,1),c,p,1,0,0,"")){_.b("  <p class=\"error\">");_.b("\n" + i);_.b("    Build failed. ");_.b(_.v(_.f("message",c,p,0)));_.b("\n" + i);_.b("  </p>");_.b("\n");};return _.fl();;});module.exports = {  render: function () { return t.render.apply(t, arguments); },  r: function () { return t.r.apply(t, arguments); },  ri: function () { return t.ri.apply(t, arguments); }};
 },{"hogan.js/lib/template":36}],43:[function(require,module,exports){
-var t = new (require('hogan.js/lib/template')).Template(function(c,p,i){var _=this;_.b(i=i||"");_.b("`app.json` is a manifest format for describing web apps. It declares environment");_.b("\n" + i);_.b("variables, addons, and other information required to run apps on Heroku. This document describes the schema in detail.");_.b("\n" + i);_.b("\n" + i);_.b("## Example app.json");_.b("\n" + i);_.b("\n" + i);_.b("```json");_.b("\n" + i);_.b(_.t(_.f("exampleJSON",c,p,0)));_.b("\n" + i);_.b("```");_.b("\n" + i);_.b("\n" + i);_.b("## The Schema");_.b("\n" + i);_.b("\n" + i);if(_.s(_.f("propertiesArray",c,p,1),c,p,0,288,384,"{{ }}")){_.rs(c,p,function(c,p,_){_.b("### ");_.b(_.v(_.f("name",c,p,0)));_.b("\n" + i);_.b("\n" + i);_.b(_.v(_.f("description",c,p,0)));_.b(" *");_.b(_.v(_.f("requiredOrOptional",c,p,0)));_.b(" ");_.b(_.v(_.f("type",c,p,0)));_.b("*");_.b("\n" + i);_.b("\n" + i);_.b("```json");_.b("\n" + i);_.b(_.t(_.f("exampleJSON",c,p,0)));_.b("\n" + i);_.b("```");_.b("\n");});c.pop();}return _.fl();;});module.exports = {  render: function () { return t.render.apply(t, arguments); },  r: function () { return t.r.apply(t, arguments); },  ri: function () { return t.ri.apply(t, arguments); }};
+var t = new (require('hogan.js/lib/template')).Template(function(c,p,i){var _=this;_.b(i=i||"");_.b("`app.json` is a manifest format for describing web apps. It declares environment");_.b("\n" + i);_.b("variables, addons, and other information required to run apps on Heroku. This document describes the schema in detail.");_.b("\n" + i);_.b("\n" + i);_.b("## Example app.json");_.b("\n" + i);_.b("\n" + i);_.b("```json");_.b("\n" + i);_.b(_.t(_.f("exampleJSON",c,p,0)));_.b("\n" + i);_.b("```");_.b("\n" + i);_.b("\n" + i);_.b("## The Schema");_.b("\n" + i);_.b("\n" + i);if(_.s(_.f("propertiesArray",c,p,1),c,p,0,288,389,"{{ }}")){_.rs(c,p,function(c,p,_){_.b("\n" + i);_.b("### ");_.b(_.v(_.f("name",c,p,0)));_.b("\n" + i);_.b("\n" + i);_.b("*(");_.b(_.v(_.f("type",c,p,0)));_.b(", ");_.b(_.v(_.f("requiredOrOptional",c,p,0)));_.b(")* ");_.b(_.v(_.f("description",c,p,0)));_.b("\n" + i);_.b("\n" + i);_.b("```json");_.b("\n" + i);_.b(_.t(_.f("exampleJSON",c,p,0)));_.b("\n" + i);_.b("```");_.b("\n" + i);_.b("\n");});c.pop();}return _.fl();;});module.exports = {  render: function () { return t.render.apply(t, arguments); },  r: function () { return t.r.apply(t, arguments); },  ri: function () { return t.ri.apply(t, arguments); }};
 },{"hogan.js/lib/template":36}]},{},[1])

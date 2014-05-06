@@ -34,36 +34,32 @@ var App = module.exports = (function() {
     }
 
     this.__defineGetter__("valid", function(){
-      return this.validate().valid
+      return revalidator.validate(this, schema).valid
     })
 
     this.__defineGetter__("errors", function(){
-      return this.validate().errors
+      return revalidator.validate(this, schema).errors
     })
 
     this.__defineGetter__("errorString", function(){
-      return this.validate().errors.map(function(error) {
+      return this.errors.map(function(error) {
         return ["-", error.property, error.message].join(" ")
       }).join("\n")
     })
 
-    return this
-  }
-
-  App.prototype.validate = function() {
-    return revalidator.validate(this, schema)
-  }
-
-  App.prototype.toJSON = function() {
-    var key
-    var out = {}
-    var validProps = Object.keys(schema.properties)
-    for (key in this) {
-      if (this.hasOwnProperty(key) && validProps.indexOf(key) > -1) {
-        out[key] = this[key]
+    this.__defineGetter__("toJSON", function(){
+      var key
+      var out = {}
+      var validProps = Object.keys(schema.properties)
+      for (key in this) {
+        if (this.hasOwnProperty(key) && validProps.indexOf(key) > -1) {
+          out[key] = this[key]
+        }
       }
-    }
-    return JSON.stringify(out, null, 2)
+      return JSON.stringify(out, null, 2)
+    })
+
+    return this
   }
 
   App.prototype.getAddonPrices = function(cb) {
