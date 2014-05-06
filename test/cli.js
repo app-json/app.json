@@ -70,10 +70,37 @@ describe("CLI", function() {
 
   describe("app validate", function() {
 
-    it("outputs a nice message for valid app.json")
+    describe("for a valid app.json", function() {
+      it("prints a happy message to stdout", function(done) {
+        nixt()
+          .run('cd test/fixtures/valid; ../../../bin/cli validate')
+          .stdout(/Your app\.json file is valid!/i)
+          .end(done)
+      })
+    })
 
-    it("outputs a nasty message for an invalid app.json")
+    describe("for a malformed app.json", function() {
+      it("prints an error message to stderr", function(done) {
+        nixt()
+          .run('cd test/fixtures/malformed; ../../../bin/cli validate')
+          .stderr(/Found an app\.json file, but it's invalid JSON./i)
+          .end(done)
+        })
+    })
 
-  })
+    describe("for an invalid app.json", function() {
+      it("prints validation errors to stderr", function(done) {
+        nixt()
+          .run('cd test/fixtures/invalid; ../../../bin/cli validate')
+          .stderr(/got some issues/i)
+          .stderr(/name is too short/i)
+          .stderr(/keywords must be of array type/i)
+          .stderr(/website is not a valid url/i)
+          .stderr(/repository is not a valid url/i)
+          .end(done)
+        })
+    })
+
+})
 
 })

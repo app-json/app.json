@@ -41,6 +41,12 @@ var App = module.exports = (function() {
       return this.validate().errors
     })
 
+    this.__defineGetter__("errorString", function(){
+      return this.validate().errors.map(function(error) {
+        return ["-", error.property, error.message].join(" ")
+      }).join("\n")
+    })
+
     return this
   }
 

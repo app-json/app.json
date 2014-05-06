@@ -11,13 +11,13 @@ describe("App", function() {
 
   beforeEach(function() {
     app = null
-    payload = JSON.parse(fs.readFileSync(__dirname + "/fixtures/app.json"))
+    payload = JSON.parse(fs.readFileSync(__dirname + "/fixtures/valid/app.json"))
   })
 
   describe("App.new", function() {
 
     it("accepts a filename", function() {
-      app = App.new(__dirname + "/fixtures/app.json")
+      app = App.new(__dirname + "/fixtures/valid/app.json")
       assert(app.valid)
     })
 
@@ -34,7 +34,7 @@ describe("App", function() {
     it("throws a semi-helpful error when given a filename with malformed JSON", function() {
       assert.throws(
         function() {
-          App.new(__dirname + "/fixtures/malformed-app.json")
+          App.new(__dirname + "/fixtures/malformed/app.json")
         },
         /malformed JSON/i
       )
@@ -44,7 +44,7 @@ describe("App", function() {
 
       assert.throws(
         function() {
-          App.new(fs.readFileSync(__dirname + "/fixtures/malformed-app.json").toString())
+          App.new(fs.readFileSync(__dirname + "/fixtures/malformed/app.json").toString())
         },
         /malformed JSON/i
       )
@@ -52,13 +52,13 @@ describe("App", function() {
 
   })
 
-  describe("validation", function() {
+  describe(".errors", function() {
 
-    it("returns an empty array for .errors if app is valid", function() {
+    it("returns an array", function() {
+      payload.name = ""
       app = App.new(payload)
-      assert(app.valid)
+      assert(!app.valid)
       assert(util.isArray(app.errors))
-      assert.equal(app.errors.length, 0)
     })
 
     it("doesn't allow a blank string for name", function() {
@@ -78,6 +78,15 @@ describe("App", function() {
       assert.equal(app.errors[0].message, 'is too short (minimum is 3 characters)')
     })
 
+    it("requires name to be at under thirty characters", function() {
+      payload.name = "12345678901234567890123456789012"
+      app = App.new(payload)
+      assert(!app.valid)
+      assert.equal(app.errors.length, 1)
+      assert.equal(app.errors[0].property, 'name')
+      assert.equal(app.errors[0].message, 'is too long (maximum is 30 characters)')
+    })
+
     // it("does not allow empty-string name", function() {
     //   payload.name = "null"
     //   app = App.new(payload)
@@ -87,7 +96,7 @@ describe("App", function() {
     //   assert.equal(app.errors[0].message, 'is required')
     // })
 
-    it("validates website url", function() {
+    it("validates website url format", function() {
       payload.website = "not-a-url.com"
       app = App.new(payload)
       assert(!app.valid)
@@ -95,7 +104,7 @@ describe("App", function() {
       assert.equal(app.errors[0].message, 'is not a valid url')
     })
 
-    it("validates repository url", function() {
+    it("validates repository url format", function() {
       payload.repository = "not-a-url.com"
       app = App.new(payload)
       assert(!app.valid)
@@ -104,13 +113,38 @@ describe("App", function() {
       assert.equal(app.errors[0].message, 'is not a valid url')
     })
 
-    it("validates logo url", function() {
+    it("validates logo url format", function() {
       payload.logo = "not-a-url.com"
       app = App.new(payload)
       assert(!app.valid)
       assert.equal(app.errors.length, 1)
       assert.equal(app.errors[0].property, 'logo')
       assert.equal(app.errors[0].message, 'is not a valid url')
+    })
+
+    it("returns an empty array if app is valid", function() {
+      app = App.new(payload)
+      assert(app.valid)
+      assert(util.isArray(app.errors))
+      assert.equal(app.errors.length, 0)
+    })
+
+  })
+
+  describe(".errorString", function() {
+
+    it("returns a newline-delimited string of error messages", function() {
+      payload.name = "no"
+      payload.website = "not-a-url.com"
+      app = App.new(payload)
+      assert.equal(app.errors.length, 2)
+      assert.equal(app.errorString, "- name is too short (minimum is 3 characters)\n- website is not a valid url")
+    })
+
+    it("returns an empty string if app is valid", function() {
+      app = App.new(payload)
+      assert(app.valid)
+      assert.equal(app.errorString, "")
     })
 
   })

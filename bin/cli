@@ -7,8 +7,17 @@ var marked = require("marked")
 var title = require("to-title-case")
 var iniparser = require("iniparser")
 var flatten = require("flatten")
+var chalk = require('chalk')
 var pkg = require("../package.json")
 var App = require("..")
+
+function green(msg) {
+  console.log(chalk.green(msg))
+}
+
+function red(msg) {
+  console.error(chalk.red(msg))
+}
 
 program
   .version(pkg.version)
@@ -53,8 +62,8 @@ program
       return;
     }
 
+    // TODO parse url host instead
     var herokuAppName = git[herokuRemotes[0]].url.match(/git@heroku\.com:(.*)\.git/)[1]
-    // console.log(herokuAppName)
 
     var herokuCreds = require('netrc')()['api.heroku.com']
     var Heroku = require('heroku-client')
@@ -113,20 +122,20 @@ program
       try {
         JSON.parse(fs.readFileSync(manifest).toString())
       } catch(err) {
-        return console.error("Found an app.json file, but it's invalid JSON.")
+        return red("Found an app.json file, but it's invalid JSON.")
       }
 
       var app = App.new(manifest)
 
       if (app.valid) {
-        console.log("\nYour app.json file is valid!\n")
+        green("\nYour app.json file is valid!\n")
         console.log(app.toJSON())
       } else {
-        console.log("Found an app.json file, but it's got some issues:")
-        console.log(app.errors.split("\n"))
+        red("Found an app.json file, but it's got some issues:\n")
+        console.error(app.errorString)
       }
     } else {
-      console.log("No app.json found. Use `app init` to create one.")
+      red("No app.json found. Use `app init` to create one.")
     }
   })
 

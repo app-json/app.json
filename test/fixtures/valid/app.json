@@ -2,11 +2,8 @@
   "name": "zapp",
   "description": "A scrappy app for doing stuff with stuff.",
   "keywords": ["appage", "scrappage", "zappage"],
-  "urls": {
-    "website": "https://zapp.github.io",
-    "source": "https://github.com/jane-user/zapp.git",
-    "success": "/getting-started"
-  },
+  "website": "https://zapp.github.io",
+  "repository": "https://github.com/jane-user/zapp.git",
   "scripts": {
     "postdeploy": "bundle exec rake bootstrap"
   },
@@ -15,10 +12,6 @@
     "SESSION_SECRET": {
       "description": "A crazy random thing to secure your cookies",
       "generator": "secret"
-    },
-    "SPECIALNESS": {
-      "description": "How special, on a scale of 1 to 10?",
-      "default": 5
     },
     "WEB_CONCURRENCY": {
       "description": "How many processes to run",
