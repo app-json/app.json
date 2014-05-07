@@ -5,40 +5,45 @@ var addons = require("../lib/addons")
 describe('addons.getPlan()', function(){
   this.timeout(3000)
 
-  it('accepts an addon:plan string', function(done){
-    addons.getPlan('mongohq:ssd_1g_elastic', function(err, plan) {
-      assert.equal(plan.name, 'mongohq:ssd_1g_elastic')
-      assert.equal(plan.description, 'MongoHQ 1 GB SSD')
-      done()
+  describe("with an addon:plan argument", function() {
+
+    it('accepts an addon:plan string', function(done){
+      addons.getPlan('mongohq:ssd_1g_elastic', function(err, plan) {
+        assert.equal(plan.name, 'mongohq:ssd_1g_elastic')
+        assert.equal(plan.description, 'MongoHQ 1 GB SSD')
+        done()
+      })
     })
   })
 
-  it('accepts an addon string with no plan', function(done){
-    addons.getPlan('mongohq', function(err, plan) {
+
+  describe("without a plan", function() {
+
+    var plan = null
+
+    before(function(done) {
+      addons.getPlan('mongohq', function(err, p) {
+        plan = p
+        done()
+      })
+    })
+
+    it('figures out the default plan', function(){
       assert.equal(plan.name, 'mongohq:sandbox')
-      done()
     })
-  })
 
-  it('returns a pretty price', function(done){
-    addons.getPlan('mongohq', function(err, plan) {
+    it('returns a pretty price', function(){
       assert.equal(plan.prettyPrice, 'Free')
-      done()
     })
-  })
 
-  it('returns a logo URL when given an addon:plan slug', function(done){
-    addons.getPlan('mongohq:sandbox', function(err, plan) {
+    it('returns a logo URL when given an addon:plan slug', function(){
       assert.equal(plan.logo, 'https://addons.heroku.com/addons/mongohq/icons/original.png')
-      done()
     })
-  })
 
-  it('returns a logo URL given a plan-free slug', function(done){
-    addons.getPlan('mongohq', function(err, plan) {
+    it('returns a logo URL given a plan-free slug', function(){
       assert.equal(plan.logo, 'https://addons.heroku.com/addons/mongohq/icons/original.png')
-      done()
     })
+
   })
 
 })
@@ -46,56 +51,43 @@ describe('addons.getPlan()', function(){
 describe('addons.getPrices()', function(){
   this.timeout(3000)
 
-  it('accepts an array and returns an object', function(done){
-    addons.getPrices(['mongohq:ssd_1g_elastic'], function(err, prices) {
+  describe("mongohq:ssd_1g_elastic", function() {
+
+    var prices = null
+
+    before(function(done) {
+      addons.getPrices(['mongohq:ssd_1g_elastic'], function(err, p) {
+        prices = p
+        done()
+      })
+    })
+
+    it('accepts an array and returns an object', function(){
       assert(typeof(prices) === "object")
       assert(!util.isArray(prices))
       assert(util.isArray(prices.plans))
-      done()
     })
-  })
 
-  it('returns an array of plans in the prices object', function(done){
-    addons.getPrices(['mongohq:ssd_1g_elastic'], function(err, prices) {
+    it('returns an array of plans in the prices object', function(){
       assert(util.isArray(prices.plans))
-      done()
     })
-  })
 
-  it('handles addon:plan formatted slugs', function(done){
-    addons.getPrices(['mongohq:ssd_1g_elastic'], function(err, prices) {
+    it('handles addon:plan formatted slugs', function(){
       assert.equal(prices.plans[0].name, 'mongohq:ssd_1g_elastic')
       assert.equal(prices.plans[0].price.cents, 1800)
       assert.equal(prices.plans[0].price.unit, 'month')
-      done()
     })
-  })
 
-  it('finds the default plan, if unspecified', function(done){
-    addons.getPrices(['mongohq'], function(err, prices) {
-      assert.equal(prices.plans[0].name, 'mongohq:sandbox')
-      assert.equal(prices.plans[0].price.cents, 0)
-      assert.equal(prices.plans[0].price.unit, 'month')
-      done()
-    })
-  })
 
-  it('returns a totalPrice in the prices object', function(done){
-    addons.getPrices(['mongohq:ssd_1g_elastic', 'memcachedcloud:100'], function(err, prices) {
-      assert.equal(prices.plans[0].name, 'mongohq:ssd_1g_elastic')
+    it('returns a totalPrice in the prices object', function(){
       assert.equal(prices.plans[0].price.cents, 1800)
-      assert.equal(prices.plans[1].price.cents, 1400)
-      assert.equal(prices.totalPriceInCents, 3200)
-      done()
+      assert.equal(prices.totalPriceInCents, 1800)
     })
-  })
 
-  it('returns a human-friendly dollar amount total', function(done){
-    addons.getPrices(['mongohq:ssd_1g_elastic', 'memcachedcloud:100'], function(err, prices) {
-      assert.equal(prices.totalPriceInCents, 3200)
-      assert.equal(prices.totalPrice, '$32/mo')
-      done()
+    it('returns a human-friendly dollar amount total', function(){
+      assert.equal(prices.totalPrice, '$18/mo')
     })
+
   })
 
   it('returns free if total is zero', function(done){
