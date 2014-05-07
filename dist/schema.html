@@ -1,5 +1,6 @@
 <p><code>app.json</code> is a manifest format for describing web apps. It declares environment
-variables, addons, and other information required to run apps on Heroku. This document describes the schema in detail.</p>
+variables, addons, and other information required to run an app on Heroku. This
+document describes the schema in detail.</p>
 <h2 id="example-app-json">Example app.json</h2>
 <pre><code class="lang-json">{
   &quot;name&quot;: &quot;Small Sharp Tool&quot;,
@@ -33,7 +34,7 @@ variables, addons, and other information required to run apps on Heroku. This do
   ]
 }
 </code></pre>
-<h2 id="the-schema">The Schema</h2>
+<h2 id="schema-reference">Schema Reference</h2>
 <h3 id="name">name</h3>
 <p><em>(string, optional)</em> A clean and simple name to identify the template.</p>
 <pre><code class="lang-json">{
@@ -63,7 +64,7 @@ variables, addons, and other information required to run apps on Heroku. This do
 }
 </code></pre>
 <h3 id="repository">repository</h3>
-<p><em>(string, optional)</em> The location of the application&#39;s source code. Can be a Git URL, a GitHub URL, or a tarball URL.</p>
+<p><em>(string, optional)</em> The location of the application&#39;s source code, such as a Git URL, GitHub URL, Subversion URL, or Mercurial URL.</p>
 <pre><code class="lang-json">{
   &quot;repository&quot;: &quot;https://github.com/jane-doe/small-sharp-tool&quot;
 }

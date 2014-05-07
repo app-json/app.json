@@ -1,5 +1,6 @@
 `app.json` is a manifest format for describing web apps. It declares environment
-variables, addons, and other information required to run apps on Heroku. This document describes the schema in detail.
+variables, addons, and other information required to run an app on Heroku. This
+document describes the schema in detail.
 
 ## Example app.json
 
@@ -37,7 +38,7 @@ variables, addons, and other information required to run apps on Heroku. This do
 }
 ```
 
-## The Schema
+## Schema Reference
 
 
 ### name
@@ -90,7 +91,7 @@ variables, addons, and other information required to run apps on Heroku. This do
 
 ### repository
 
-*(string, optional)* The location of the application&#39;s source code. Can be a Git URL, a GitHub URL, or a tarball URL.
+*(string, optional)* The location of the application&#39;s source code, such as a Git URL, GitHub URL, Subversion URL, or Mercurial URL.
 
 ```json
 {
