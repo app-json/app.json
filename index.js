@@ -1,10 +1,13 @@
 'use strict'
 var fs = require("fs")
+var url = require("url")
 var http = require("http")
 var hogan = require("hogan.js")
 var superagent = require("superagent")
 var revalidator = require("revalidator")
 var parseGithubURL = require("github-url-to-object")
+var flatten = require("flatten")
+var isURL = require("is-url")
 var addons = require("./lib/addons")
 var schema = require("./lib/schema")
 
@@ -68,6 +71,63 @@ var App = module.exports = (function() {
       if (err) return cb(err)
       _this.prices = prices
       cb(null, prices)
+    })
+  }
+
+  App.prototype.deriveAddonsAndEnvFromHerokuApp = function(herokuAppName, cb) {
+    var _this = this
+    var creds = require('netrc')()['api.heroku.com']
+
+    if (!creds) return callback(new Error("No api.heroku.com entry found in ~/.netrc"))
+
+    var Heroku = require('heroku-client')
+    var heroku = new Heroku({token: creds.password})
+
+    console.log("\nFetching addons for " + herokuAppName)
+    heroku.get("/apps/" + herokuAppName + "/addons", function(err, addons) {
+      if (err) return cb(err)
+
+      var env = {}
+
+      var configVarsCreatedByAddons = flatten(addons.map(function(addon) {
+        return addon.config_vars
+      }))
+
+      // Special case for Heroku Postgres
+      configVarsCreatedByAddons.push("DATABASE_URL")
+
+      _this.addons = addons.map(function(addon) {
+        return addon.plan.name
+      })
+
+      console.log("Fetching environment variables for " + herokuAppName)
+
+      return heroku.get("/apps/" + herokuAppName + "/config-vars", function(err, configVars) {
+        if (err) return cb(err)
+        var key, value
+        for (key in configVars) {
+          value = configVars[key]
+          if (configVarsCreatedByAddons.indexOf(key) === -1) {
+
+            if (key.match(/secret|pass|token|key/i)){
+              value = "REDACTED"
+            }
+
+            if (isURL(value) && url.parse(value).auth) {
+              var parsedURL = url.parse(value)
+              parsedURL.auth = "REDACTED"
+              value = url.format(parsedURL)
+            }
+
+            env[key] = value
+          }
+        }
+
+        if (Object.keys(env).length > 0) _this.env = env
+
+        cb()
+
+      })
     })
   }
 

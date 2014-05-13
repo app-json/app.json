@@ -5,10 +5,8 @@ var path = require("path")
 var program = require("commander")
 var marked = require("marked")
 var title = require("to-title-case")
-var iniparser = require("iniparser")
-var flatten = require("flatten")
-var chalk = require('chalk')
-var pkg = require("../package.json")
+var chalk = require("chalk")
+var git = require("../lib/git")
 var App = require("..")
 
 function green(msg) {
@@ -20,92 +18,58 @@ function red(msg) {
 }
 
 program
-  .version(pkg.version)
-
-program
   .command("init")
   .description("Create an app.json for the current directory's app")
+  .option("-a, --app <heroku-app-name>", "Specify a Heroku app from which to derive addons and env")
   .action(function(program){
+
     if (fs.existsSync(process.cwd() + "/app.json")) {
-      return console.log("This directory already contains an app.json. Run `app validate` to verify it.")
+      return console.log("This directory already contains an app.json. Run `app.json validate` to verify it.")
     }
 
     var app = App.new()
     app.name = title(path.basename(process.cwd()))
-    app.description = "TODO: Add a short blurb about " + app.name
+    app.description = "TODO: Add a short description about " + app.name
     app.keywords = ["small", "sharp", "tool"]
+    app.website = "TODO: Add website URL"
+    app.repository = "TODO: Add repository URL"
     app.addons = []
+    app.env = {}
 
-    if (fs.existsSync(process.cwd() + "/.git")) {
-      var git = iniparser.parseString(fs.readFileSync(process.cwd() + "/.git/config").toString())
-    }
-
-    if (!git) {
+    var done = function() {
       fs.writeFile(process.cwd() + "/app.json", app.toJSON, function(err) {
         if (err) console.error(err)
         console.log("Created app.json\n")
         console.log(app.toJSON)
       })
-      return;
     }
 
-    var herokuRemotes = Object.keys(git).filter(function(key) {
-      return git[key].url && git[key].url.match("git@heroku.com")
-    })
-
-    if (!herokuRemotes.length) {
-      fs.writeFile(process.cwd() + "/app.json", app.toJSON, function(err) {
-        if (err) console.error(err)
-        console.log("Created app.json\n")
-        console.log(app.toJSON)
+    if (program.app) {
+      app.deriveAddonsAndEnvFromHerokuApp(program.app, function(err) {
+        if (err) return console.error(err)
+        return done()
       })
-      return;
-    }
+    } else {
+      git.parseHerokuAppNames(function(err, names) {
+        if (err) return console.error(err)
 
-    // TODO parse url host instead
-    var herokuAppName = git[herokuRemotes[0]].url.match(/git@heroku\.com:(.*)\.git/)[1]
+        if (!names.length) return done()
 
-    var herokuCreds = require('netrc')()['api.heroku.com']
-    var Heroku = require('heroku-client')
-    var heroku = new Heroku({token: herokuCreds.password})
-
-    console.log("\nFetching addons for " + herokuAppName)
-    heroku.get("/apps/" + herokuAppName + "/addons", function(err, addons) {
-      if (err) throw(err)
-      var addon_config_vars, env
-      app.addons = addons.map(function(addon) {
-        return addon.plan.name
-      })
-
-      addon_config_vars = flatten(addons.map(function(addon) {
-        return addon.config_vars
-      }))
-
-      console.log("Fetching environment variables for " + herokuAppName)
-      env = {}
-      return heroku.get("/apps/" + herokuAppName + "/config-vars", function(err, configVars) {
-        if (err) throw(err)
-        var k, v
-        for (k in configVars) {
-          v = configVars[k]
-          if (!(addon_config_vars.indexOf(k) > -1)) {
-            env[k] = v
-          }
+        if (names.length > 1) {
+          console.log("Multiple Heroku git remotes found. Try one of these commands:\n")
+          names.forEach(function(name) {
+            console.log("app.json init --app " + name)
+          })
+          return
         }
 
-        if (Object.keys(env).length > 0) {
-          app.env = env;
-        }
-
-        fs.writeFile(process.cwd() + "/app.json", app.toJSON, function(err) {
-          if (err) console.error(err)
-          console.log("Created app.json\n")
-          console.log(app.toJSON)
+        app.deriveAddonsAndEnvFromHerokuApp(names[0], function(err) {
+          if (err) return console.error(err)
+          return done()
         })
 
       })
-    })
-
+    }
 
   })
 
@@ -113,8 +77,6 @@ program
   .command("validate")
   .description("Validate the app.json file in the current directory")
   .action(function(program){
-
-    // console.log(args)
 
     var manifest = process.cwd() + "/app.json"
     if (fs.existsSync(manifest)) {

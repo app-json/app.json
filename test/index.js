@@ -180,6 +180,10 @@ describe("App", function() {
 
   })
 
+  describe(".deriveAddonsAndEnvFromHerokuApp()", function() {
+
+  })
+
   describe(".getAddonPrices()", function() {
 
     it("fetches a remote list of addons and their total price", function(done) {
@@ -330,7 +334,7 @@ describe("App", function() {
       it("produces github-formatted markdown intead of HTML", function() {
         $ = cheerio.load(marked(App.templates.schema.render(App.schema)))
         assert.equal($('h2').first().text(), "Example app.json")
-        assert.equal($('h2').last().text(), "The Schema")
+        assert.equal($('h2').last().text(), "Schema Reference")
       })
     })
 
