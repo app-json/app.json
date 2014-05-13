@@ -74,6 +74,36 @@ var App = module.exports = (function() {
     })
   }
 
+  App.prototype.deploy = function(cb) {
+    var _this = this
+    var user = parseGithubURL(this.repository).user
+    var repo = parseGithubURL(this.repository).repo
+    var tarball="https://api.github.com/repos/" + user + "/" + repo + "/tarball"
+    var creds = require('netrc')()['api.heroku.com']
+
+    if (!creds) {
+      return cb(new Error("No api.heroku.com entry found in ~/.netrc"))
+    }
+
+    superagent
+      .post('https://api.heroku.com/app-setups')
+      .set('Accept', 'application/vnd.heroku+json; version=3')
+      .set('Content-Type', 'application/json')
+      .auth('', creds.password)
+      .send({source_blob:{url:tarball}})
+      .end(function(err, res){
+        if (err) {
+          return cb(err)
+        } else {
+          // _this.deployedAppName =
+          return cb(null, res.body)
+        }
+      })
+
+  }
+
+  // App.prototype.pollDeployProcess = function(cb) {
+
   App.prototype.deriveAddonsAndEnvFromHerokuApp = function(herokuAppName, cb) {
     var _this = this
     var creds = require('netrc')()['api.heroku.com']

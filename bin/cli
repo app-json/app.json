@@ -39,7 +39,7 @@ program
     var done = function() {
       fs.writeFile(process.cwd() + "/app.json", app.toJSON, function(err) {
         if (err) console.error(err)
-        console.log("Created app.json\n")
+        green("Created app.json\n")
         console.log(app.toJSON)
       })
     }
@@ -97,7 +97,7 @@ program
         console.error(app.errorString)
       }
     } else {
-      red("No app.json found. Use `app init` to create one.")
+      red("No app.json found. Use `app.json init` to create one.")
     }
   })
 
@@ -117,22 +117,21 @@ program
   })
 
 program
-  .command("concoct <repo>")
-  .description("Deploy an app from GitHub using a shorthand URL.")
+  .command("deploy <repo>")
+  .description("Deploy an app.json-enabled app from GitHub using its shorthand URL.")
   .action(function(repo){
-    var concoctBin = path.resolve(__dirname, '../bin/concoct')
-    var go = require('child_process').spawn(concoctBin, [repo])
+    var bin = path.resolve(__dirname, '../bin/concoct')
+    var ps = require('child_process').spawn(bin, [repo])
 
-    go.stdout.on('data', function (data) {
+    ps.stdout.on('data', function (data) {
       process.stdout.write(data.toString())
     })
 
-    go.stderr.on('data', function (data) {
+    ps.stderr.on('data', function (data) {
       console.log(data.toString())
     })
 
-    go.on('exit', function (code) {
-      console.log('child process exited with code ' + code)
+    ps.on('exit', function (code) {
     })
 
   })
