@@ -14,7 +14,7 @@ describe("CLI", function() {
 
   })
 
-  describe("app concoct <repo>", function() {
+  describe("app deploy <repo>", function() {
 
   })
 

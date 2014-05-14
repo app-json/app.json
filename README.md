@@ -54,13 +54,6 @@ $ app.json
     validate               Validate the app.json file in the current directory
     schema [options]       Write the app.json schema to STDOUT
     deploy <repo>          Deploy an app from GitHub using a shorthand URL.
-
-  Options:
-
-    -h, --help     output usage information
-    -V, --version  output the version number
-
-  Use 'app <command> --help' to get more information about a specific command.
 ```
 
 ## Schema

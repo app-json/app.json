@@ -10,6 +10,7 @@ var flatten = require("flatten")
 var isURL = require("is-url")
 var addons = require("./lib/addons")
 var schema = require("./lib/schema")
+var auth = require('./lib/auth')
 
 var App = module.exports = (function() {
 
@@ -74,44 +75,62 @@ var App = module.exports = (function() {
     })
   }
 
-  App.prototype.deploy = function(cb) {
+  App.prototype.build = function(cb) {
+    if (!auth.token) return cb(auth.fail)
+
     var _this = this
     var user = parseGithubURL(this.repository).user
     var repo = parseGithubURL(this.repository).repo
     var tarball="https://api.github.com/repos/" + user + "/" + repo + "/tarball"
-    var creds = require('netrc')()['api.heroku.com']
-
-    if (!creds) {
-      return cb(new Error("No api.heroku.com entry found in ~/.netrc"))
-    }
 
     superagent
       .post('https://api.heroku.com/app-setups')
       .set('Accept', 'application/vnd.heroku+json; version=3')
       .set('Content-Type', 'application/json')
-      .auth('', creds.password)
+      .auth('', auth.token)
       .send({source_blob:{url:tarball}})
       .end(function(err, res){
         if (err) {
           return cb(err)
         } else {
-          // _this.deployedAppName =
+          _this.build_id = res.body.id
           return cb(null, res.body)
         }
       })
-
   }
 
-  // App.prototype.pollDeployProcess = function(cb) {
+  App.prototype.getBuildStatus = function(cb) {
+    if (!auth.token) return cb(auth.fail)
+    if (!this.build_id) return cb(new Error("No build_id property"))
+
+    var _this = this
+    var user = parseGithubURL(this.repository).user
+    var repo = parseGithubURL(this.repository).repo
+    var tarball="https://api.github.com/repos/" + user + "/" + repo + "/tarball"
+
+    superagent
+      .post('https://api.heroku.com/app-setups')
+      .set('Accept', 'application/vnd.heroku+json; version=3')
+      .set('Content-Type', 'application/json')
+      .auth('', auth.token)
+      .send({source_blob:{url:tarball}})
+      .end(function(err, res){
+        if (err) {
+          return cb(err)
+        } else {
+          _this.build_id = res.body.id
+          return cb(null, res.body)
+        }
+      })
+  }
+
 
   App.prototype.deriveAddonsAndEnvFromHerokuApp = function(herokuAppName, cb) {
+    if (!auth.token) return cb(auth.fail)
+
     var _this = this
-    var creds = require('netrc')()['api.heroku.com']
-
-    if (!creds) return callback(new Error("No api.heroku.com entry found in ~/.netrc"))
-
     var Heroku = require('heroku-client')
-    var heroku = new Heroku({token: creds.password})
+    var heroku = new Heroku({token: auth.token})
 
     console.log("\nFetching addons for " + herokuAppName)
     heroku.get("/apps/" + herokuAppName + "/addons", function(err, addons) {

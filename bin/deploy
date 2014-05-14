@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 
-concoct() {
+deploy() {
   host="https://nyata.herokuapp.com"
   tarball_url="https://codeload.github.com/${1}/legacy.tar.gz/master"
   token=$(heroku auth:token)
 
   echo
-  echo "Concocting..."
+  echo "Deploying..."
   echo $tarball_url
 
   api_response=$(curl \
@@ -47,4 +47,4 @@ concoct() {
   done
 }
 
-concoct $1
+deploy $1

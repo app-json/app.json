@@ -33,6 +33,7 @@ program
     app.keywords = ["small", "sharp", "tool"]
     app.website = "TODO: Add website URL"
     app.repository = "TODO: Add repository URL"
+    app.logo = "TODO: Add logo URL"
     app.addons = []
     app.env = {}
 
@@ -120,7 +121,7 @@ program
   .command("deploy <repo>")
   .description("Deploy an app.json-enabled app from GitHub using its shorthand URL.")
   .action(function(repo){
-    var bin = path.resolve(__dirname, '../bin/concoct')
+    var bin = path.resolve(__dirname, '../bin/deploy')
     var ps = require('child_process').spawn(bin, [repo])
 
     ps.stdout.on('data', function (data) {
