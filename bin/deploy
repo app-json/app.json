@@ -1,21 +1,24 @@
 #!/usr/bin/env bash
 
 deploy() {
-  host="https://nyata.herokuapp.com"
+  default_api_url="https://api.heroku.com"
+  api_url="${HEROKU_API_URL:-$default_api_url}"
+  curl_opt_verify_host=$([ $default_api_url = $api_url ] || echo '-k')
   tarball_url="https://codeload.github.com/${1}/legacy.tar.gz/master"
-  token=$(heroku auth:token)
 
   echo
-  echo "Deploying..."
+  echo "Concocting..."
   echo $tarball_url
 
   api_response=$(curl \
-    -u :$token \
+    -n \
+    $curl_opt_verify_host \
     -X POST \
     --silent \
     -H 'Content-Type: application/json' \
+    -H 'Accept: application/vnd.heroku+json; version=3' \
     -d "{ \"source_blob\": { \"url\": \"$tarball_url\" } }" \
-    $host/app-setups)
+    $api_url/app-setups)
 
   echo
   echo "API Response"
@@ -28,16 +31,18 @@ deploy() {
 
   echo
   echo "Build Status URL"
-  status_url="$host/app-setups/$build_id"
+  status_url="$api_url/app-setups/$build_id"
   echo $status_url
 
   # status is a reserved word in bash
   state="pending"
-  while [ $state == "pending" ]; do
+  while [ "$state" = "pending" ]; do
     status_response=$(curl \
-      -u :$token \
+      -n \
+      $curl_opt_verify_host \
       --silent \
       -H 'Content-Type: application/json' \
+      -H 'Accept: application/vnd.heroku+json; version=3' \
       $status_url)
     state=$(echo $status_response | jq -r .status)
     echo
