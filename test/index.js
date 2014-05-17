@@ -65,8 +65,8 @@ describe("App", function() {
       payload.name = ""
       app = App.new(payload)
       assert(!app.valid)
-      assert.equal(app.errors.length, 1)
       assert.equal(app.errors[0].property, 'name')
+      assert.equal(app.errors[0].message, "must not be empty")
     })
 
     it("requires name to be at least three characters", function() {
@@ -86,15 +86,6 @@ describe("App", function() {
       assert.equal(app.errors[0].property, 'name')
       assert.equal(app.errors[0].message, 'is too long (maximum is 30 characters)')
     })
-
-    // it("does not allow empty-string name", function() {
-    //   payload.name = "null"
-    //   app = App.new(payload)
-    //   assert(!app.valid)
-    //   assert.equal(app.errors.length, 1)
-    //   assert.equal(app.errors[0].property, 'name')
-    //   assert.equal(app.errors[0].message, 'is required')
-    // })
 
     it("validates website url format", function() {
       payload.website = "not-a-url.com"
