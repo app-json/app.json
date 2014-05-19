@@ -7,7 +7,7 @@ deploy() {
   tarball_url="https://codeload.github.com/${1}/legacy.tar.gz/master"
 
   echo
-  echo "Concocting..."
+  echo "Deploying..."
   echo $tarball_url
 
   api_response=$(curl \
