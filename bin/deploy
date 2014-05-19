@@ -5,9 +5,10 @@ deploy() {
   api_url="${HEROKU_API_URL:-$default_api_url}"
   curl_opt_verify_host=$([ $default_api_url = $api_url ] || echo '-k')
   tarball_url="https://codeload.github.com/${1}/legacy.tar.gz/master"
-
+  overrides=${2:-"{}"}
+  
   echo
-  echo "Concocting..."
+  echo "Deploying..."
   echo $tarball_url
 
   api_response=$(curl \
@@ -17,7 +18,7 @@ deploy() {
     --silent \
     -H 'Content-Type: application/json' \
     -H 'Accept: application/vnd.heroku+json; version=3' \
-    -d "{ \"source_blob\": { \"url\": \"$tarball_url\" } }" \
+    -d "{ \"source_blob\": { \"url\": \"$tarball_url\" }, \"overrides\": $overrides }" \
     $api_url/app-setups)
 
   echo
@@ -52,4 +53,4 @@ deploy() {
   done
 }
 
-deploy $1
+deploy $@
