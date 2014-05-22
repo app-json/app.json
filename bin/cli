@@ -4,11 +4,11 @@ var fs = require("fs")
 var path = require("path")
 var program = require("commander")
 var marked = require("marked")
-var title = require("to-title-case")
+var titlecase = require("to-title-case")
 var chalk = require("chalk")
 var gh = require("github-url-to-object")
 var merge = require("merge")
-var Heroku = require("../lib/heroku")
+var heroku = require("../lib/heroku").init()
 var App = require("..")
 
 function green(msg) {
@@ -22,15 +22,15 @@ function red(msg) {
 program
   .command("init")
   .description("Create an app.json for the current directory's app")
-  .option("-a, --app <heroku-app-name>", "Specify a Heroku app from which to derive addons and env")
+  .option("-a, --app <heroku-app-name>", "Heroku app name from which to derive addons and env")
   .action(function(program){
 
     if (fs.existsSync(process.cwd() + "/app.json")) {
-      return console.log("This directory already contains an app.json. Run `app.json validate` to verify it.")
+      return console.error("This directory already contains an app.json.\nTo validate it, run: app.json validate\nTo update it, run: app.json update")
     }
 
     var app = App.new()
-    app.name = title(path.basename(process.cwd()))
+    app.name = titlecase(path.basename(process.cwd()))
     app.description = "TODO: Add a short description about " + app.name
     app.keywords = ["small", "sharp", "tool"]
     app.website = "TODO: Add website URL"
@@ -48,14 +48,14 @@ program
     }
 
     if (program.app) {
-      Heroku.deriveAddonsAndEnv(program.app, function(err, addons_and_env) {
+      heroku.deriveAddonsAndEnv(program.app, function(err, addons_and_env) {
         if (err) return console.error(err)
         app = merge(app, addons_and_env)
         return done()
       })
 
     } else {
-      Heroku.deriveAppNamesFromLocalGitConfig(function(err, names) {
+      heroku.deriveAppNamesFromLocalGitConfig(function(err, names) {
         if (err) return console.error(err)
 
         if (!names.length) return done()
@@ -68,7 +68,7 @@ program
           return
         }
 
-        Heroku.deriveAddonsAndEnv(names[0], function(err, addons_and_env) {
+        heroku.deriveAddonsAndEnv(names[0], function(err, addons_and_env) {
           if (err) return console.error(err)
           app = merge(app, addons_and_env)
           return done()
@@ -78,6 +78,60 @@ program
     }
 
   })
+
+
+program
+  .command("update")
+  .description("Update an existing app.json with your Heroku app's current configuration")
+  .option("-a, --app <heroku-app-name>", "Heroku app name from which to derive addons and env")
+  .action(function(program){
+
+    if (!fs.existsSync(process.cwd() + "/app.json")) {
+      return console.error("No app.json file found. Run `app.json init` to create one.")
+    }
+
+    var app = App.new(process.cwd() + "/app.json")
+
+    var done = function() {
+      fs.writeFile(process.cwd() + "/app.json", app.toJSON, function(err) {
+        if (err) console.error(err)
+        green("Updated app.json\n")
+        console.log(app.toJSON)
+      })
+    }
+
+    if (program.app) {
+      heroku.deriveAddonsAndEnv(program.app, function(err, addons_and_env) {
+        if (err) return console.error(err)
+        app = merge(app, addons_and_env)
+        return done()
+      })
+
+    } else {
+      heroku.deriveAppNamesFromLocalGitConfig(function(err, names) {
+        if (err) return console.error(err)
+
+        if (!names.length) return done()
+
+        if (names.length > 1) {
+          console.log("Multiple Heroku git remotes found. Try one of these commands:\n")
+          names.forEach(function(name) {
+            console.log("app.json update -a " + name)
+          })
+          return
+        }
+
+        heroku.deriveAddonsAndEnv(names[0], function(err, addons_and_env) {
+          if (err) return console.error(err)
+          app = merge(app, addons_and_env)
+          return done()
+        })
+
+      })
+    }
+
+  })
+
 
 program
   .command("validate")
@@ -127,38 +181,26 @@ program
   .description("Deploy an app.json-enabled app from GitHub using its shorthand URL.")
   .action(function(repo){
     var build
-    console.log("Cloning from " + gh(repo).https_url)
-    Heroku.clone(repo, function(err, buildResult) {
-      if (err) return console.error(err)
-      build = buildResult
-      console.log("Created https://" + build.app.name + ".herokuapp.com")
+    console.log("\nCloning " + gh(repo).https_url)
+    heroku.clone(repo)
 
-      var poll = function() {
-        Heroku.getBuildStatus(build.id, function(err, status) {
-          if (err) return console.error(err)
-          build = status
-
-          switch(build.status) {
-          case "pending":
-            process.stdout.write(".")
-            break
-          case "failed":
-            clearInterval(pollInterval)
-            return console.error("Build failed: ", build.failure_message)
-            break
-          case "succeeded":
-            clearInterval(pollInterval)
-            console.log("\nBuild succeeded!")
-            console.log(build.resolved_success_url)
-            break
-          }
-
-        })
-      }
-
-      var pollInterval = setInterval(poll, 1000)
-
+    heroku.on("created", function(build) {
+      console.log("Created %s.herokuapp.com", build.app.name)
+      process.stdout.write("Building")
     })
+
+    heroku.on("pending", function() {
+      process.stdout.write(".")
+    })
+
+    heroku.on("error", function(err) {
+      console.error(err)
+    })
+
+    heroku.on("succeeded", function(build) {
+      console.log("\nSuccess!\n View your new app at " + build.resolved_success_url)
+    })
+
   })
 
 // Print this after the generated help text
