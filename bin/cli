@@ -6,7 +6,9 @@ var program = require("commander")
 var marked = require("marked")
 var title = require("to-title-case")
 var chalk = require("chalk")
-var git = require("../lib/git")
+var gh = require("github-url-to-object")
+var merge = require("merge")
+var Heroku = require("../lib/heroku")
 var App = require("..")
 
 function green(msg) {
@@ -46,12 +48,14 @@ program
     }
 
     if (program.app) {
-      app.deriveAddonsAndEnvFromHerokuApp(program.app, function(err) {
+      Heroku.deriveAddonsAndEnv(program.app, function(err, addons_and_env) {
         if (err) return console.error(err)
+        app = merge(app, addons_and_env)
         return done()
       })
+
     } else {
-      git.parseHerokuAppNames(function(err, names) {
+      Heroku.deriveAppNamesFromLocalGitConfig(function(err, names) {
         if (err) return console.error(err)
 
         if (!names.length) return done()
@@ -59,13 +63,14 @@ program
         if (names.length > 1) {
           console.log("Multiple Heroku git remotes found. Try one of these commands:\n")
           names.forEach(function(name) {
-            console.log("app.json init --app " + name)
+            console.log("app.json init -a " + name)
           })
           return
         }
 
-        app.deriveAddonsAndEnvFromHerokuApp(names[0], function(err) {
+        Heroku.deriveAddonsAndEnv(names[0], function(err, addons_and_env) {
           if (err) return console.error(err)
+          app = merge(app, addons_and_env)
           return done()
         })
 
@@ -94,11 +99,11 @@ program
         green("\nYour app.json file is valid!\n")
         console.log(app.toJSON)
       } else {
-        red("Found an app.json file, but it's got some issues:\n")
+        red("\nFound an app.json file, but it's got some issues:\n")
         console.error(app.errorString)
       }
     } else {
-      red("No app.json found. Use `app.json init` to create one.")
+      red("\nNo app.json found. Use `app.json init` to create one.\n")
     }
   })
 
@@ -118,23 +123,42 @@ program
   })
 
 program
-  .command("deploy <repo>")
+  .command("deploy [repo]")
   .description("Deploy an app.json-enabled app from GitHub using its shorthand URL.")
   .action(function(repo){
-    var bin = path.resolve(__dirname, '../bin/deploy')
-    var ps = require('child_process').spawn(bin, [repo])
+    var build
+    console.log("Cloning from " + gh(repo).https_url)
+    Heroku.clone(repo, function(err, buildResult) {
+      if (err) return console.error(err)
+      build = buildResult
+      console.log("Created https://" + build.app.name + ".herokuapp.com")
 
-    ps.stdout.on('data', function (data) {
-      process.stdout.write(data.toString())
+      var poll = function() {
+        Heroku.getBuildStatus(build.id, function(err, status) {
+          if (err) return console.error(err)
+          build = status
+
+          switch(build.status) {
+          case "pending":
+            process.stdout.write(".")
+            break
+          case "failed":
+            clearInterval(pollInterval)
+            return console.error("Build failed: ", build.failure_message)
+            break
+          case "succeeded":
+            clearInterval(pollInterval)
+            console.log("\nBuild succeeded!")
+            console.log(build.resolved_success_url)
+            break
+          }
+
+        })
+      }
+
+      var pollInterval = setInterval(poll, 1000)
+
     })
-
-    ps.stderr.on('data', function (data) {
-      console.log(data.toString())
-    })
-
-    ps.on('exit', function (code) {
-    })
-
   })
 
 // Print this after the generated help text

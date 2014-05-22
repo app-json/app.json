@@ -1,16 +1,15 @@
-'use strict'
+"use strict"
 var fs = require("fs")
 var url = require("url")
 var http = require("http")
 var hogan = require("hogan.js")
+var gh = require("github-url-to-object")
 var superagent = require("superagent")
 var revalidator = require("revalidator")
-var parseGithubURL = require("github-url-to-object")
 var flatten = require("flatten")
 var isURL = require("is-url")
 var addons = require("./lib/addons")
 var schema = require("./lib/schema")
-var auth = require('./lib/auth')
 
 var App = module.exports = (function() {
 
@@ -75,123 +74,13 @@ var App = module.exports = (function() {
     })
   }
 
-  App.prototype.build = function(cb) {
-    if (!auth.token) return cb(auth.fail)
-
-    var _this = this
-    var user = parseGithubURL(this.repository).user
-    var repo = parseGithubURL(this.repository).repo
-    var tarball="https://api.github.com/repos/" + user + "/" + repo + "/tarball"
-
-    superagent
-      .post('https://api.heroku.com/app-setups')
-      .set('Accept', 'application/vnd.heroku+json; version=3')
-      .set('Content-Type', 'application/json')
-      .auth('', auth.token)
-      .send({source_blob:{url:tarball}})
-      .end(function(err, res){
-        if (err) {
-          return cb(err)
-        } else {
-          _this.build_id = res.body.id
-          return cb(null, res.body)
-        }
-      })
-  }
-
-  App.prototype.getBuildStatus = function(cb) {
-    if (!auth.token) return cb(auth.fail)
-    if (!this.build_id) return cb(new Error("No build_id property"))
-
-    var _this = this
-    var user = parseGithubURL(this.repository).user
-    var repo = parseGithubURL(this.repository).repo
-    var tarball="https://api.github.com/repos/" + user + "/" + repo + "/tarball"
-
-    superagent
-      .post('https://api.heroku.com/app-setups')
-      .set('Accept', 'application/vnd.heroku+json; version=3')
-      .set('Content-Type', 'application/json')
-      .auth('', auth.token)
-      .send({source_blob:{url:tarball}})
-      .end(function(err, res){
-        if (err) {
-          return cb(err)
-        } else {
-          _this.build_id = res.body.id
-          return cb(null, res.body)
-        }
-      })
-  }
-
-
-  App.prototype.deriveAddonsAndEnvFromHerokuApp = function(herokuAppName, cb) {
-    if (!auth.token) return cb(auth.fail)
-
-    var _this = this
-    var Heroku = require('heroku-client')
-    var heroku = new Heroku({token: auth.token})
-
-    console.log("\nFetching addons for " + herokuAppName)
-    heroku.get("/apps/" + herokuAppName + "/addons", function(err, addons) {
-      if (err) return cb(err)
-
-      var env = {}
-
-      var configVarsCreatedByAddons = flatten(addons.map(function(addon) {
-        return addon.config_vars
-      }))
-
-      // Special case for Heroku Postgres
-      configVarsCreatedByAddons.push("DATABASE_URL")
-
-      _this.addons = addons.map(function(addon) {
-        return addon.plan.name
-      })
-
-      console.log("Fetching environment variables for " + herokuAppName)
-
-      return heroku.get("/apps/" + herokuAppName + "/config-vars", function(err, configVars) {
-        if (err) return cb(err)
-        var key, value
-        for (key in configVars) {
-          value = configVars[key]
-          if (configVarsCreatedByAddons.indexOf(key) === -1) {
-
-            if (key.match(/secret|pass|token|key/i)){
-              value = "REDACTED"
-            }
-
-            if (isURL(value) && url.parse(value).auth) {
-              var parsedURL = url.parse(value)
-              parsedURL.auth = "REDACTED"
-              value = url.format(parsedURL)
-            }
-
-            env[key] = value
-          }
-        }
-
-        if (Object.keys(env).length > 0) _this.env = env
-
-        cb()
-
-      })
-    })
-  }
-
   App.new = function(raw) {
     return new App(raw)
   }
 
   App.fetch = function(url, cb) {
-    if (!parseGithubURL(url))
-      return cb("Not a valid github URL: " + url)
-
-    var user = parseGithubURL(url).user
-    var repo = parseGithubURL(url).repo
-    var proxy_url = "https://github-raw-cors-proxy.herokuapp.com/" + user + "/" + repo + "/blob/master/app.json"
-
+    if (!gh(url)) return cb("Not a valid GitHub URL: " + url)
+    var proxy_url = "https://github-raw-cors-proxy.herokuapp.com/" + gh(url).user + "/" + gh(url).repo + "/blob/master/app.json"
     superagent.get(proxy_url, function(res){
       cb(null, App.new(res.body))
     })

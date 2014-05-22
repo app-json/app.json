@@ -1,3 +1,4 @@
+"use strict"
 var fs = require("fs")
 var assert = require("assert")
 var util = require("util")
@@ -302,7 +303,7 @@ describe("App", function() {
       })
 
       it("renders app name in an H2 tag", function() {
-        $ = cheerio.load(App.templates.app.render(App.example))
+        var $ = cheerio.load(App.templates.app.render(App.example))
         assert.equal($('h2').text(), App.example.name);
       })
 
@@ -323,7 +324,7 @@ describe("App", function() {
       })
 
       it("produces github-formatted markdown intead of HTML", function() {
-        $ = cheerio.load(marked(App.templates.schema.render(App.schema)))
+        var $ = cheerio.load(marked(App.templates.schema.render(App.schema)))
         assert.equal($('h2').first().text(), "Example app.json")
         assert.equal($('h2').last().text(), "Schema Reference")
       })
