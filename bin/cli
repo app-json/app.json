@@ -34,9 +34,9 @@ program
     app.name = titlecase(path.basename(process.cwd()))
     app.description = "TODO: Add a short description about " + app.name
     app.keywords = ["small", "sharp", "tool"]
-    app.website = "TODO: Add website URL"
-    app.repository = "TODO: Add repository URL"
-    app.logo = "TODO: Add logo URL"
+    // app.website = "TODO: Add website URL"
+    // app.repository = "TODO: Add repository URL"
+    // app.logo = "TODO: Add logo URL"
     app.addons = []
     app.env = {}
 
