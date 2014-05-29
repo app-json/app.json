@@ -8,7 +8,7 @@ var titlecase = require("to-title-case")
 var chalk = require("chalk")
 var gh = require("github-url-to-object")
 var merge = require("merge")
-var heroku = require("../lib/heroku").init()
+var heroku = require("../lib/heroku").new()
 var App = require("..")
 
 function green(msg) {
@@ -132,7 +132,6 @@ program
 
   })
 
-
 program
   .command("validate")
   .description("Validate the app.json file in the current directory")
@@ -162,29 +161,15 @@ program
   })
 
 program
-  .command("schema")
-  .option('--markdown', 'Write the schema in markdown format')
-  .option('--html', 'Write the schema in HTML format')
-  .description("Write the app.json schema to STDOUT")
-  .action(function(program){
-    if (program.markdown) {
-      process.stdout.write(App.templates.schema.render(App.schema))
-    } else if (program.html) {
-      process.stdout.write(marked(App.templates.schema.render(App.schema)))
-    } else {
-      process.stdout.write(JSON.stringify(App.schema.properties, null, 2))
-    }
-  })
-
-program
-  .command("deploy [repo]")
-  .description("Deploy an app.json-enabled app from GitHub using its shorthand URL.")
-  .action(function(repo){
+  .command("clone <repo> [app]")
+  // .option('--markdown', 'Write the schema in markdown format')
+  .description("Create a new Heroku app from a repository or tarball URL.")
+  .action(function(repo, app){
     var build
     console.log("\nCloning " + gh(repo).https_url)
-    heroku.clone(repo)
+    heroku.clone(repo, app)
 
-    heroku.on("created", function(build) {
+    heroku.on("create", function(build) {
       console.log("Created %s.herokuapp.com", build.app.name)
       process.stdout.write("Building")
     })
@@ -201,6 +186,28 @@ program
       console.log("\nSuccess!\n View your new app at " + build.resolved_success_url)
     })
 
+  })
+
+program
+  .command("schema")
+  .option('--markdown', 'Write the schema in markdown format')
+  .option('--html', 'Write the schema in HTML format')
+  .description("Write the app.json schema to STDOUT")
+  .action(function(program){
+    if (program.markdown) {
+      process.stdout.write(App.templates.schema.render(App.schema))
+    } else if (program.html) {
+      process.stdout.write(marked(App.templates.schema.render(App.schema)))
+    } else {
+      process.stdout.write(JSON.stringify(App.schema.properties, null, 2))
+    }
+  })
+
+program
+  .command("help [command]")
+  .action(function(program){
+    console.log("You need help.")
+    console.log(program)
   })
 
 // Print this after the generated help text

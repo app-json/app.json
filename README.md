@@ -13,6 +13,16 @@ This repository contains the source for an npm module called
 
 ## Installation and Usage
 
+### Usage on the Command Line
+
+To use this module on the command line, install it globally using npm:
+
+```sh
+npm install app.json --global
+```
+
+Now run `app.json` (or simply `app`) from any directory.
+
 ### Programmatic usage with Node.js or Browserify
 
 Download the module from npm and save it to your package.json:
@@ -33,36 +43,13 @@ If browserify isn't your thing, use the pre-compiled browser-ready bundle in
 [dist/app.js](/dist/app.js). Include this file in your html page and it will create
 `window.App` for you.
 
-### Usage on the Command Line
-
-To use this module on the command line, install it globally using npm:
-
-```sh
-npm install app.json --global
-```
-
-Now you can run `app.json` (or simply `app`) from any directory:
-
-```
-$ app.json
-
-  Usage: app.json [options] [command]
-
-  Commands:
-
-    init                   Create an app.json for the current directory's app
-    validate               Validate the app.json file in the current directory
-    schema [options]       Write the app.json schema to STDOUT
-    deploy <repo>          Deploy an app from GitHub using a shorthand URL.
-```
-
 ## Schema
 
 The app.json schema is defined using the [JSON Schema](http://json-schema.org/)
 specification and is validated with the
 [revalidator](https://github.com/flatiron/revalidator#readme) node module. View
 the [raw schema](/lib/schema.js) or the auto-generated [app.json
-Schema Documentation](https://devcenter.heroku.com/articles/app-json-schema?preview=1) on Heroku Dev Center.
+Schema Documentation](https://devcenter.heroku.com/articles/app-json-schema) on Heroku Dev Center.
 
 ## Class Methods
 
