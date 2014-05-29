@@ -1,7 +1,7 @@
 # app.json [![Build Status](https://travis-ci.org/heroku/app.json.png?branch=master)](https://travis-ci.org/heroku/app.json)
 
 `app.json` is a manifest format for describing web apps. It's a file in the root
-directory of an app that describes the app's build requirements, environment variables, addons,
+directory of your app that describes build requirements, environment variables, addons,
 and other information.
 
 This repository contains the source for an npm module called
@@ -9,21 +9,79 @@ This repository contains the source for an npm module called
 
 - A JavaScript interface for creating, validating, and producing app.json manifests.
 - A module that is designed to work in browsers and Node.js.
-- A CLI for creating manifests and producing schema documentation.
+- A command-line interface (CLI) for cloning apps, creating manifests, and producing schema documentation.
 
-## Installation and Usage
+For more info about `app.json`, see
 
-### Usage on the Command Line
+- [Introducing the app.json Application Manifest](https://blog.heroku.com/archives/2014/5/22/introducing_the_app_json_application_manifest)
+- [app.json Schema](https://devcenter.heroku.com/articles/app-json-schema)
+- [Setting Up Apps using the Platform API](https://devcenter.heroku.com/articles/setting-up-apps-using-the-heroku-platform-api)
 
-To use this module on the command line, install it globally using npm:
+## Command Line Usage
+
+To use the command line tool, install it globally using npm:
 
 ```sh
 npm install app.json --global
 ```
 
-Now run `app.json` (or simply `app`) from any directory.
+Now you can run `app.json` (or simply `app`) on the command line.
 
-### Programmatic usage with Node.js or Browserify
+### Cloning apps
+
+You can use the CLI to create new Heroku apps from publicly-accessible `.tar.gz`
+or `.tgz` files (colloquially known as "tarballs"), or from GitHub URLs. The general form is:
+
+```sh
+app.json clone <repo> [new-app-name]
+```
+
+- `repo` is required.
+- `new-app-name` is optional.
+
+Here are some examples:
+
+```sh
+# GitHub shorthand URL
+app.json clone zeke/slideshow my-slideshow
+
+# GitHub full URL
+app.json clone https://github.com/zeke/slideshow.git my-slideshow
+
+# Tarball URL
+app.json clone http://app.json.s3.amazonaws.com/zeke-slideshow-a95e802.tar.gz
+```
+
+### Creating a manifest
+
+The `init` command will create a new `app.json` file in your current
+working directory. If the directory already has a Heroku git remote in `.git/config`,
+the CLI will attempt to populate the `env` and `addons` properties of the new
+`app.json` file with live data from your running Heroku app.
+
+```sh
+app.json init
+```
+
+### Validating a manifest
+
+Use the `validate` command to ensure that your `app.json` file conforms to [the
+schema](https://devcenter.heroku.com/articles/app-json-schema).
+
+```sh
+app.json validate
+```
+
+### Updating a manifest
+
+Use the `update` command to fetch the latest `addons` and `env` properties from
+a running Heroku app.
+
+```sh
+app.json update
+```
+
+## Programmatic usage with Node.js or Browserify
 
 Download the module from npm and save it to your package.json:
 
@@ -86,7 +144,7 @@ to make the `app.json` file downloadable from browsers.
 `url` can be a fully qualified GitHub URL, or a shorthand `user/repo` string:
 
 ```js
-App.fetch('zeke/harp-slideshow-template', function(err, manifest) {
+App.fetch('zeke/slideshow', function(err, manifest) {
   console.log(err, manifest)
 })
 ```

@@ -8,6 +8,7 @@ var titlecase = require("to-title-case")
 var chalk = require("chalk")
 var gh = require("github-url-to-object")
 var merge = require("merge")
+var open = require("open")
 var heroku = require("../lib/heroku").new()
 var App = require("..")
 
@@ -162,12 +163,13 @@ program
 
 program
   .command("clone <repo> [app]")
-  // .option('--markdown', 'Write the schema in markdown format')
   .description("Create a new Heroku app from a repository or tarball URL.")
   .action(function(repo, app){
     var build
-    console.log("\nCloning " + gh(repo).https_url)
-    heroku.clone(repo, app)
+
+    heroku.on("start", function(payload) {
+      console.log("\nCloning from %s", payload.source_blob.url)
+    })
 
     heroku.on("create", function(build) {
       console.log("Created %s.herokuapp.com", build.app.name)
@@ -183,8 +185,15 @@ program
     })
 
     heroku.on("succeeded", function(build) {
-      console.log("\nSuccess!\n View your new app at " + build.resolved_success_url)
+      console.log("Done.")
+      if (build.postdeploy && build.postdeploy.output) {
+        console.log("Postdeploy output: %s", build.postdeploy.output)
+      }
+      console.log("Your new app is running at %s", build.resolved_success_url)
+      open(build.resolved_success_url)
     })
+
+    heroku.clone(repo, app)
 
   })
 
@@ -203,12 +212,12 @@ program
     }
   })
 
-program
-  .command("help [command]")
-  .action(function(program){
-    console.log("You need help.")
-    console.log(program)
-  })
+// program
+//   .command("help [command]")
+//   .action(function(program){
+//     console.log("You need help.")
+//     console.log(program)
+//   })
 
 // Print this after the generated help text
 program.on("--help", function(){

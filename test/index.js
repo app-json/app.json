@@ -225,7 +225,7 @@ describe("App", function() {
   describe("App.fetch()", function() {
 
     it("downloads remote manifests with github shorthand", function(done) {
-      App.fetch('zeke/harp-slideshow-template', function(err, remoteApp) {
+      App.fetch('zeke/slideshow', function(err, remoteApp) {
         assert(remoteApp.valid)
         assert.equal(remoteApp.name, "Harp Slideshow")
         done()
