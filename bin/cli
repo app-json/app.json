@@ -151,7 +151,6 @@ program
 
       if (app.valid) {
         green("\nYour app.json file is valid!\n")
-        console.log(app.toJSON)
       } else {
         red("\nFound an app.json file, but it's got some issues:\n")
         console.error(app.errorString)
