@@ -45,6 +45,9 @@ Here are some examples:
 # GitHub shorthand URL
 app.json clone zeke/slideshow my-slideshow
 
+# GitHub shorthand URL with branch
+app.json clone zeke/slideshow#master my-slideshow
+
 # GitHub full URL
 app.json clone https://github.com/zeke/slideshow.git my-slideshow
 
