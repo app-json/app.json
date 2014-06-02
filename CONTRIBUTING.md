@@ -5,7 +5,7 @@
 Fork the repo, or clone the canonical one:
 
 ```sh
-git clone https://github.com/heroku/app.json
+git clone https://github.com/app-json/app.json
 cd app.json
 ```
 

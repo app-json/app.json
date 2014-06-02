@@ -1,4 +1,4 @@
-# app.json [![Build Status](https://travis-ci.org/heroku/app.json.png?branch=master)](https://travis-ci.org/heroku/app.json)
+# app.json [![Build Status](https://travis-ci.org/app-json/app.json.png?branch=master)](https://travis-ci.org/app-json/app.json)
 
 `app.json` is a manifest format for describing web apps. It's a file in the root
 directory of your app that describes build requirements, environment variables, addons,
