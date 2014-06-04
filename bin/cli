@@ -83,7 +83,7 @@ program
 
 program
   .command("update")
-  .description("Update an existing app.json with your Heroku app's current configuration")
+  .description("Update an app.json based on an existing Heroku app")
   .option("-a, --app <heroku-app-name>", "Heroku app name from which to derive addons and env")
   .action(function(program){
 
@@ -211,12 +211,12 @@ program
     }
   })
 
-// program
-//   .command("help [command]")
-//   .action(function(program){
-//     console.log("You need help.")
-//     console.log(program)
-//   })
+program
+  .command("version")
+  .description("Write CLI version to STDOUT")
+  .action(function(program){
+    console.log(require("../package.json").version)
+  })
 
 // Print this after the generated help text
 program.on("--help", function(){
