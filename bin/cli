@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+"use strict";
+
 var fs = require("fs")
 var path = require("path")
 var program = require("commander")
@@ -163,7 +165,8 @@ program
 program
   .command("clone <repo> [app]")
   .description("Create a new Heroku app from a repository or tarball URL.")
-  .action(function(repo, app){
+  .option("-v, --verbose", "Verbose build output")
+  .action(function(repo, app, args){
     var build
 
     heroku.on("start", function(payload) {
@@ -175,8 +178,12 @@ program
       process.stdout.write("Building")
     })
 
-    heroku.on("pending", function() {
-      process.stdout.write(".")
+    heroku.on("pending", function(build) {
+      if (args.verbose) {
+        console.log("\n" + JSON.stringify(build, null, 2) + "\n")
+      } else {
+        process.stdout.write(".")
+      }
     })
 
     heroku.on("error", function(err) {
