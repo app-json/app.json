@@ -30,7 +30,7 @@ Now you can run `app.json` (or simply `app`) on the command line.
 ### Cloning apps
 
 You can use the CLI to create new Heroku apps from publicly-accessible `.tar.gz`
-or `.tgz` files (colloquially known as "tarballs"), or from GitHub URLs. The general form is:
+or `.tgz` files (colloquially known as "tarballs"), or from GitHub and Bitbucket URLs. The general form is:
 
 ```sh
 app.json clone <repo> [new-app-name]
@@ -43,10 +43,16 @@ Here are some examples:
 
 ```sh
 # GitHub shorthand URL
-app.json clone zeke/slideshow my-slideshow
+app.json clone github:zeke/slideshow
 
 # GitHub shorthand URL with branch
-app.json clone zeke/slideshow#master my-slideshow
+app.json clone github:zeke/slideshow#master
+
+# GitHub shorthand URL
+app.json clone bitbucket:sikelianos/slideshow
+
+# GitHub shorthand URL with branch
+app.json clone bitbucket:sikelianos/slideshow#master
 
 # GitHub full URL
 app.json clone https://github.com/zeke/slideshow.git my-slideshow

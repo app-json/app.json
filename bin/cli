@@ -8,7 +8,6 @@ var program = require("commander")
 var marked = require("marked")
 var titlecase = require("to-title-case")
 var chalk = require("chalk")
-var gh = require("github-url-to-object")
 var merge = require("merge")
 var open = require("open")
 var heroku = require("../lib/heroku").new()
@@ -175,7 +174,7 @@ program
 
     heroku.on("create", function(build) {
       console.log("Created %s.herokuapp.com", build.app.name)
-      process.stdout.write("Building")
+      console.log("Building...")
     })
 
     heroku.on("pending", function(build) {

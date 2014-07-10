@@ -1,7 +1,7 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"/Users/zeke/code/hero/app.json/fake_a7fe422.js":[function(require,module,exports){
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"/Users/zeke/code/app-json/app.json/fake_b3d68458.js":[function(require,module,exports){
 window.App = require('./')
 
-},{"./":"/Users/zeke/code/hero/app.json/index.js"}],"/Users/zeke/code/hero/app.json/index.js":[function(require,module,exports){
+},{"./":"/Users/zeke/code/app-json/app.json/index.js"}],"/Users/zeke/code/app-json/app.json/index.js":[function(require,module,exports){
 (function (Buffer){
 "use strict"
 var url = require("url")
@@ -111,7 +111,7 @@ var App = module.exports = (function() {
 })()
 
 }).call(this,require("buffer").Buffer)
-},{"./lib/addons":"/Users/zeke/code/hero/app.json/lib/addons.js","./lib/schema":"/Users/zeke/code/hero/app.json/lib/schema.js","./templates/app.mustache.html":"/Users/zeke/code/hero/app.json/templates/app.mustache.html","./templates/build.mustache.html":"/Users/zeke/code/hero/app.json/templates/build.mustache.html","./templates/schema.mustache.html":"/Users/zeke/code/hero/app.json/templates/schema.mustache.html","buffer":"/Users/zeke/code/hero/app.json/node_modules/browserify/node_modules/buffer/index.js","flatten":"/Users/zeke/code/hero/app.json/node_modules/flatten/index.js","github-url-to-object":"/Users/zeke/code/hero/app.json/node_modules/github-url-to-object/index.js","hogan.js":"/Users/zeke/code/hero/app.json/node_modules/hogan.js/lib/hogan.js","http":"/Users/zeke/code/hero/app.json/node_modules/browserify/node_modules/http-browserify/index.js","is-url":"/Users/zeke/code/hero/app.json/node_modules/is-url/index.js","revalidator":"/Users/zeke/code/hero/app.json/node_modules/revalidator/lib/revalidator.js","superagent":"/Users/zeke/code/hero/app.json/node_modules/superagent/lib/client.js","url":"/Users/zeke/code/hero/app.json/node_modules/browserify/node_modules/url/url.js"}],"/Users/zeke/code/hero/app.json/lib/addons.js":[function(require,module,exports){
+},{"./lib/addons":"/Users/zeke/code/app-json/app.json/lib/addons.js","./lib/schema":"/Users/zeke/code/app-json/app.json/lib/schema.js","./templates/app.mustache.html":"/Users/zeke/code/app-json/app.json/templates/app.mustache.html","./templates/build.mustache.html":"/Users/zeke/code/app-json/app.json/templates/build.mustache.html","./templates/schema.mustache.html":"/Users/zeke/code/app-json/app.json/templates/schema.mustache.html","buffer":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/buffer/index.js","flatten":"/Users/zeke/code/app-json/app.json/node_modules/flatten/index.js","github-url-to-object":"/Users/zeke/code/app-json/app.json/node_modules/github-url-to-object/index.js","hogan.js":"/Users/zeke/code/app-json/app.json/node_modules/hogan.js/lib/hogan.js","http":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/http-browserify/index.js","is-url":"/Users/zeke/code/app-json/app.json/node_modules/is-url/index.js","revalidator":"/Users/zeke/code/app-json/app.json/node_modules/revalidator/lib/revalidator.js","superagent":"/Users/zeke/code/app-json/app.json/node_modules/superagent/lib/client.js","url":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/url/url.js"}],"/Users/zeke/code/app-json/app.json/lib/addons.js":[function(require,module,exports){
 "use strict"
 var async = require('async')
 var superagent = require('superagent')
@@ -180,7 +180,7 @@ function formatPrice(price) {
   return (price == 0) ? "Free" : "$" + price/100 + "/mo"
 }
 
-},{"async":"/Users/zeke/code/hero/app.json/node_modules/async/lib/async.js","superagent":"/Users/zeke/code/hero/app.json/node_modules/superagent/lib/client.js"}],"/Users/zeke/code/hero/app.json/lib/schema.js":[function(require,module,exports){
+},{"async":"/Users/zeke/code/app-json/app.json/node_modules/async/lib/async.js","superagent":"/Users/zeke/code/app-json/app.json/node_modules/superagent/lib/client.js"}],"/Users/zeke/code/app-json/app.json/lib/schema.js":[function(require,module,exports){
 "use strict"
 var schema = {
   "properties": {
@@ -283,7 +283,7 @@ schema.propertiesArray = Object.keys(schema.properties).map(function(name) {
 
 module.exports = schema
 
-},{}],"/Users/zeke/code/hero/app.json/node_modules/async/lib/async.js":[function(require,module,exports){
+},{}],"/Users/zeke/code/app-json/app.json/node_modules/async/lib/async.js":[function(require,module,exports){
 (function (process){
 /*jshint onevar: false, indent:4 */
 /*global setImmediate: false, setTimeout: false, console: false */
@@ -1330,7 +1330,7 @@ module.exports = schema
 }());
 
 }).call(this,require("FWaASH"))
-},{"FWaASH":"/Users/zeke/code/hero/app.json/node_modules/browserify/node_modules/process/browser.js"}],"/Users/zeke/code/hero/app.json/node_modules/browserify/node_modules/buffer/index.js":[function(require,module,exports){
+},{"FWaASH":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/process/browser.js"}],"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/buffer/index.js":[function(require,module,exports){
 /*!
  * The buffer module from node.js, for the browser.
  *
@@ -2441,7 +2441,7 @@ function assert (test, message) {
   if (!test) throw new Error(message || 'Failed assertion')
 }
 
-},{"base64-js":"/Users/zeke/code/hero/app.json/node_modules/browserify/node_modules/buffer/node_modules/base64-js/lib/b64.js","ieee754":"/Users/zeke/code/hero/app.json/node_modules/browserify/node_modules/buffer/node_modules/ieee754/index.js"}],"/Users/zeke/code/hero/app.json/node_modules/browserify/node_modules/buffer/node_modules/base64-js/lib/b64.js":[function(require,module,exports){
+},{"base64-js":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/buffer/node_modules/base64-js/lib/b64.js","ieee754":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/buffer/node_modules/ieee754/index.js"}],"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/buffer/node_modules/base64-js/lib/b64.js":[function(require,module,exports){
 var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 
 ;(function (exports) {
@@ -2564,7 +2564,7 @@ var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 	module.exports.fromByteArray = uint8ToBase64
 }())
 
-},{}],"/Users/zeke/code/hero/app.json/node_modules/browserify/node_modules/buffer/node_modules/ieee754/index.js":[function(require,module,exports){
+},{}],"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/buffer/node_modules/ieee754/index.js":[function(require,module,exports){
 exports.read = function(buffer, offset, isLE, mLen, nBytes) {
   var e, m,
       eLen = nBytes * 8 - mLen - 1,
@@ -2650,7 +2650,7 @@ exports.write = function(buffer, value, offset, isLE, mLen, nBytes) {
   buffer[offset + i - d] |= s * 128;
 };
 
-},{}],"/Users/zeke/code/hero/app.json/node_modules/browserify/node_modules/events/events.js":[function(require,module,exports){
+},{}],"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/events/events.js":[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -2955,7 +2955,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],"/Users/zeke/code/hero/app.json/node_modules/browserify/node_modules/http-browserify/index.js":[function(require,module,exports){
+},{}],"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/http-browserify/index.js":[function(require,module,exports){
 var http = module.exports;
 var EventEmitter = require('events').EventEmitter;
 var Request = require('./lib/request');
@@ -3094,7 +3094,7 @@ http.STATUS_CODES = {
     510 : 'Not Extended',               // RFC 2774
     511 : 'Network Authentication Required' // RFC 6585
 };
-},{"./lib/request":"/Users/zeke/code/hero/app.json/node_modules/browserify/node_modules/http-browserify/lib/request.js","events":"/Users/zeke/code/hero/app.json/node_modules/browserify/node_modules/events/events.js","url":"/Users/zeke/code/hero/app.json/node_modules/browserify/node_modules/url/url.js"}],"/Users/zeke/code/hero/app.json/node_modules/browserify/node_modules/http-browserify/lib/request.js":[function(require,module,exports){
+},{"./lib/request":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/http-browserify/lib/request.js","events":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/events/events.js","url":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/url/url.js"}],"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/http-browserify/lib/request.js":[function(require,module,exports){
 var Stream = require('stream');
 var Response = require('./response');
 var Base64 = require('Base64');
@@ -3285,7 +3285,7 @@ var indexOf = function (xs, x) {
     return -1;
 };
 
-},{"./response":"/Users/zeke/code/hero/app.json/node_modules/browserify/node_modules/http-browserify/lib/response.js","Base64":"/Users/zeke/code/hero/app.json/node_modules/browserify/node_modules/http-browserify/node_modules/Base64/base64.js","inherits":"/Users/zeke/code/hero/app.json/node_modules/browserify/node_modules/inherits/inherits_browser.js","stream":"/Users/zeke/code/hero/app.json/node_modules/browserify/node_modules/stream-browserify/index.js"}],"/Users/zeke/code/hero/app.json/node_modules/browserify/node_modules/http-browserify/lib/response.js":[function(require,module,exports){
+},{"./response":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/http-browserify/lib/response.js","Base64":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/http-browserify/node_modules/Base64/base64.js","inherits":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/inherits/inherits_browser.js","stream":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/stream-browserify/index.js"}],"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/http-browserify/lib/response.js":[function(require,module,exports){
 var Stream = require('stream');
 var util = require('util');
 
@@ -3407,7 +3407,7 @@ var isArray = Array.isArray || function (xs) {
     return Object.prototype.toString.call(xs) === '[object Array]';
 };
 
-},{"stream":"/Users/zeke/code/hero/app.json/node_modules/browserify/node_modules/stream-browserify/index.js","util":"/Users/zeke/code/hero/app.json/node_modules/browserify/node_modules/util/util.js"}],"/Users/zeke/code/hero/app.json/node_modules/browserify/node_modules/http-browserify/node_modules/Base64/base64.js":[function(require,module,exports){
+},{"stream":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/stream-browserify/index.js","util":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/util/util.js"}],"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/http-browserify/node_modules/Base64/base64.js":[function(require,module,exports){
 ;(function () {
 
   var object = typeof exports != 'undefined' ? exports : this; // #8: web workers
@@ -3469,7 +3469,7 @@ var isArray = Array.isArray || function (xs) {
 
 }());
 
-},{}],"/Users/zeke/code/hero/app.json/node_modules/browserify/node_modules/inherits/inherits_browser.js":[function(require,module,exports){
+},{}],"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/inherits/inherits_browser.js":[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -3494,7 +3494,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],"/Users/zeke/code/hero/app.json/node_modules/browserify/node_modules/process/browser.js":[function(require,module,exports){
+},{}],"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/process/browser.js":[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -3559,7 +3559,7 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],"/Users/zeke/code/hero/app.json/node_modules/browserify/node_modules/punycode/punycode.js":[function(require,module,exports){
+},{}],"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/punycode/punycode.js":[function(require,module,exports){
 (function (global){
 /*! http://mths.be/punycode v1.2.4 by @mathias */
 ;(function(root) {
@@ -4070,7 +4070,7 @@ process.chdir = function (dir) {
 }(this));
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],"/Users/zeke/code/hero/app.json/node_modules/browserify/node_modules/querystring-es3/decode.js":[function(require,module,exports){
+},{}],"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/querystring-es3/decode.js":[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -4156,7 +4156,7 @@ var isArray = Array.isArray || function (xs) {
   return Object.prototype.toString.call(xs) === '[object Array]';
 };
 
-},{}],"/Users/zeke/code/hero/app.json/node_modules/browserify/node_modules/querystring-es3/encode.js":[function(require,module,exports){
+},{}],"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/querystring-es3/encode.js":[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -4243,13 +4243,13 @@ var objectKeys = Object.keys || function (obj) {
   return res;
 };
 
-},{}],"/Users/zeke/code/hero/app.json/node_modules/browserify/node_modules/querystring-es3/index.js":[function(require,module,exports){
+},{}],"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/querystring-es3/index.js":[function(require,module,exports){
 'use strict';
 
 exports.decode = exports.parse = require('./decode');
 exports.encode = exports.stringify = require('./encode');
 
-},{"./decode":"/Users/zeke/code/hero/app.json/node_modules/browserify/node_modules/querystring-es3/decode.js","./encode":"/Users/zeke/code/hero/app.json/node_modules/browserify/node_modules/querystring-es3/encode.js"}],"/Users/zeke/code/hero/app.json/node_modules/browserify/node_modules/stream-browserify/duplex.js":[function(require,module,exports){
+},{"./decode":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/querystring-es3/decode.js","./encode":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/querystring-es3/encode.js"}],"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/stream-browserify/duplex.js":[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -4323,7 +4323,7 @@ function onend() {
   });
 }
 
-},{"./readable.js":"/Users/zeke/code/hero/app.json/node_modules/browserify/node_modules/stream-browserify/readable.js","./writable.js":"/Users/zeke/code/hero/app.json/node_modules/browserify/node_modules/stream-browserify/writable.js","inherits":"/Users/zeke/code/hero/app.json/node_modules/browserify/node_modules/inherits/inherits_browser.js","process/browser.js":"/Users/zeke/code/hero/app.json/node_modules/browserify/node_modules/stream-browserify/node_modules/process/browser.js"}],"/Users/zeke/code/hero/app.json/node_modules/browserify/node_modules/stream-browserify/index.js":[function(require,module,exports){
+},{"./readable.js":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/stream-browserify/readable.js","./writable.js":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/stream-browserify/writable.js","inherits":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/inherits/inherits_browser.js","process/browser.js":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/stream-browserify/node_modules/process/browser.js"}],"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/stream-browserify/index.js":[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -4452,7 +4452,7 @@ Stream.prototype.pipe = function(dest, options) {
   return dest;
 };
 
-},{"./duplex.js":"/Users/zeke/code/hero/app.json/node_modules/browserify/node_modules/stream-browserify/duplex.js","./passthrough.js":"/Users/zeke/code/hero/app.json/node_modules/browserify/node_modules/stream-browserify/passthrough.js","./readable.js":"/Users/zeke/code/hero/app.json/node_modules/browserify/node_modules/stream-browserify/readable.js","./transform.js":"/Users/zeke/code/hero/app.json/node_modules/browserify/node_modules/stream-browserify/transform.js","./writable.js":"/Users/zeke/code/hero/app.json/node_modules/browserify/node_modules/stream-browserify/writable.js","events":"/Users/zeke/code/hero/app.json/node_modules/browserify/node_modules/events/events.js","inherits":"/Users/zeke/code/hero/app.json/node_modules/browserify/node_modules/inherits/inherits_browser.js"}],"/Users/zeke/code/hero/app.json/node_modules/browserify/node_modules/stream-browserify/node_modules/process/browser.js":[function(require,module,exports){
+},{"./duplex.js":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/stream-browserify/duplex.js","./passthrough.js":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/stream-browserify/passthrough.js","./readable.js":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/stream-browserify/readable.js","./transform.js":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/stream-browserify/transform.js","./writable.js":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/stream-browserify/writable.js","events":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/events/events.js","inherits":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/inherits/inherits_browser.js"}],"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/stream-browserify/node_modules/process/browser.js":[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -4507,7 +4507,7 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],"/Users/zeke/code/hero/app.json/node_modules/browserify/node_modules/stream-browserify/passthrough.js":[function(require,module,exports){
+},{}],"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/stream-browserify/passthrough.js":[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -4550,7 +4550,7 @@ PassThrough.prototype._transform = function(chunk, encoding, cb) {
   cb(null, chunk);
 };
 
-},{"./transform.js":"/Users/zeke/code/hero/app.json/node_modules/browserify/node_modules/stream-browserify/transform.js","inherits":"/Users/zeke/code/hero/app.json/node_modules/browserify/node_modules/inherits/inherits_browser.js"}],"/Users/zeke/code/hero/app.json/node_modules/browserify/node_modules/stream-browserify/readable.js":[function(require,module,exports){
+},{"./transform.js":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/stream-browserify/transform.js","inherits":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/inherits/inherits_browser.js"}],"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/stream-browserify/readable.js":[function(require,module,exports){
 (function (process){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -5487,7 +5487,7 @@ function indexOf (xs, x) {
 }
 
 }).call(this,require("FWaASH"))
-},{"./index.js":"/Users/zeke/code/hero/app.json/node_modules/browserify/node_modules/stream-browserify/index.js","FWaASH":"/Users/zeke/code/hero/app.json/node_modules/browserify/node_modules/process/browser.js","buffer":"/Users/zeke/code/hero/app.json/node_modules/browserify/node_modules/buffer/index.js","events":"/Users/zeke/code/hero/app.json/node_modules/browserify/node_modules/events/events.js","inherits":"/Users/zeke/code/hero/app.json/node_modules/browserify/node_modules/inherits/inherits_browser.js","process/browser.js":"/Users/zeke/code/hero/app.json/node_modules/browserify/node_modules/stream-browserify/node_modules/process/browser.js","string_decoder":"/Users/zeke/code/hero/app.json/node_modules/browserify/node_modules/string_decoder/index.js"}],"/Users/zeke/code/hero/app.json/node_modules/browserify/node_modules/stream-browserify/transform.js":[function(require,module,exports){
+},{"./index.js":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/stream-browserify/index.js","FWaASH":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/process/browser.js","buffer":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/buffer/index.js","events":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/events/events.js","inherits":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/inherits/inherits_browser.js","process/browser.js":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/stream-browserify/node_modules/process/browser.js","string_decoder":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/string_decoder/index.js"}],"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/stream-browserify/transform.js":[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -5693,7 +5693,7 @@ function done(stream, er) {
   return stream.push(null);
 }
 
-},{"./duplex.js":"/Users/zeke/code/hero/app.json/node_modules/browserify/node_modules/stream-browserify/duplex.js","inherits":"/Users/zeke/code/hero/app.json/node_modules/browserify/node_modules/inherits/inherits_browser.js"}],"/Users/zeke/code/hero/app.json/node_modules/browserify/node_modules/stream-browserify/writable.js":[function(require,module,exports){
+},{"./duplex.js":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/stream-browserify/duplex.js","inherits":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/inherits/inherits_browser.js"}],"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/stream-browserify/writable.js":[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -6081,7 +6081,7 @@ function endWritable(stream, state, cb) {
   state.ended = true;
 }
 
-},{"./index.js":"/Users/zeke/code/hero/app.json/node_modules/browserify/node_modules/stream-browserify/index.js","buffer":"/Users/zeke/code/hero/app.json/node_modules/browserify/node_modules/buffer/index.js","inherits":"/Users/zeke/code/hero/app.json/node_modules/browserify/node_modules/inherits/inherits_browser.js","process/browser.js":"/Users/zeke/code/hero/app.json/node_modules/browserify/node_modules/stream-browserify/node_modules/process/browser.js"}],"/Users/zeke/code/hero/app.json/node_modules/browserify/node_modules/string_decoder/index.js":[function(require,module,exports){
+},{"./index.js":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/stream-browserify/index.js","buffer":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/buffer/index.js","inherits":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/inherits/inherits_browser.js","process/browser.js":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/stream-browserify/node_modules/process/browser.js"}],"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/string_decoder/index.js":[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -6274,7 +6274,7 @@ function base64DetectIncompleteChar(buffer) {
   return incomplete;
 }
 
-},{"buffer":"/Users/zeke/code/hero/app.json/node_modules/browserify/node_modules/buffer/index.js"}],"/Users/zeke/code/hero/app.json/node_modules/browserify/node_modules/url/url.js":[function(require,module,exports){
+},{"buffer":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/buffer/index.js"}],"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/url/url.js":[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -6983,14 +6983,14 @@ function isNullOrUndefined(arg) {
   return  arg == null;
 }
 
-},{"punycode":"/Users/zeke/code/hero/app.json/node_modules/browserify/node_modules/punycode/punycode.js","querystring":"/Users/zeke/code/hero/app.json/node_modules/browserify/node_modules/querystring-es3/index.js"}],"/Users/zeke/code/hero/app.json/node_modules/browserify/node_modules/util/support/isBufferBrowser.js":[function(require,module,exports){
+},{"punycode":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/punycode/punycode.js","querystring":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/querystring-es3/index.js"}],"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/util/support/isBufferBrowser.js":[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],"/Users/zeke/code/hero/app.json/node_modules/browserify/node_modules/util/util.js":[function(require,module,exports){
+},{}],"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/util/util.js":[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -7580,7 +7580,7 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require("FWaASH"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":"/Users/zeke/code/hero/app.json/node_modules/browserify/node_modules/util/support/isBufferBrowser.js","FWaASH":"/Users/zeke/code/hero/app.json/node_modules/browserify/node_modules/process/browser.js","inherits":"/Users/zeke/code/hero/app.json/node_modules/browserify/node_modules/inherits/inherits_browser.js"}],"/Users/zeke/code/hero/app.json/node_modules/flatten/index.js":[function(require,module,exports){
+},{"./support/isBuffer":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/util/support/isBufferBrowser.js","FWaASH":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/process/browser.js","inherits":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/inherits/inherits_browser.js"}],"/Users/zeke/code/app-json/app.json/node_modules/flatten/index.js":[function(require,module,exports){
 module.exports = function flatten(list, depth) {
   depth = (typeof depth == 'number') ? depth : Infinity;
 
@@ -7598,31 +7598,59 @@ module.exports = function flatten(list, depth) {
   }
 };
 
-},{}],"/Users/zeke/code/hero/app.json/node_modules/github-url-to-object/index.js":[function(require,module,exports){
-var url = require('url')
-var isUrl = require('is-url')
+},{}],"/Users/zeke/code/app-json/app.json/node_modules/github-url-to-object/index.js":[function(require,module,exports){
+"use strict"
+
+var url = require("url")
+var util = require("util")
+var isUrl = require("is-url")
 
 module.exports = function(repo_url) {
+  var obj = {}
 
   if (!repo_url) return null
 
-  // bail if given a non-github URL
-  if (isUrl(repo_url) && url.parse(repo_url).hostname != "github.com") return null
+  var shorthand = repo_url.match(/^([\w-_]+)\/([\w-_\.]+)#?([\w-_\.]+)?$/)
+  var mediumhand = repo_url.match(/^github:([\w-_]+)\/([\w-_\.]+)#?([\w-_\.]+)?$/)
+  var antiquated = repo_url.match(/^git@[\w-_\.]+:([\w-_]+)\/([\w-_\.]+)$/)
 
-  var re = /^(?:https?:\/\/|git:\/\/)?(?:[^@]+@)?(gist.github.com|github.com)[:\/]([^\/]+\/[^\/]+?|[0-9]+)$/
-  var match = re.exec(repo_url.replace(/\.git$/, ''));
+  if (shorthand) {
+    obj.user = shorthand[1]
+    obj.repo = shorthand[2]
+    obj.branch = shorthand[3] || "master"
+  } else if (mediumhand) {
+    obj.user = mediumhand[1]
+    obj.repo = mediumhand[2]
+    obj.branch = mediumhand[3] || "master"
+  } else if (antiquated) {
+    obj.user = antiquated[1]
+    obj.repo = antiquated[2].replace(/\.git$/i, "")
+    obj.branch = "master"
+  } else {
+    if (!isUrl(repo_url)) return null
+    var parsedURL = url.parse(repo_url)
+    if (parsedURL.hostname != "github.com") return null
+    var parts = parsedURL.pathname.match(/^\/([\w-_]+)\/([\w-_\.]+)/)
+    if (!parts) return null
+    obj.user = parts[1]
+    obj.repo = parts[2].replace(/\.git$/i, "")
+    obj.branch = "master"
+  }
 
-  // support shorthand URLs
-  var parts = match ? match[2].split('/') : repo_url.split('/')
+  obj.tarball_url = util.format("https://api.github.com/repos/%s/%s/tarball/%s", obj.user, obj.repo, obj.branch)
 
-  var obj = {user: parts[0], repo: parts[1]}
+  if (obj.branch === "master") {
+    obj.https_url = util.format("https://github.com/%s/%s", obj.user, obj.repo)
+    obj.travis_url = util.format("https://travis-ci.org/%s/%s", obj.user, obj.repo)
+  } else {
+    obj.https_url = util.format("https://github.com/%s/%s/tree/%s", obj.user, obj.repo, obj.branch)
+    obj.travis_url = util.format("https://travis-ci.org/%s/%s?branch=%s", obj.user, obj.repo, obj.branch)
+  }
 
-  obj.tarball_url = "https://api.github.com/repos/" + obj.user + "/" + obj.repo + "/tarball"
-  obj.https_url = "https://github.com/" + obj.user + "/" + obj.repo
   return obj
 }
 
-},{"is-url":"/Users/zeke/code/hero/app.json/node_modules/is-url/index.js","url":"/Users/zeke/code/hero/app.json/node_modules/browserify/node_modules/url/url.js"}],"/Users/zeke/code/hero/app.json/node_modules/hogan.js/lib/compiler.js":[function(require,module,exports){
+},{"is-url":"/Users/zeke/code/app-json/app.json/node_modules/is-url/index.js","url":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/url/url.js","util":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/util/util.js"}],"/Users/zeke/code/app-json/app.json/node_modules/hogan.js/lib/compiler.js":[function(require,module,exports){
 /*
  *  Copyright 2011 Twitter, Inc.
  *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -7968,7 +7996,7 @@ module.exports = function(repo_url) {
   };
 })(typeof exports !== 'undefined' ? exports : Hogan);
 
-},{}],"/Users/zeke/code/hero/app.json/node_modules/hogan.js/lib/hogan.js":[function(require,module,exports){
+},{}],"/Users/zeke/code/app-json/app.json/node_modules/hogan.js/lib/hogan.js":[function(require,module,exports){
 /*
  *  Copyright 2011 Twitter, Inc.
  *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -7989,7 +8017,7 @@ module.exports = function(repo_url) {
 var Hogan = require('./compiler');
 Hogan.Template = require('./template').Template;
 module.exports = Hogan; 
-},{"./compiler":"/Users/zeke/code/hero/app.json/node_modules/hogan.js/lib/compiler.js","./template":"/Users/zeke/code/hero/app.json/node_modules/hogan.js/lib/template.js"}],"/Users/zeke/code/hero/app.json/node_modules/hogan.js/lib/template.js":[function(require,module,exports){
+},{"./compiler":"/Users/zeke/code/app-json/app.json/node_modules/hogan.js/lib/compiler.js","./template":"/Users/zeke/code/app-json/app.json/node_modules/hogan.js/lib/template.js"}],"/Users/zeke/code/app-json/app.json/node_modules/hogan.js/lib/template.js":[function(require,module,exports){
 /*
  *  Copyright 2011 Twitter, Inc.
  *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -8232,7 +8260,7 @@ var Hogan = {};
 })(typeof exports !== 'undefined' ? exports : Hogan);
 
 
-},{}],"/Users/zeke/code/hero/app.json/node_modules/is-url/index.js":[function(require,module,exports){
+},{}],"/Users/zeke/code/app-json/app.json/node_modules/is-url/index.js":[function(require,module,exports){
 
 /**
  * Expose `isUrl`.
@@ -8257,7 +8285,7 @@ function isUrl(string){
   return matcher.test(string);
 }
 
-},{}],"/Users/zeke/code/hero/app.json/node_modules/revalidator/lib/revalidator.js":[function(require,module,exports){
+},{}],"/Users/zeke/code/app-json/app.json/node_modules/revalidator/lib/revalidator.js":[function(require,module,exports){
 (function (exports) {
   exports.validate = validate;
   exports.mixin = mixin;
@@ -8686,7 +8714,7 @@ function isUrl(string){
 
 })(typeof module === 'object' && module && module.exports ? module.exports : window);
 
-},{}],"/Users/zeke/code/hero/app.json/node_modules/superagent/lib/client.js":[function(require,module,exports){
+},{}],"/Users/zeke/code/app-json/app.json/node_modules/superagent/lib/client.js":[function(require,module,exports){
 /**
  * Module dependencies.
  */
@@ -9692,7 +9720,7 @@ request.put = function(url, data, fn){
 
 module.exports = request;
 
-},{"emitter":"/Users/zeke/code/hero/app.json/node_modules/superagent/node_modules/emitter-component/index.js","reduce":"/Users/zeke/code/hero/app.json/node_modules/superagent/node_modules/reduce-component/index.js"}],"/Users/zeke/code/hero/app.json/node_modules/superagent/node_modules/emitter-component/index.js":[function(require,module,exports){
+},{"emitter":"/Users/zeke/code/app-json/app.json/node_modules/superagent/node_modules/emitter-component/index.js","reduce":"/Users/zeke/code/app-json/app.json/node_modules/superagent/node_modules/reduce-component/index.js"}],"/Users/zeke/code/app-json/app.json/node_modules/superagent/node_modules/emitter-component/index.js":[function(require,module,exports){
 
 /**
  * Expose `Emitter`.
@@ -9850,7 +9878,7 @@ Emitter.prototype.hasListeners = function(event){
   return !! this.listeners(event).length;
 };
 
-},{}],"/Users/zeke/code/hero/app.json/node_modules/superagent/node_modules/reduce-component/index.js":[function(require,module,exports){
+},{}],"/Users/zeke/code/app-json/app.json/node_modules/superagent/node_modules/reduce-component/index.js":[function(require,module,exports){
 
 /**
  * Reduce `arr` with `fn`.
@@ -9875,10 +9903,10 @@ module.exports = function(arr, fn, initial){
   
   return curr;
 };
-},{}],"/Users/zeke/code/hero/app.json/templates/app.mustache.html":[function(require,module,exports){
+},{}],"/Users/zeke/code/app-json/app.json/templates/app.mustache.html":[function(require,module,exports){
 var t = new (require('hogan.js/lib/template')).Template(function(c,p,i){var _=this;_.b(i=i||"");_.b("<li class=\"app\">");_.b("\n" + i);_.b("\n" + i);_.b("  <a class=\"logo activator\">");_.b("\n" + i);_.b("    <img src=\"");_.b(_.v(_.f("logo",c,p,0)));_.b("\">");_.b("\n" + i);_.b("  </a>");_.b("\n" + i);_.b("\n" + i);_.b("  <div class=\"meta\">");_.b("\n" + i);_.b("\n" + i);_.b("    <h2><a class=\"activator\">");_.b(_.v(_.f("name",c,p,0)));_.b("</a></h2>");_.b("\n" + i);_.b("\n" + i);_.b("    <div class=\"drawer\">");_.b("\n" + i);_.b("\n" + i);if(_.s(_.f("description",c,p,1),c,p,0,198,236,"{{ }}")){_.rs(c,p,function(c,p,_){_.b("        <p>");_.b(_.v(_.f("description",c,p,0)));_.b("</p>");_.b("\n");});c.pop();}_.b("\n" + i);if(_.s(_.f("repository",c,p,1),c,p,0,275,353,"{{ }}")){_.rs(c,p,function(c,p,_){_.b("        <a href=\"");_.b(_.v(_.f("repository",c,p,0)));_.b("\" class=\"repository\">");_.b(_.v(_.f("repository",c,p,0)));_.b("</a>");_.b("\n");});c.pop();}_.b("\n" + i);if(_.s(_.f("website",c,p,1),c,p,0,388,457,"{{ }}")){_.rs(c,p,function(c,p,_){_.b("        <a href=\"");_.b(_.v(_.f("website",c,p,0)));_.b("\" class=\"website\">");_.b(_.v(_.f("website",c,p,0)));_.b("</a>");_.b("\n");});c.pop();}_.b("\n" + i);_.b("      <ul class=\"addons\">");_.b("\n" + i);if(_.s(_.d("prices.plans",c,p,1),c,p,0,522,792,"{{ }}")){_.rs(c,p,function(c,p,_){_.b("          <li>");_.b("\n" + i);_.b("            <a href=\"https://addons.heroku.com/");_.b(_.v(_.f("name",c,p,0)));_.b("\">");_.b("\n" + i);_.b("              <img src=\"");_.b(_.v(_.f("logo",c,p,0)));_.b("\">");_.b("\n" + i);_.b("              <span class=\"description\">");_.b(_.v(_.f("description",c,p,0)));_.b("</span>");_.b("\n" + i);_.b("              <span class=\"price\">");_.b(_.v(_.f("prettyPrice",c,p,0)));_.b("</span>");_.b("\n" + i);_.b("            </a>");_.b("\n" + i);_.b("          </li>");_.b("\n");});c.pop();}_.b("      </ul>");_.b("\n" + i);_.b("\n" + i);_.b("      <form class=\"deploy\">");_.b("\n" + i);_.b("        <input type=\"hidden\" name=\"source\" value=\"");_.b(_.v(_.f("repository",c,p,0)));_.b("\">");_.b("\n" + i);_.b("        <input type=\"submit\" value=\"Deploy for ");_.b(_.v(_.d("prices.totalPrice",c,p,0)));_.b("\">");_.b("\n" + i);_.b("      </form>");_.b("\n" + i);_.b("\n" + i);_.b("      <div class=\"output\"></div>");_.b("\n" + i);_.b("\n" + i);_.b("    </div>");_.b("\n" + i);_.b("\n" + i);_.b("  </div>");_.b("\n" + i);_.b("\n" + i);_.b("</li>");_.b("\n");return _.fl();;});module.exports = {  render: function () { return t.render.apply(t, arguments); },  r: function () { return t.r.apply(t, arguments); },  ri: function () { return t.ri.apply(t, arguments); }};
-},{"hogan.js/lib/template":"/Users/zeke/code/hero/app.json/node_modules/hogan.js/lib/template.js"}],"/Users/zeke/code/hero/app.json/templates/build.mustache.html":[function(require,module,exports){
+},{"hogan.js/lib/template":"/Users/zeke/code/app-json/app.json/node_modules/hogan.js/lib/template.js"}],"/Users/zeke/code/app-json/app.json/templates/build.mustache.html":[function(require,module,exports){
 var t = new (require('hogan.js/lib/template')).Template(function(c,p,i){var _=this;_.b(i=i||"");if(_.s(_.f("app",c,p,1),c,p,0,8,160,"{{ }}")){_.rs(c,p,function(c,p,_){_.b("  <p>");_.b("\n" + i);_.b("    Your app is deploying to");_.b("\n" + i);_.b("    <a href=\"https://");_.b(_.v(_.d("app.name",c,p,0)));_.b(".herokuapp.com\">");_.b(_.v(_.d("app.name",c,p,0)));_.b(".herokuapp.com</a>,");_.b("\n" + i);_.b("    and will be ready soon.");_.b("\n" + i);_.b("  </p>");_.b("\n");});c.pop();}_.b("\n" + i);if(!_.s(_.f("app",c,p,1),c,p,1,0,0,"")){_.b("  <p class=\"error\">");_.b("\n" + i);_.b("    Build failed. ");_.b(_.v(_.f("message",c,p,0)));_.b("\n" + i);_.b("  </p>");_.b("\n");};return _.fl();;});module.exports = {  render: function () { return t.render.apply(t, arguments); },  r: function () { return t.r.apply(t, arguments); },  ri: function () { return t.ri.apply(t, arguments); }};
-},{"hogan.js/lib/template":"/Users/zeke/code/hero/app.json/node_modules/hogan.js/lib/template.js"}],"/Users/zeke/code/hero/app.json/templates/schema.mustache.html":[function(require,module,exports){
+},{"hogan.js/lib/template":"/Users/zeke/code/app-json/app.json/node_modules/hogan.js/lib/template.js"}],"/Users/zeke/code/app-json/app.json/templates/schema.mustache.html":[function(require,module,exports){
 var t = new (require('hogan.js/lib/template')).Template(function(c,p,i){var _=this;_.b(i=i||"");_.b("`app.json` is a manifest format for describing web apps. It declares environment");_.b("\n" + i);_.b("variables, addons, and other information required to run an app on Heroku. This");_.b("\n" + i);_.b("document describes the schema in detail.");_.b("\n" + i);_.b("\n" + i);_.b("## Example app.json");_.b("\n" + i);_.b("\n" + i);_.b("```json");_.b("\n" + i);_.b(_.t(_.f("exampleJSON",c,p,0)));_.b("\n" + i);_.b("```");_.b("\n" + i);_.b("\n" + i);_.b("## Schema Reference");_.b("\n" + i);_.b("\n" + i);if(_.s(_.f("propertiesArray",c,p,1),c,p,0,296,397,"{{ }}")){_.rs(c,p,function(c,p,_){_.b("\n" + i);_.b("### ");_.b(_.v(_.f("name",c,p,0)));_.b("\n" + i);_.b("\n" + i);_.b("*(");_.b(_.v(_.f("type",c,p,0)));_.b(", ");_.b(_.v(_.f("requiredOrOptional",c,p,0)));_.b(")* ");_.b(_.v(_.f("description",c,p,0)));_.b("\n" + i);_.b("\n" + i);_.b("```json");_.b("\n" + i);_.b(_.t(_.f("exampleJSON",c,p,0)));_.b("\n" + i);_.b("```");_.b("\n" + i);_.b("\n");});c.pop();}return _.fl();;});module.exports = {  render: function () { return t.render.apply(t, arguments); },  r: function () { return t.r.apply(t, arguments); },  ri: function () { return t.ri.apply(t, arguments); }};
-},{"hogan.js/lib/template":"/Users/zeke/code/hero/app.json/node_modules/hogan.js/lib/template.js"}]},{},["/Users/zeke/code/hero/app.json/fake_a7fe422.js"])
+},{"hogan.js/lib/template":"/Users/zeke/code/app-json/app.json/node_modules/hogan.js/lib/template.js"}]},{},["/Users/zeke/code/app-json/app.json/fake_b3d68458.js"])
