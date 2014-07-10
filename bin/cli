@@ -190,9 +190,9 @@ program
 
     heroku.on("succeeded", function(build) {
       if (build.postdeploy && build.postdeploy.output) {
-        console.log("Postdeploy output: %s", build.postdeploy.output)
+        console.log("\nPostdeploy output: %s", build.postdeploy.output)
       }
-      console.log("Your new app is running at %s", build.resolved_success_url)
+      console.log("\nYour new app is running at %s", build.resolved_success_url)
       console.log("\nA new Heroku git remote was created, which you can clone if you'd like:")
       console.log("git clone git@heroku.com:%s.git", build.app.name)
 
