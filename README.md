@@ -146,14 +146,14 @@ var app = App.new({
 
 ### App.fetch(url, callback)
 
-You can fetch app manifests straight from GitHub. The
-[github-raw-cors-proxy](https://github.com/zeke/github-raw-cors-proxy) service is used
+You can fetch app manifests straight from GitHub or Bitbucket. The
+[app-json-fetcher](https://github.com/app-json/app-json-fetcher) service is used
 to make the `app.json` file downloadable from browsers.
 
-`url` can be a fully qualified GitHub URL, or a shorthand `user/repo` string:
+`url` can be a fully qualified repository URL or a shorthand string in the form `github:user/repo` or `bitbucket:user/repo`
 
 ```js
-App.fetch('zeke/slideshow', function(err, manifest) {
+App.fetch("github:zeke/slideshow", function(err, manifest) {
   console.log(err, manifest)
 })
 ```
