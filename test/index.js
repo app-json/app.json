@@ -240,6 +240,15 @@ describe("App", function() {
         done()
       })
     })
+
+    it("downloads remote manifests with bitbucket shorthand", function(done) {
+      App.fetch('bitbucket:sikelianos/web-starter-kit', function(err, remoteApp) {
+        assert(remoteApp.valid)
+        assert.equal(remoteApp.name, "Google Web Starter Kit")
+        done()
+      })
+    })
+
   })
 
   describe("App.schema", function() {

@@ -3,7 +3,8 @@ var fs = require("fs")
 var url = require("url")
 var http = require("http")
 var hogan = require("hogan.js")
-var gh = require("github-url-to-object")
+var github = require("github-url-to-object")
+var bitbucket = require("bitbucket-url-to-object")
 var superagent = require("superagent")
 var revalidator = require("revalidator")
 var flatten = require("flatten")
@@ -78,10 +79,24 @@ var App = module.exports = (function() {
     return new App(raw)
   }
 
-  App.fetch = function(url, cb) {
-    if (!gh(url)) return cb("Not a valid GitHub URL: " + url)
-    var proxy_url = "https://github-raw-cors-proxy.herokuapp.com/" + gh(url).user + "/" + gh(url).repo + "/blob/master/app.json"
-    superagent.get(proxy_url, function(res){
+  App.fetch = function(repository, cb) {
+    if (github(repository)) {
+      repository = github(repository)
+    } else if (bitbucket(repository)) {
+      repository = bitbucket(repository)
+    } else {
+      return cb("A valid GitHub or Bitbucket URL is required: " + repository)
+    }
+
+    var fetcher_url = url.format({
+      protocol: "https",
+      hostname: "app-json-fetcher.herokuapp.com",
+      query: {
+        repository: repository.https_url
+      }
+    })
+
+    superagent.get(fetcher_url, function(res){
       cb(null, App.new(res.body))
     })
   }

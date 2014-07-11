@@ -1,4 +1,4 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"/Users/zeke/code/app-json/app.json/fake_b3d68458.js":[function(require,module,exports){
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"/Users/zeke/code/app-json/app.json/fake_99b38a4b.js":[function(require,module,exports){
 window.App = require('./')
 
 },{"./":"/Users/zeke/code/app-json/app.json/index.js"}],"/Users/zeke/code/app-json/app.json/index.js":[function(require,module,exports){
@@ -7,7 +7,8 @@ window.App = require('./')
 var url = require("url")
 var http = require("http")
 var hogan = require("hogan.js")
-var gh = require("github-url-to-object")
+var github = require("github-url-to-object")
+var bitbucket = require("bitbucket-url-to-object")
 var superagent = require("superagent")
 var revalidator = require("revalidator")
 var flatten = require("flatten")
@@ -82,10 +83,24 @@ var App = module.exports = (function() {
     return new App(raw)
   }
 
-  App.fetch = function(url, cb) {
-    if (!gh(url)) return cb("Not a valid GitHub URL: " + url)
-    var proxy_url = "https://github-raw-cors-proxy.herokuapp.com/" + gh(url).user + "/" + gh(url).repo + "/blob/master/app.json"
-    superagent.get(proxy_url, function(res){
+  App.fetch = function(repository, cb) {
+    if (github(repository)) {
+      repository = github(repository)
+    } else if (bitbucket(repository)) {
+      repository = bitbucket(repository)
+    } else {
+      return cb("A valid GitHub or Bitbucket URL is required: " + repository)
+    }
+
+    var fetcher_url = url.format({
+      protocol: "https",
+      hostname: "app-json-fetcher.herokuapp.com",
+      query: {
+        repository: repository.https_url
+      }
+    })
+
+    superagent.get(fetcher_url, function(res){
       cb(null, App.new(res.body))
     })
   }
@@ -111,7 +126,7 @@ var App = module.exports = (function() {
 })()
 
 }).call(this,require("buffer").Buffer)
-},{"./lib/addons":"/Users/zeke/code/app-json/app.json/lib/addons.js","./lib/schema":"/Users/zeke/code/app-json/app.json/lib/schema.js","./templates/app.mustache.html":"/Users/zeke/code/app-json/app.json/templates/app.mustache.html","./templates/build.mustache.html":"/Users/zeke/code/app-json/app.json/templates/build.mustache.html","./templates/schema.mustache.html":"/Users/zeke/code/app-json/app.json/templates/schema.mustache.html","buffer":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/buffer/index.js","flatten":"/Users/zeke/code/app-json/app.json/node_modules/flatten/index.js","github-url-to-object":"/Users/zeke/code/app-json/app.json/node_modules/github-url-to-object/index.js","hogan.js":"/Users/zeke/code/app-json/app.json/node_modules/hogan.js/lib/hogan.js","http":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/http-browserify/index.js","is-url":"/Users/zeke/code/app-json/app.json/node_modules/is-url/index.js","revalidator":"/Users/zeke/code/app-json/app.json/node_modules/revalidator/lib/revalidator.js","superagent":"/Users/zeke/code/app-json/app.json/node_modules/superagent/lib/client.js","url":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/url/url.js"}],"/Users/zeke/code/app-json/app.json/lib/addons.js":[function(require,module,exports){
+},{"./lib/addons":"/Users/zeke/code/app-json/app.json/lib/addons.js","./lib/schema":"/Users/zeke/code/app-json/app.json/lib/schema.js","./templates/app.mustache.html":"/Users/zeke/code/app-json/app.json/templates/app.mustache.html","./templates/build.mustache.html":"/Users/zeke/code/app-json/app.json/templates/build.mustache.html","./templates/schema.mustache.html":"/Users/zeke/code/app-json/app.json/templates/schema.mustache.html","bitbucket-url-to-object":"/Users/zeke/code/app-json/app.json/node_modules/bitbucket-url-to-object/index.js","buffer":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/buffer/index.js","flatten":"/Users/zeke/code/app-json/app.json/node_modules/flatten/index.js","github-url-to-object":"/Users/zeke/code/app-json/app.json/node_modules/github-url-to-object/index.js","hogan.js":"/Users/zeke/code/app-json/app.json/node_modules/hogan.js/lib/hogan.js","http":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/http-browserify/index.js","is-url":"/Users/zeke/code/app-json/app.json/node_modules/is-url/index.js","revalidator":"/Users/zeke/code/app-json/app.json/node_modules/revalidator/lib/revalidator.js","superagent":"/Users/zeke/code/app-json/app.json/node_modules/superagent/lib/client.js","url":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/url/url.js"}],"/Users/zeke/code/app-json/app.json/lib/addons.js":[function(require,module,exports){
 "use strict"
 var async = require('async')
 var superagent = require('superagent')
@@ -1330,7 +1345,59 @@ module.exports = schema
 }());
 
 }).call(this,require("FWaASH"))
-},{"FWaASH":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/process/browser.js"}],"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/buffer/index.js":[function(require,module,exports){
+},{"FWaASH":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/process/browser.js"}],"/Users/zeke/code/app-json/app.json/node_modules/bitbucket-url-to-object/index.js":[function(require,module,exports){
+"use strict"
+
+var url = require("url")
+var util = require("util")
+var isUrl = require("is-url")
+
+module.exports = function(repo_url) {
+  var obj = {}
+
+  if (!repo_url) return null
+
+  var shorthand = repo_url.match(/^([\w-_]+)\/([\w-_\.]+)#?([\w-_\.]+)?$/)
+  var mediumhand = repo_url.match(/^bitbucket:([\w-_]+)\/([\w-_\.]+)#?([\w-_\.]+)?$/)
+  var antiquated = repo_url.match(/^git@[\w-_\.]+:([\w-_]+)\/([\w-_\.]+)$/)
+
+  if (shorthand) {
+    obj.user = shorthand[1]
+    obj.repo = shorthand[2]
+    obj.branch = shorthand[3] || "master"
+  } else if (mediumhand) {
+    obj.user = mediumhand[1]
+    obj.repo = mediumhand[2]
+    obj.branch = mediumhand[3] || "master"
+  } else if (antiquated) {
+    obj.user = antiquated[1]
+    obj.repo = antiquated[2].replace(/\.git$/i, "")
+    obj.branch = "master"
+  } else {
+    if (!isUrl(repo_url)) return null
+    var parsedURL = url.parse(repo_url)
+    if (parsedURL.hostname != "bitbucket.org") return null
+    var parts = parsedURL.pathname.match(/^\/([\w-_]+)\/([\w-_\.]+)/)
+    if (!parts) return null
+    obj.user = parts[1]
+    obj.repo = parts[2].replace(/\.git$/i, "")
+    obj.branch = "master"
+  }
+
+  obj.tarball_url = util.format("https://bitbucket.org/%s/%s/get/%s.tar.gz", obj.user, obj.repo, obj.branch)
+
+  if (obj.branch === "master") {
+    obj.https_url = util.format("https://bitbucket.org/%s/%s", obj.user, obj.repo)
+    obj.travis_url = util.format("https://travis-ci.org/%s/%s", obj.user, obj.repo)
+  } else {
+    obj.https_url = util.format("https://bitbucket.org/%s/%s/branch/%s", obj.user, obj.repo, obj.branch)
+    obj.travis_url = util.format("https://travis-ci.org/%s/%s?branch=%s", obj.user, obj.repo, obj.branch)
+  }
+
+  return obj
+}
+
+},{"is-url":"/Users/zeke/code/app-json/app.json/node_modules/is-url/index.js","url":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/url/url.js","util":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/util/util.js"}],"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/buffer/index.js":[function(require,module,exports){
 /*!
  * The buffer module from node.js, for the browser.
  *
@@ -9909,4 +9976,4 @@ var t = new (require('hogan.js/lib/template')).Template(function(c,p,i){var _=th
 var t = new (require('hogan.js/lib/template')).Template(function(c,p,i){var _=this;_.b(i=i||"");if(_.s(_.f("app",c,p,1),c,p,0,8,160,"{{ }}")){_.rs(c,p,function(c,p,_){_.b("  <p>");_.b("\n" + i);_.b("    Your app is deploying to");_.b("\n" + i);_.b("    <a href=\"https://");_.b(_.v(_.d("app.name",c,p,0)));_.b(".herokuapp.com\">");_.b(_.v(_.d("app.name",c,p,0)));_.b(".herokuapp.com</a>,");_.b("\n" + i);_.b("    and will be ready soon.");_.b("\n" + i);_.b("  </p>");_.b("\n");});c.pop();}_.b("\n" + i);if(!_.s(_.f("app",c,p,1),c,p,1,0,0,"")){_.b("  <p class=\"error\">");_.b("\n" + i);_.b("    Build failed. ");_.b(_.v(_.f("message",c,p,0)));_.b("\n" + i);_.b("  </p>");_.b("\n");};return _.fl();;});module.exports = {  render: function () { return t.render.apply(t, arguments); },  r: function () { return t.r.apply(t, arguments); },  ri: function () { return t.ri.apply(t, arguments); }};
 },{"hogan.js/lib/template":"/Users/zeke/code/app-json/app.json/node_modules/hogan.js/lib/template.js"}],"/Users/zeke/code/app-json/app.json/templates/schema.mustache.html":[function(require,module,exports){
 var t = new (require('hogan.js/lib/template')).Template(function(c,p,i){var _=this;_.b(i=i||"");_.b("`app.json` is a manifest format for describing web apps. It declares environment");_.b("\n" + i);_.b("variables, addons, and other information required to run an app on Heroku. This");_.b("\n" + i);_.b("document describes the schema in detail.");_.b("\n" + i);_.b("\n" + i);_.b("## Example app.json");_.b("\n" + i);_.b("\n" + i);_.b("```json");_.b("\n" + i);_.b(_.t(_.f("exampleJSON",c,p,0)));_.b("\n" + i);_.b("```");_.b("\n" + i);_.b("\n" + i);_.b("## Schema Reference");_.b("\n" + i);_.b("\n" + i);if(_.s(_.f("propertiesArray",c,p,1),c,p,0,296,397,"{{ }}")){_.rs(c,p,function(c,p,_){_.b("\n" + i);_.b("### ");_.b(_.v(_.f("name",c,p,0)));_.b("\n" + i);_.b("\n" + i);_.b("*(");_.b(_.v(_.f("type",c,p,0)));_.b(", ");_.b(_.v(_.f("requiredOrOptional",c,p,0)));_.b(")* ");_.b(_.v(_.f("description",c,p,0)));_.b("\n" + i);_.b("\n" + i);_.b("```json");_.b("\n" + i);_.b(_.t(_.f("exampleJSON",c,p,0)));_.b("\n" + i);_.b("```");_.b("\n" + i);_.b("\n");});c.pop();}return _.fl();;});module.exports = {  render: function () { return t.render.apply(t, arguments); },  r: function () { return t.r.apply(t, arguments); },  ri: function () { return t.ri.apply(t, arguments); }};
-},{"hogan.js/lib/template":"/Users/zeke/code/app-json/app.json/node_modules/hogan.js/lib/template.js"}]},{},["/Users/zeke/code/app-json/app.json/fake_b3d68458.js"])
+},{"hogan.js/lib/template":"/Users/zeke/code/app-json/app.json/node_modules/hogan.js/lib/template.js"}]},{},["/Users/zeke/code/app-json/app.json/fake_99b38a4b.js"])
