@@ -107,8 +107,14 @@ var App = require("app.json")
 ### Usage in the Browser (without Browserify)
 
 If browserify isn't your thing, use the pre-compiled browser-ready bundle in
-[dist/app.js](/dist/app.js). Include this file in your html page and it will create
+[dist/app.json.js](/dist/app.json.js). Include this file in your html page and it will create
 `window.App` for you.
+
+You can also use Bower if that's your thing:
+
+```sh
+bower install app.json
+```
 
 ## Schema
 
