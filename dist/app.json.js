@@ -1,135 +1,68 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"/Users/zeke/code/app-json/app.json/fake_99b38a4b.js":[function(require,module,exports){
-window.App = require('./')
-
-},{"./":"/Users/zeke/code/app-json/app.json/index.js"}],"/Users/zeke/code/app-json/app.json/index.js":[function(require,module,exports){
-(function (Buffer){
+!function(e){if("object"==typeof exports)module.exports=e();else if("function"==typeof define&&define.amd)define(e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.App=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(_dereq_,module,exports){
+(function (__dirname){
 "use strict"
-var url = require("url")
-var http = require("http")
-var hogan = require("hogan.js")
-var github = require("github-url-to-object")
-var bitbucket = require("bitbucket-url-to-object")
-var superagent = require("superagent")
-var revalidator = require("revalidator")
-var flatten = require("flatten")
-var isURL = require("is-url")
-var addons = require("./lib/addons")
-var schema = require("./lib/schema")
+var fs = _dereq_("fs")
+var url = _dereq_("url")
+var http = _dereq_("http")
+var hogan = _dereq_("hogan.js")
+var github = _dereq_("github-url-to-object")
+var bitbucket = _dereq_("bitbucket-url-to-object")
+var superagent = _dereq_("superagent")
+var addons = _dereq_("./lib/addons")
+var schema = _dereq_("./lib/schema")
 
-var App = module.exports = (function() {
+var App = module.exports = _dereq_("./lib/app")
 
-  function App(raw) {
-    var key
+App.prototype.getAddonPrices = function(cb) {
+  var _this = this
+  App.addons.getPrices(this.addons, function(err, prices){
+    if (err) return cb(err)
+    _this.prices = prices
+    cb(null, prices)
+  })
+}
 
-    if (typeof(raw) === 'string') {
-
-      // Filename?
-      if (raw.match(/\.json$/i)) {
-        raw = fs.readFileSync(raw)
-      }
-
-      try {
-        raw = JSON.parse(raw)
-      } catch(err) {
-        throw new Error("Malformed JSON")
-      }
-    }
-
-    for (key in raw) {
-      if (raw.hasOwnProperty(key)) {
-        this[key] = raw[key]
-      }
-    }
-
-    this.__defineGetter__("valid", function(){
-      return revalidator.validate(this, schema).valid
-    })
-
-    this.__defineGetter__("errors", function(){
-      return revalidator.validate(this, schema).errors
-    })
-
-    this.__defineGetter__("errorString", function(){
-      return this.errors.map(function(error) {
-        return ["-", error.property, error.message].join(" ")
-      }).join("\n")
-    })
-
-    this.__defineGetter__("toJSON", function(){
-      var key
-      var out = {}
-      var validProps = Object.keys(schema.properties)
-      for (key in this) {
-        if (this.hasOwnProperty(key) && validProps.indexOf(key) > -1) {
-          out[key] = this[key]
-        }
-      }
-      return JSON.stringify(out, null, 2)
-    })
-
-    return this
-  }
-
-  App.prototype.getAddonPrices = function(cb) {
-    var _this = this
-    App.addons.getPrices(this.addons, function(err, prices){
-      if (err) return cb(err)
-      _this.prices = prices
-      cb(null, prices)
-    })
-  }
-
-  App.new = function(raw) {
-    return new App(raw)
-  }
-
-  App.fetch = function(repository, cb) {
-    if (github(repository)) {
-      repository = github(repository)
-    } else if (bitbucket(repository)) {
-      repository = bitbucket(repository)
-    } else {
-      return cb("A valid GitHub or Bitbucket URL is required: " + repository)
-    }
-
-    var fetcher_url = url.format({
-      protocol: "https",
-      hostname: "app-json-fetcher.herokuapp.com",
-      query: {
-        repository: repository.https_url
-      }
-    })
-
-    superagent.get(fetcher_url, function(res){
-      cb(null, App.new(res.body))
-    })
-  }
-
-  // Hogan Templates FTW
-  App.templates = {}
-  if (module.parent) {
-    App.templates.app = hogan.compile(Buffer("PGxpIGNsYXNzPSJhcHAiPgoKICA8YSBjbGFzcz0ibG9nbyBhY3RpdmF0b3IiPgogICAgPGltZyBzcmM9Int7bG9nb319Ij4KICA8L2E+CgogIDxkaXYgY2xhc3M9Im1ldGEiPgoKICAgIDxoMj48YSBjbGFzcz0iYWN0aXZhdG9yIj57e25hbWV9fTwvYT48L2gyPgoKICAgIDxkaXYgY2xhc3M9ImRyYXdlciI+CgogICAgICB7eyNkZXNjcmlwdGlvbn19CiAgICAgICAgPHA+e3tkZXNjcmlwdGlvbn19PC9wPgogICAgICB7ey9kZXNjcmlwdGlvbn19CgogICAgICB7eyNyZXBvc2l0b3J5fX0KICAgICAgICA8YSBocmVmPSJ7e3JlcG9zaXRvcnl9fSIgY2xhc3M9InJlcG9zaXRvcnkiPnt7cmVwb3NpdG9yeX19PC9hPgogICAgICB7ey9yZXBvc2l0b3J5fX0KCiAgICAgIHt7I3dlYnNpdGV9fQogICAgICAgIDxhIGhyZWY9Int7d2Vic2l0ZX19IiBjbGFzcz0id2Vic2l0ZSI+e3t3ZWJzaXRlfX08L2E+CiAgICAgIHt7L3dlYnNpdGV9fQoKICAgICAgPHVsIGNsYXNzPSJhZGRvbnMiPgogICAgICAgIHt7I3ByaWNlcy5wbGFuc319CiAgICAgICAgICA8bGk+CiAgICAgICAgICAgIDxhIGhyZWY9Imh0dHBzOi8vYWRkb25zLmhlcm9rdS5jb20ve3tuYW1lfX0iPgogICAgICAgICAgICAgIDxpbWcgc3JjPSJ7e2xvZ299fSI+CiAgICAgICAgICAgICAgPHNwYW4gY2xhc3M9ImRlc2NyaXB0aW9uIj57e2Rlc2NyaXB0aW9ufX08L3NwYW4+CiAgICAgICAgICAgICAgPHNwYW4gY2xhc3M9InByaWNlIj57e3ByZXR0eVByaWNlfX08L3NwYW4+CiAgICAgICAgICAgIDwvYT4KICAgICAgICAgIDwvbGk+CiAgICAgICAge3svcHJpY2VzLnBsYW5zfX0KICAgICAgPC91bD4KCiAgICAgIDxmb3JtIGNsYXNzPSJkZXBsb3kiPgogICAgICAgIDxpbnB1dCB0eXBlPSJoaWRkZW4iIG5hbWU9InNvdXJjZSIgdmFsdWU9Int7cmVwb3NpdG9yeX19Ij4KICAgICAgICA8aW5wdXQgdHlwZT0ic3VibWl0IiB2YWx1ZT0iRGVwbG95IGZvciB7e3ByaWNlcy50b3RhbFByaWNlfX0iPgogICAgICA8L2Zvcm0+CgogICAgICA8ZGl2IGNsYXNzPSJvdXRwdXQiPjwvZGl2PgoKICAgIDwvZGl2PgoKICA8L2Rpdj4KCjwvbGk+Cg==","base64").toString())
-    App.templates.build = hogan.compile(Buffer("e3sjYXBwfX0KICA8cD4KICAgIFlvdXIgYXBwIGlzIGRlcGxveWluZyB0bwogICAgPGEgaHJlZj0iaHR0cHM6Ly97e2FwcC5uYW1lfX0uaGVyb2t1YXBwLmNvbSI+e3thcHAubmFtZX19Lmhlcm9rdWFwcC5jb208L2E+LAogICAgYW5kIHdpbGwgYmUgcmVhZHkgc29vbi4KICA8L3A+Cnt7L2FwcH19Cgp7e15hcHB9fQogIDxwIGNsYXNzPSJlcnJvciI+CiAgICBCdWlsZCBmYWlsZWQuIHt7bWVzc2FnZX19CiAgPC9wPgp7ey9hcHB9fQo=","base64").toString())
-    App.templates.schema = hogan.compile(Buffer("YGFwcC5qc29uYCBpcyBhIG1hbmlmZXN0IGZvcm1hdCBmb3IgZGVzY3JpYmluZyB3ZWIgYXBwcy4gSXQgZGVjbGFyZXMgZW52aXJvbm1lbnQKdmFyaWFibGVzLCBhZGRvbnMsIGFuZCBvdGhlciBpbmZvcm1hdGlvbiByZXF1aXJlZCB0byBydW4gYW4gYXBwIG9uIEhlcm9rdS4gVGhpcwpkb2N1bWVudCBkZXNjcmliZXMgdGhlIHNjaGVtYSBpbiBkZXRhaWwuCgojIyBFeGFtcGxlIGFwcC5qc29uCgpgYGBqc29uCnt7e2V4YW1wbGVKU09OfX19CmBgYAoKIyMgU2NoZW1hIFJlZmVyZW5jZQoKe3sjcHJvcGVydGllc0FycmF5fX0KCiMjIyB7e25hbWV9fQoKKih7e3R5cGV9fSwge3tyZXF1aXJlZE9yT3B0aW9uYWx9fSkqIHt7ZGVzY3JpcHRpb259fQoKYGBganNvbgp7e3tleGFtcGxlSlNPTn19fQpgYGAKCnt7L3Byb3BlcnRpZXNBcnJheX19Cg==","base64").toString())
+App.fetch = function(repository, cb) {
+  if (github(repository)) {
+    repository = github(repository)
+  } else if (bitbucket(repository)) {
+    repository = bitbucket(repository)
   } else {
-    App.templates.app = require('./templates/app.mustache.html')
-    App.templates.build = require('./templates/build.mustache.html')
-    App.templates.schema = require('./templates/schema.mustache.html')
+    return cb("A valid GitHub or Bitbucket URL is required: " + repository)
   }
 
-  App.example = new App(schema.example)
-  App.addons = addons
-  App.schema = schema
+  var fetcher_url = url.format({
+    protocol: "https",
+    hostname: "app-json-fetcher.herokuapp.com",
+    query: {
+      repository: repository.https_url
+    }
+  })
 
-  return App
+  superagent.get(fetcher_url, function(res){
+    cb(null, App.new(res.body))
+  })
+}
 
-})()
+// Hogan Templates FTW
+App.templates = {}
+if (module.parent) {
+  App.templates.app = hogan.compile(fs.readFileSync(__dirname + '/templates/app.mustache.html').toString())
+  App.templates.build = hogan.compile(fs.readFileSync(__dirname + '/templates/build.mustache.html').toString())
+  App.templates.schema = hogan.compile(fs.readFileSync(__dirname + '/templates/schema.mustache.html').toString())
+} else {
+  App.templates.app = _dereq_('./templates/app.mustache.html')
+  App.templates.build = _dereq_('./templates/build.mustache.html')
+  App.templates.schema = _dereq_('./templates/schema.mustache.html')
+}
 
-}).call(this,require("buffer").Buffer)
-},{"./lib/addons":"/Users/zeke/code/app-json/app.json/lib/addons.js","./lib/schema":"/Users/zeke/code/app-json/app.json/lib/schema.js","./templates/app.mustache.html":"/Users/zeke/code/app-json/app.json/templates/app.mustache.html","./templates/build.mustache.html":"/Users/zeke/code/app-json/app.json/templates/build.mustache.html","./templates/schema.mustache.html":"/Users/zeke/code/app-json/app.json/templates/schema.mustache.html","bitbucket-url-to-object":"/Users/zeke/code/app-json/app.json/node_modules/bitbucket-url-to-object/index.js","buffer":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/buffer/index.js","flatten":"/Users/zeke/code/app-json/app.json/node_modules/flatten/index.js","github-url-to-object":"/Users/zeke/code/app-json/app.json/node_modules/github-url-to-object/index.js","hogan.js":"/Users/zeke/code/app-json/app.json/node_modules/hogan.js/lib/hogan.js","http":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/http-browserify/index.js","is-url":"/Users/zeke/code/app-json/app.json/node_modules/is-url/index.js","revalidator":"/Users/zeke/code/app-json/app.json/node_modules/revalidator/lib/revalidator.js","superagent":"/Users/zeke/code/app-json/app.json/node_modules/superagent/lib/client.js","url":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/url/url.js"}],"/Users/zeke/code/app-json/app.json/lib/addons.js":[function(require,module,exports){
+App.addons = addons
+
+}).call(this,"/")
+},{"./lib/addons":2,"./lib/app":3,"./lib/schema":4,"./templates/app.mustache.html":42,"./templates/build.mustache.html":43,"./templates/schema.mustache.html":44,"bitbucket-url-to-object":6,"fs":7,"github-url-to-object":33,"hogan.js":35,"http":12,"superagent":39,"url":30}],2:[function(_dereq_,module,exports){
 "use strict"
-var async = require('async')
-var superagent = require('superagent')
+var async = _dereq_('async')
+var superagent = _dereq_('superagent')
 var addons = module.exports = {}
 
 addons.getPrices = function(slugs, cb) {
@@ -195,8 +128,82 @@ function formatPrice(price) {
   return (price == 0) ? "Free" : "$" + price/100 + "/mo"
 }
 
-},{"async":"/Users/zeke/code/app-json/app.json/node_modules/async/lib/async.js","superagent":"/Users/zeke/code/app-json/app.json/node_modules/superagent/lib/client.js"}],"/Users/zeke/code/app-json/app.json/lib/schema.js":[function(require,module,exports){
-"use strict"
+},{"async":5,"superagent":39}],3:[function(_dereq_,module,exports){
+"use strict";
+
+var fs = _dereq_("fs")
+var url = _dereq_("url")
+var revalidator = _dereq_("revalidator")
+var isURL = _dereq_("is-url")
+var schema = _dereq_("./schema")
+
+var App = module.exports = (function() {
+
+  function App(raw) {
+    var key
+
+    if (typeof(raw) === 'string') {
+
+      // Filename?
+      if (raw.match(/\.json$/i)) {
+        raw = fs.readFileSync(raw)
+      }
+
+      try {
+        raw = JSON.parse(raw)
+      } catch(err) {
+        throw new Error("Malformed JSON")
+      }
+    }
+
+    for (key in raw) {
+      if (raw.hasOwnProperty(key)) {
+        this[key] = raw[key]
+      }
+    }
+
+    this.__defineGetter__("valid", function(){
+      return revalidator.validate(this, schema).valid
+    })
+
+    this.__defineGetter__("errors", function(){
+      return revalidator.validate(this, schema).errors
+    })
+
+    this.__defineGetter__("errorString", function(){
+      return this.errors.map(function(error) {
+        return ["-", error.property, error.message].join(" ")
+      }).join("\n")
+    })
+
+    this.__defineGetter__("toJSON", function(){
+      var key
+      var out = {}
+      var validProps = Object.keys(schema.properties)
+      for (key in this) {
+        if (this.hasOwnProperty(key) && validProps.indexOf(key) > -1) {
+          out[key] = this[key]
+        }
+      }
+      return JSON.stringify(out, null, 2)
+    })
+
+    return this
+  }
+
+  App.new = function(raw) {
+    return new App(raw)
+  }
+
+  App.example = new App(schema.example)
+  App.schema = schema
+
+  return App
+
+})()
+
+},{"./schema":4,"fs":7,"is-url":37,"revalidator":38,"url":30}],4:[function(_dereq_,module,exports){
+https://github.com/app-json/app.json/blob/master/lib/schema.js#L1"use strict"
 var schema = {
   "properties": {
     "name": {
@@ -298,7 +305,7 @@ schema.propertiesArray = Object.keys(schema.properties).map(function(name) {
 
 module.exports = schema
 
-},{}],"/Users/zeke/code/app-json/app.json/node_modules/async/lib/async.js":[function(require,module,exports){
+},{}],5:[function(_dereq_,module,exports){
 (function (process){
 /*jshint onevar: false, indent:4 */
 /*global setImmediate: false, setTimeout: false, console: false */
@@ -1344,13 +1351,13 @@ module.exports = schema
 
 }());
 
-}).call(this,require("FWaASH"))
-},{"FWaASH":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/process/browser.js"}],"/Users/zeke/code/app-json/app.json/node_modules/bitbucket-url-to-object/index.js":[function(require,module,exports){
+}).call(this,_dereq_("FWaASH"))
+},{"FWaASH":17}],6:[function(_dereq_,module,exports){
 "use strict"
 
-var url = require("url")
-var util = require("util")
-var isUrl = require("is-url")
+var url = _dereq_("url")
+var util = _dereq_("util")
+var isUrl = _dereq_("is-url")
 
 module.exports = function(repo_url) {
   var obj = {}
@@ -1397,7 +1404,9 @@ module.exports = function(repo_url) {
   return obj
 }
 
-},{"is-url":"/Users/zeke/code/app-json/app.json/node_modules/is-url/index.js","url":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/url/url.js","util":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/util/util.js"}],"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/buffer/index.js":[function(require,module,exports){
+},{"is-url":37,"url":30,"util":32}],7:[function(_dereq_,module,exports){
+
+},{}],8:[function(_dereq_,module,exports){
 /*!
  * The buffer module from node.js, for the browser.
  *
@@ -1405,8 +1414,8 @@ module.exports = function(repo_url) {
  * @license  MIT
  */
 
-var base64 = require('base64-js')
-var ieee754 = require('ieee754')
+var base64 = _dereq_('base64-js')
+var ieee754 = _dereq_('ieee754')
 
 exports.Buffer = Buffer
 exports.SlowBuffer = Buffer
@@ -2508,7 +2517,7 @@ function assert (test, message) {
   if (!test) throw new Error(message || 'Failed assertion')
 }
 
-},{"base64-js":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/buffer/node_modules/base64-js/lib/b64.js","ieee754":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/buffer/node_modules/ieee754/index.js"}],"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/buffer/node_modules/base64-js/lib/b64.js":[function(require,module,exports){
+},{"base64-js":9,"ieee754":10}],9:[function(_dereq_,module,exports){
 var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 
 ;(function (exports) {
@@ -2631,7 +2640,7 @@ var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 	module.exports.fromByteArray = uint8ToBase64
 }())
 
-},{}],"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/buffer/node_modules/ieee754/index.js":[function(require,module,exports){
+},{}],10:[function(_dereq_,module,exports){
 exports.read = function(buffer, offset, isLE, mLen, nBytes) {
   var e, m,
       eLen = nBytes * 8 - mLen - 1,
@@ -2717,7 +2726,7 @@ exports.write = function(buffer, value, offset, isLE, mLen, nBytes) {
   buffer[offset + i - d] |= s * 128;
 };
 
-},{}],"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/events/events.js":[function(require,module,exports){
+},{}],11:[function(_dereq_,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -3022,11 +3031,11 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/http-browserify/index.js":[function(require,module,exports){
+},{}],12:[function(_dereq_,module,exports){
 var http = module.exports;
-var EventEmitter = require('events').EventEmitter;
-var Request = require('./lib/request');
-var url = require('url')
+var EventEmitter = _dereq_('events').EventEmitter;
+var Request = _dereq_('./lib/request');
+var url = _dereq_('url')
 
 http.request = function (params, cb) {
     if (typeof params === 'string') {
@@ -3161,11 +3170,11 @@ http.STATUS_CODES = {
     510 : 'Not Extended',               // RFC 2774
     511 : 'Network Authentication Required' // RFC 6585
 };
-},{"./lib/request":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/http-browserify/lib/request.js","events":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/events/events.js","url":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/url/url.js"}],"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/http-browserify/lib/request.js":[function(require,module,exports){
-var Stream = require('stream');
-var Response = require('./response');
-var Base64 = require('Base64');
-var inherits = require('inherits');
+},{"./lib/request":13,"events":11,"url":30}],13:[function(_dereq_,module,exports){
+var Stream = _dereq_('stream');
+var Response = _dereq_('./response');
+var Base64 = _dereq_('Base64');
+var inherits = _dereq_('inherits');
 
 var Request = module.exports = function (xhr, params) {
     var self = this;
@@ -3352,9 +3361,9 @@ var indexOf = function (xs, x) {
     return -1;
 };
 
-},{"./response":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/http-browserify/lib/response.js","Base64":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/http-browserify/node_modules/Base64/base64.js","inherits":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/inherits/inherits_browser.js","stream":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/stream-browserify/index.js"}],"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/http-browserify/lib/response.js":[function(require,module,exports){
-var Stream = require('stream');
-var util = require('util');
+},{"./response":14,"Base64":15,"inherits":16,"stream":23}],14:[function(_dereq_,module,exports){
+var Stream = _dereq_('stream');
+var util = _dereq_('util');
 
 var Response = module.exports = function (res) {
     this.offset = 0;
@@ -3474,7 +3483,7 @@ var isArray = Array.isArray || function (xs) {
     return Object.prototype.toString.call(xs) === '[object Array]';
 };
 
-},{"stream":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/stream-browserify/index.js","util":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/util/util.js"}],"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/http-browserify/node_modules/Base64/base64.js":[function(require,module,exports){
+},{"stream":23,"util":32}],15:[function(_dereq_,module,exports){
 ;(function () {
 
   var object = typeof exports != 'undefined' ? exports : this; // #8: web workers
@@ -3536,7 +3545,7 @@ var isArray = Array.isArray || function (xs) {
 
 }());
 
-},{}],"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/inherits/inherits_browser.js":[function(require,module,exports){
+},{}],16:[function(_dereq_,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -3561,7 +3570,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/process/browser.js":[function(require,module,exports){
+},{}],17:[function(_dereq_,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -3626,7 +3635,7 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/punycode/punycode.js":[function(require,module,exports){
+},{}],18:[function(_dereq_,module,exports){
 (function (global){
 /*! http://mths.be/punycode v1.2.4 by @mathias */
 ;(function(root) {
@@ -4137,7 +4146,7 @@ process.chdir = function (dir) {
 }(this));
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/querystring-es3/decode.js":[function(require,module,exports){
+},{}],19:[function(_dereq_,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -4223,7 +4232,7 @@ var isArray = Array.isArray || function (xs) {
   return Object.prototype.toString.call(xs) === '[object Array]';
 };
 
-},{}],"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/querystring-es3/encode.js":[function(require,module,exports){
+},{}],20:[function(_dereq_,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -4310,13 +4319,13 @@ var objectKeys = Object.keys || function (obj) {
   return res;
 };
 
-},{}],"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/querystring-es3/index.js":[function(require,module,exports){
+},{}],21:[function(_dereq_,module,exports){
 'use strict';
 
-exports.decode = exports.parse = require('./decode');
-exports.encode = exports.stringify = require('./encode');
+exports.decode = exports.parse = _dereq_('./decode');
+exports.encode = exports.stringify = _dereq_('./encode');
 
-},{"./decode":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/querystring-es3/decode.js","./encode":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/querystring-es3/encode.js"}],"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/stream-browserify/duplex.js":[function(require,module,exports){
+},{"./decode":19,"./encode":20}],22:[function(_dereq_,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -4344,10 +4353,10 @@ exports.encode = exports.stringify = require('./encode');
 // Writable.
 
 module.exports = Duplex;
-var inherits = require('inherits');
-var setImmediate = require('process/browser.js').nextTick;
-var Readable = require('./readable.js');
-var Writable = require('./writable.js');
+var inherits = _dereq_('inherits');
+var setImmediate = _dereq_('process/browser.js').nextTick;
+var Readable = _dereq_('./readable.js');
+var Writable = _dereq_('./writable.js');
 
 inherits(Duplex, Readable);
 
@@ -4390,7 +4399,7 @@ function onend() {
   });
 }
 
-},{"./readable.js":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/stream-browserify/readable.js","./writable.js":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/stream-browserify/writable.js","inherits":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/inherits/inherits_browser.js","process/browser.js":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/stream-browserify/node_modules/process/browser.js"}],"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/stream-browserify/index.js":[function(require,module,exports){
+},{"./readable.js":26,"./writable.js":28,"inherits":16,"process/browser.js":24}],23:[function(_dereq_,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -4414,15 +4423,15 @@ function onend() {
 
 module.exports = Stream;
 
-var EE = require('events').EventEmitter;
-var inherits = require('inherits');
+var EE = _dereq_('events').EventEmitter;
+var inherits = _dereq_('inherits');
 
 inherits(Stream, EE);
-Stream.Readable = require('./readable.js');
-Stream.Writable = require('./writable.js');
-Stream.Duplex = require('./duplex.js');
-Stream.Transform = require('./transform.js');
-Stream.PassThrough = require('./passthrough.js');
+Stream.Readable = _dereq_('./readable.js');
+Stream.Writable = _dereq_('./writable.js');
+Stream.Duplex = _dereq_('./duplex.js');
+Stream.Transform = _dereq_('./transform.js');
+Stream.PassThrough = _dereq_('./passthrough.js');
 
 // Backwards-compat with node 0.4.x
 Stream.Stream = Stream;
@@ -4519,7 +4528,7 @@ Stream.prototype.pipe = function(dest, options) {
   return dest;
 };
 
-},{"./duplex.js":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/stream-browserify/duplex.js","./passthrough.js":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/stream-browserify/passthrough.js","./readable.js":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/stream-browserify/readable.js","./transform.js":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/stream-browserify/transform.js","./writable.js":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/stream-browserify/writable.js","events":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/events/events.js","inherits":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/inherits/inherits_browser.js"}],"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/stream-browserify/node_modules/process/browser.js":[function(require,module,exports){
+},{"./duplex.js":22,"./passthrough.js":25,"./readable.js":26,"./transform.js":27,"./writable.js":28,"events":11,"inherits":16}],24:[function(_dereq_,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -4574,7 +4583,7 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/stream-browserify/passthrough.js":[function(require,module,exports){
+},{}],25:[function(_dereq_,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -4602,8 +4611,8 @@ process.chdir = function (dir) {
 
 module.exports = PassThrough;
 
-var Transform = require('./transform.js');
-var inherits = require('inherits');
+var Transform = _dereq_('./transform.js');
+var inherits = _dereq_('inherits');
 inherits(PassThrough, Transform);
 
 function PassThrough(options) {
@@ -4617,7 +4626,7 @@ PassThrough.prototype._transform = function(chunk, encoding, cb) {
   cb(null, chunk);
 };
 
-},{"./transform.js":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/stream-browserify/transform.js","inherits":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/inherits/inherits_browser.js"}],"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/stream-browserify/readable.js":[function(require,module,exports){
+},{"./transform.js":27,"inherits":16}],26:[function(_dereq_,module,exports){
 (function (process){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -4643,13 +4652,13 @@ PassThrough.prototype._transform = function(chunk, encoding, cb) {
 module.exports = Readable;
 Readable.ReadableState = ReadableState;
 
-var EE = require('events').EventEmitter;
-var Stream = require('./index.js');
-var Buffer = require('buffer').Buffer;
-var setImmediate = require('process/browser.js').nextTick;
+var EE = _dereq_('events').EventEmitter;
+var Stream = _dereq_('./index.js');
+var Buffer = _dereq_('buffer').Buffer;
+var setImmediate = _dereq_('process/browser.js').nextTick;
 var StringDecoder;
 
-var inherits = require('inherits');
+var inherits = _dereq_('inherits');
 inherits(Readable, Stream);
 
 function ReadableState(options, stream) {
@@ -4714,7 +4723,7 @@ function ReadableState(options, stream) {
   this.encoding = null;
   if (options.encoding) {
     if (!StringDecoder)
-      StringDecoder = require('string_decoder').StringDecoder;
+      StringDecoder = _dereq_('string_decoder').StringDecoder;
     this.decoder = new StringDecoder(options.encoding);
     this.encoding = options.encoding;
   }
@@ -4815,7 +4824,7 @@ function needMoreData(state) {
 // backwards compatibility.
 Readable.prototype.setEncoding = function(enc) {
   if (!StringDecoder)
-    StringDecoder = require('string_decoder').StringDecoder;
+    StringDecoder = _dereq_('string_decoder').StringDecoder;
   this._readableState.decoder = new StringDecoder(enc);
   this._readableState.encoding = enc;
 };
@@ -5553,8 +5562,8 @@ function indexOf (xs, x) {
   return -1;
 }
 
-}).call(this,require("FWaASH"))
-},{"./index.js":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/stream-browserify/index.js","FWaASH":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/process/browser.js","buffer":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/buffer/index.js","events":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/events/events.js","inherits":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/inherits/inherits_browser.js","process/browser.js":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/stream-browserify/node_modules/process/browser.js","string_decoder":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/string_decoder/index.js"}],"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/stream-browserify/transform.js":[function(require,module,exports){
+}).call(this,_dereq_("FWaASH"))
+},{"./index.js":23,"FWaASH":17,"buffer":8,"events":11,"inherits":16,"process/browser.js":24,"string_decoder":29}],27:[function(_dereq_,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -5620,8 +5629,8 @@ function indexOf (xs, x) {
 
 module.exports = Transform;
 
-var Duplex = require('./duplex.js');
-var inherits = require('inherits');
+var Duplex = _dereq_('./duplex.js');
+var inherits = _dereq_('inherits');
 inherits(Transform, Duplex);
 
 
@@ -5760,7 +5769,7 @@ function done(stream, er) {
   return stream.push(null);
 }
 
-},{"./duplex.js":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/stream-browserify/duplex.js","inherits":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/inherits/inherits_browser.js"}],"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/stream-browserify/writable.js":[function(require,module,exports){
+},{"./duplex.js":22,"inherits":16}],28:[function(_dereq_,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -5802,10 +5811,10 @@ var isArrayBuffer = typeof ArrayBuffer !== 'undefined'
   }
 ;
 
-var inherits = require('inherits');
-var Stream = require('./index.js');
-var setImmediate = require('process/browser.js').nextTick;
-var Buffer = require('buffer').Buffer;
+var inherits = _dereq_('inherits');
+var Stream = _dereq_('./index.js');
+var setImmediate = _dereq_('process/browser.js').nextTick;
+var Buffer = _dereq_('buffer').Buffer;
 
 inherits(Writable, Stream);
 
@@ -6148,7 +6157,7 @@ function endWritable(stream, state, cb) {
   state.ended = true;
 }
 
-},{"./index.js":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/stream-browserify/index.js","buffer":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/buffer/index.js","inherits":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/inherits/inherits_browser.js","process/browser.js":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/stream-browserify/node_modules/process/browser.js"}],"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/string_decoder/index.js":[function(require,module,exports){
+},{"./index.js":23,"buffer":8,"inherits":16,"process/browser.js":24}],29:[function(_dereq_,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -6170,7 +6179,7 @@ function endWritable(stream, state, cb) {
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 // USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-var Buffer = require('buffer').Buffer;
+var Buffer = _dereq_('buffer').Buffer;
 
 function assertEncoding(encoding) {
   if (encoding && !Buffer.isEncoding(encoding)) {
@@ -6341,7 +6350,7 @@ function base64DetectIncompleteChar(buffer) {
   return incomplete;
 }
 
-},{"buffer":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/buffer/index.js"}],"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/url/url.js":[function(require,module,exports){
+},{"buffer":8}],30:[function(_dereq_,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -6363,7 +6372,7 @@ function base64DetectIncompleteChar(buffer) {
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 // USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-var punycode = require('punycode');
+var punycode = _dereq_('punycode');
 
 exports.parse = urlParse;
 exports.resolve = urlResolve;
@@ -6435,7 +6444,7 @@ var protocolPattern = /^([a-z0-9.+-]+:)/i,
       'gopher:': true,
       'file:': true
     },
-    querystring = require('querystring');
+    querystring = _dereq_('querystring');
 
 function urlParse(url, parseQueryString, slashesDenoteHost) {
   if (url && isObject(url) && url instanceof Url) return url;
@@ -7050,14 +7059,14 @@ function isNullOrUndefined(arg) {
   return  arg == null;
 }
 
-},{"punycode":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/punycode/punycode.js","querystring":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/querystring-es3/index.js"}],"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/util/support/isBufferBrowser.js":[function(require,module,exports){
+},{"punycode":18,"querystring":21}],31:[function(_dereq_,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/util/util.js":[function(require,module,exports){
+},{}],32:[function(_dereq_,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -7584,7 +7593,7 @@ function isPrimitive(arg) {
 }
 exports.isPrimitive = isPrimitive;
 
-exports.isBuffer = require('./support/isBuffer');
+exports.isBuffer = _dereq_('./support/isBuffer');
 
 function objectToString(o) {
   return Object.prototype.toString.call(o);
@@ -7628,7 +7637,7 @@ exports.log = function() {
  *     prototype.
  * @param {function} superCtor Constructor function to inherit prototype from.
  */
-exports.inherits = require('inherits');
+exports.inherits = _dereq_('inherits');
 
 exports._extend = function(origin, add) {
   // Don't do anything if add isn't an object
@@ -7646,31 +7655,13 @@ function hasOwnProperty(obj, prop) {
   return Object.prototype.hasOwnProperty.call(obj, prop);
 }
 
-}).call(this,require("FWaASH"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/util/support/isBufferBrowser.js","FWaASH":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/process/browser.js","inherits":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/inherits/inherits_browser.js"}],"/Users/zeke/code/app-json/app.json/node_modules/flatten/index.js":[function(require,module,exports){
-module.exports = function flatten(list, depth) {
-  depth = (typeof depth == 'number') ? depth : Infinity;
-
-  return _flatten(list, 1);
-
-  function _flatten(list, d) {
-    return list.reduce(function (acc, item) {
-      if (Array.isArray(item) && d < depth) {
-        return acc.concat(_flatten(item, d + 1));
-      }
-      else {
-        return acc.concat(item);
-      }
-    }, []);
-  }
-};
-
-},{}],"/Users/zeke/code/app-json/app.json/node_modules/github-url-to-object/index.js":[function(require,module,exports){
+}).call(this,_dereq_("FWaASH"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"./support/isBuffer":31,"FWaASH":17,"inherits":16}],33:[function(_dereq_,module,exports){
 "use strict"
 
-var url = require("url")
-var util = require("util")
-var isUrl = require("is-url")
+var url = _dereq_("url")
+var util = _dereq_("util")
+var isUrl = _dereq_("is-url")
 
 module.exports = function(repo_url) {
   var obj = {}
@@ -7717,7 +7708,7 @@ module.exports = function(repo_url) {
   return obj
 }
 
-},{"is-url":"/Users/zeke/code/app-json/app.json/node_modules/is-url/index.js","url":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/url/url.js","util":"/Users/zeke/code/app-json/app.json/node_modules/browserify/node_modules/util/util.js"}],"/Users/zeke/code/app-json/app.json/node_modules/hogan.js/lib/compiler.js":[function(require,module,exports){
+},{"is-url":37,"url":30,"util":32}],34:[function(_dereq_,module,exports){
 /*
  *  Copyright 2011 Twitter, Inc.
  *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -8063,7 +8054,7 @@ module.exports = function(repo_url) {
   };
 })(typeof exports !== 'undefined' ? exports : Hogan);
 
-},{}],"/Users/zeke/code/app-json/app.json/node_modules/hogan.js/lib/hogan.js":[function(require,module,exports){
+},{}],35:[function(_dereq_,module,exports){
 /*
  *  Copyright 2011 Twitter, Inc.
  *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -8081,10 +8072,10 @@ module.exports = function(repo_url) {
 
 // This file is for use with Node.js. See dist/ for browser files.
 
-var Hogan = require('./compiler');
-Hogan.Template = require('./template').Template;
+var Hogan = _dereq_('./compiler');
+Hogan.Template = _dereq_('./template').Template;
 module.exports = Hogan; 
-},{"./compiler":"/Users/zeke/code/app-json/app.json/node_modules/hogan.js/lib/compiler.js","./template":"/Users/zeke/code/app-json/app.json/node_modules/hogan.js/lib/template.js"}],"/Users/zeke/code/app-json/app.json/node_modules/hogan.js/lib/template.js":[function(require,module,exports){
+},{"./compiler":34,"./template":36}],36:[function(_dereq_,module,exports){
 /*
  *  Copyright 2011 Twitter, Inc.
  *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -8327,7 +8318,7 @@ var Hogan = {};
 })(typeof exports !== 'undefined' ? exports : Hogan);
 
 
-},{}],"/Users/zeke/code/app-json/app.json/node_modules/is-url/index.js":[function(require,module,exports){
+},{}],37:[function(_dereq_,module,exports){
 
 /**
  * Expose `isUrl`.
@@ -8352,7 +8343,7 @@ function isUrl(string){
   return matcher.test(string);
 }
 
-},{}],"/Users/zeke/code/app-json/app.json/node_modules/revalidator/lib/revalidator.js":[function(require,module,exports){
+},{}],38:[function(_dereq_,module,exports){
 (function (exports) {
   exports.validate = validate;
   exports.mixin = mixin;
@@ -8781,13 +8772,13 @@ function isUrl(string){
 
 })(typeof module === 'object' && module && module.exports ? module.exports : window);
 
-},{}],"/Users/zeke/code/app-json/app.json/node_modules/superagent/lib/client.js":[function(require,module,exports){
+},{}],39:[function(_dereq_,module,exports){
 /**
  * Module dependencies.
  */
 
-var Emitter = require('emitter');
-var reduce = require('reduce');
+var Emitter = _dereq_('emitter');
+var reduce = _dereq_('reduce');
 
 /**
  * Root reference for iframes.
@@ -9787,7 +9778,7 @@ request.put = function(url, data, fn){
 
 module.exports = request;
 
-},{"emitter":"/Users/zeke/code/app-json/app.json/node_modules/superagent/node_modules/emitter-component/index.js","reduce":"/Users/zeke/code/app-json/app.json/node_modules/superagent/node_modules/reduce-component/index.js"}],"/Users/zeke/code/app-json/app.json/node_modules/superagent/node_modules/emitter-component/index.js":[function(require,module,exports){
+},{"emitter":40,"reduce":41}],40:[function(_dereq_,module,exports){
 
 /**
  * Expose `Emitter`.
@@ -9945,7 +9936,7 @@ Emitter.prototype.hasListeners = function(event){
   return !! this.listeners(event).length;
 };
 
-},{}],"/Users/zeke/code/app-json/app.json/node_modules/superagent/node_modules/reduce-component/index.js":[function(require,module,exports){
+},{}],41:[function(_dereq_,module,exports){
 
 /**
  * Reduce `arr` with `fn`.
@@ -9970,10 +9961,12 @@ module.exports = function(arr, fn, initial){
   
   return curr;
 };
-},{}],"/Users/zeke/code/app-json/app.json/templates/app.mustache.html":[function(require,module,exports){
-var t = new (require('hogan.js/lib/template')).Template(function(c,p,i){var _=this;_.b(i=i||"");_.b("<li class=\"app\">");_.b("\n" + i);_.b("\n" + i);_.b("  <a class=\"logo activator\">");_.b("\n" + i);_.b("    <img src=\"");_.b(_.v(_.f("logo",c,p,0)));_.b("\">");_.b("\n" + i);_.b("  </a>");_.b("\n" + i);_.b("\n" + i);_.b("  <div class=\"meta\">");_.b("\n" + i);_.b("\n" + i);_.b("    <h2><a class=\"activator\">");_.b(_.v(_.f("name",c,p,0)));_.b("</a></h2>");_.b("\n" + i);_.b("\n" + i);_.b("    <div class=\"drawer\">");_.b("\n" + i);_.b("\n" + i);if(_.s(_.f("description",c,p,1),c,p,0,198,236,"{{ }}")){_.rs(c,p,function(c,p,_){_.b("        <p>");_.b(_.v(_.f("description",c,p,0)));_.b("</p>");_.b("\n");});c.pop();}_.b("\n" + i);if(_.s(_.f("repository",c,p,1),c,p,0,275,353,"{{ }}")){_.rs(c,p,function(c,p,_){_.b("        <a href=\"");_.b(_.v(_.f("repository",c,p,0)));_.b("\" class=\"repository\">");_.b(_.v(_.f("repository",c,p,0)));_.b("</a>");_.b("\n");});c.pop();}_.b("\n" + i);if(_.s(_.f("website",c,p,1),c,p,0,388,457,"{{ }}")){_.rs(c,p,function(c,p,_){_.b("        <a href=\"");_.b(_.v(_.f("website",c,p,0)));_.b("\" class=\"website\">");_.b(_.v(_.f("website",c,p,0)));_.b("</a>");_.b("\n");});c.pop();}_.b("\n" + i);_.b("      <ul class=\"addons\">");_.b("\n" + i);if(_.s(_.d("prices.plans",c,p,1),c,p,0,522,792,"{{ }}")){_.rs(c,p,function(c,p,_){_.b("          <li>");_.b("\n" + i);_.b("            <a href=\"https://addons.heroku.com/");_.b(_.v(_.f("name",c,p,0)));_.b("\">");_.b("\n" + i);_.b("              <img src=\"");_.b(_.v(_.f("logo",c,p,0)));_.b("\">");_.b("\n" + i);_.b("              <span class=\"description\">");_.b(_.v(_.f("description",c,p,0)));_.b("</span>");_.b("\n" + i);_.b("              <span class=\"price\">");_.b(_.v(_.f("prettyPrice",c,p,0)));_.b("</span>");_.b("\n" + i);_.b("            </a>");_.b("\n" + i);_.b("          </li>");_.b("\n");});c.pop();}_.b("      </ul>");_.b("\n" + i);_.b("\n" + i);_.b("      <form class=\"deploy\">");_.b("\n" + i);_.b("        <input type=\"hidden\" name=\"source\" value=\"");_.b(_.v(_.f("repository",c,p,0)));_.b("\">");_.b("\n" + i);_.b("        <input type=\"submit\" value=\"Deploy for ");_.b(_.v(_.d("prices.totalPrice",c,p,0)));_.b("\">");_.b("\n" + i);_.b("      </form>");_.b("\n" + i);_.b("\n" + i);_.b("      <div class=\"output\"></div>");_.b("\n" + i);_.b("\n" + i);_.b("    </div>");_.b("\n" + i);_.b("\n" + i);_.b("  </div>");_.b("\n" + i);_.b("\n" + i);_.b("</li>");_.b("\n");return _.fl();;});module.exports = {  render: function () { return t.render.apply(t, arguments); },  r: function () { return t.r.apply(t, arguments); },  ri: function () { return t.ri.apply(t, arguments); }};
-},{"hogan.js/lib/template":"/Users/zeke/code/app-json/app.json/node_modules/hogan.js/lib/template.js"}],"/Users/zeke/code/app-json/app.json/templates/build.mustache.html":[function(require,module,exports){
-var t = new (require('hogan.js/lib/template')).Template(function(c,p,i){var _=this;_.b(i=i||"");if(_.s(_.f("app",c,p,1),c,p,0,8,160,"{{ }}")){_.rs(c,p,function(c,p,_){_.b("  <p>");_.b("\n" + i);_.b("    Your app is deploying to");_.b("\n" + i);_.b("    <a href=\"https://");_.b(_.v(_.d("app.name",c,p,0)));_.b(".herokuapp.com\">");_.b(_.v(_.d("app.name",c,p,0)));_.b(".herokuapp.com</a>,");_.b("\n" + i);_.b("    and will be ready soon.");_.b("\n" + i);_.b("  </p>");_.b("\n");});c.pop();}_.b("\n" + i);if(!_.s(_.f("app",c,p,1),c,p,1,0,0,"")){_.b("  <p class=\"error\">");_.b("\n" + i);_.b("    Build failed. ");_.b(_.v(_.f("message",c,p,0)));_.b("\n" + i);_.b("  </p>");_.b("\n");};return _.fl();;});module.exports = {  render: function () { return t.render.apply(t, arguments); },  r: function () { return t.r.apply(t, arguments); },  ri: function () { return t.ri.apply(t, arguments); }};
-},{"hogan.js/lib/template":"/Users/zeke/code/app-json/app.json/node_modules/hogan.js/lib/template.js"}],"/Users/zeke/code/app-json/app.json/templates/schema.mustache.html":[function(require,module,exports){
-var t = new (require('hogan.js/lib/template')).Template(function(c,p,i){var _=this;_.b(i=i||"");_.b("`app.json` is a manifest format for describing web apps. It declares environment");_.b("\n" + i);_.b("variables, addons, and other information required to run an app on Heroku. This");_.b("\n" + i);_.b("document describes the schema in detail.");_.b("\n" + i);_.b("\n" + i);_.b("## Example app.json");_.b("\n" + i);_.b("\n" + i);_.b("```json");_.b("\n" + i);_.b(_.t(_.f("exampleJSON",c,p,0)));_.b("\n" + i);_.b("```");_.b("\n" + i);_.b("\n" + i);_.b("## Schema Reference");_.b("\n" + i);_.b("\n" + i);if(_.s(_.f("propertiesArray",c,p,1),c,p,0,296,397,"{{ }}")){_.rs(c,p,function(c,p,_){_.b("\n" + i);_.b("### ");_.b(_.v(_.f("name",c,p,0)));_.b("\n" + i);_.b("\n" + i);_.b("*(");_.b(_.v(_.f("type",c,p,0)));_.b(", ");_.b(_.v(_.f("requiredOrOptional",c,p,0)));_.b(")* ");_.b(_.v(_.f("description",c,p,0)));_.b("\n" + i);_.b("\n" + i);_.b("```json");_.b("\n" + i);_.b(_.t(_.f("exampleJSON",c,p,0)));_.b("\n" + i);_.b("```");_.b("\n" + i);_.b("\n");});c.pop();}return _.fl();;});module.exports = {  render: function () { return t.render.apply(t, arguments); },  r: function () { return t.r.apply(t, arguments); },  ri: function () { return t.ri.apply(t, arguments); }};
-},{"hogan.js/lib/template":"/Users/zeke/code/app-json/app.json/node_modules/hogan.js/lib/template.js"}]},{},["/Users/zeke/code/app-json/app.json/fake_99b38a4b.js"])
+},{}],42:[function(_dereq_,module,exports){
+var t = new (_dereq_('hogan.js/lib/template')).Template(function(c,p,i){var _=this;_.b(i=i||"");_.b("<li class=\"app\">");_.b("\n" + i);_.b("\n" + i);_.b("  <a class=\"logo activator\">");_.b("\n" + i);_.b("    <img src=\"");_.b(_.v(_.f("logo",c,p,0)));_.b("\">");_.b("\n" + i);_.b("  </a>");_.b("\n" + i);_.b("\n" + i);_.b("  <div class=\"meta\">");_.b("\n" + i);_.b("\n" + i);_.b("    <h2><a class=\"activator\">");_.b(_.v(_.f("name",c,p,0)));_.b("</a></h2>");_.b("\n" + i);_.b("\n" + i);_.b("    <div class=\"drawer\">");_.b("\n" + i);_.b("\n" + i);if(_.s(_.f("description",c,p,1),c,p,0,198,236,"{{ }}")){_.rs(c,p,function(c,p,_){_.b("        <p>");_.b(_.v(_.f("description",c,p,0)));_.b("</p>");_.b("\n");});c.pop();}_.b("\n" + i);if(_.s(_.f("repository",c,p,1),c,p,0,275,353,"{{ }}")){_.rs(c,p,function(c,p,_){_.b("        <a href=\"");_.b(_.v(_.f("repository",c,p,0)));_.b("\" class=\"repository\">");_.b(_.v(_.f("repository",c,p,0)));_.b("</a>");_.b("\n");});c.pop();}_.b("\n" + i);if(_.s(_.f("website",c,p,1),c,p,0,388,457,"{{ }}")){_.rs(c,p,function(c,p,_){_.b("        <a href=\"");_.b(_.v(_.f("website",c,p,0)));_.b("\" class=\"website\">");_.b(_.v(_.f("website",c,p,0)));_.b("</a>");_.b("\n");});c.pop();}_.b("\n" + i);_.b("      <ul class=\"addons\">");_.b("\n" + i);if(_.s(_.d("prices.plans",c,p,1),c,p,0,522,792,"{{ }}")){_.rs(c,p,function(c,p,_){_.b("          <li>");_.b("\n" + i);_.b("            <a href=\"https://addons.heroku.com/");_.b(_.v(_.f("name",c,p,0)));_.b("\">");_.b("\n" + i);_.b("              <img src=\"");_.b(_.v(_.f("logo",c,p,0)));_.b("\">");_.b("\n" + i);_.b("              <span class=\"description\">");_.b(_.v(_.f("description",c,p,0)));_.b("</span>");_.b("\n" + i);_.b("              <span class=\"price\">");_.b(_.v(_.f("prettyPrice",c,p,0)));_.b("</span>");_.b("\n" + i);_.b("            </a>");_.b("\n" + i);_.b("          </li>");_.b("\n");});c.pop();}_.b("      </ul>");_.b("\n" + i);_.b("\n" + i);_.b("      <form class=\"deploy\">");_.b("\n" + i);_.b("        <input type=\"hidden\" name=\"source\" value=\"");_.b(_.v(_.f("repository",c,p,0)));_.b("\">");_.b("\n" + i);_.b("        <input type=\"submit\" value=\"Deploy for ");_.b(_.v(_.d("prices.totalPrice",c,p,0)));_.b("\">");_.b("\n" + i);_.b("      </form>");_.b("\n" + i);_.b("\n" + i);_.b("      <div class=\"output\"></div>");_.b("\n" + i);_.b("\n" + i);_.b("    </div>");_.b("\n" + i);_.b("\n" + i);_.b("  </div>");_.b("\n" + i);_.b("\n" + i);_.b("</li>");_.b("\n");return _.fl();;});module.exports = {  render: function () { return t.render.apply(t, arguments); },  r: function () { return t.r.apply(t, arguments); },  ri: function () { return t.ri.apply(t, arguments); }};
+},{"hogan.js/lib/template":36}],43:[function(_dereq_,module,exports){
+var t = new (_dereq_('hogan.js/lib/template')).Template(function(c,p,i){var _=this;_.b(i=i||"");if(_.s(_.f("app",c,p,1),c,p,0,8,160,"{{ }}")){_.rs(c,p,function(c,p,_){_.b("  <p>");_.b("\n" + i);_.b("    Your app is deploying to");_.b("\n" + i);_.b("    <a href=\"https://");_.b(_.v(_.d("app.name",c,p,0)));_.b(".herokuapp.com\">");_.b(_.v(_.d("app.name",c,p,0)));_.b(".herokuapp.com</a>,");_.b("\n" + i);_.b("    and will be ready soon.");_.b("\n" + i);_.b("  </p>");_.b("\n");});c.pop();}_.b("\n" + i);if(!_.s(_.f("app",c,p,1),c,p,1,0,0,"")){_.b("  <p class=\"error\">");_.b("\n" + i);_.b("    Build failed. ");_.b(_.v(_.f("message",c,p,0)));_.b("\n" + i);_.b("  </p>");_.b("\n");};return _.fl();;});module.exports = {  render: function () { return t.render.apply(t, arguments); },  r: function () { return t.r.apply(t, arguments); },  ri: function () { return t.ri.apply(t, arguments); }};
+},{"hogan.js/lib/template":36}],44:[function(_dereq_,module,exports){
+var t = new (_dereq_('hogan.js/lib/template')).Template(function(c,p,i){var _=this;_.b(i=i||"");_.b("`app.json` is a manifest format for describing web apps. It declares environment");_.b("\n" + i);_.b("variables, addons, and other information required to run an app on Heroku. This");_.b("\n" + i);_.b("document describes the schema in detail.");_.b("\n" + i);_.b("\n" + i);_.b("## Example app.json");_.b("\n" + i);_.b("\n" + i);_.b("```json");_.b("\n" + i);_.b(_.t(_.f("exampleJSON",c,p,0)));_.b("\n" + i);_.b("```");_.b("\n" + i);_.b("\n" + i);_.b("## Schema Reference");_.b("\n" + i);_.b("\n" + i);if(_.s(_.f("propertiesArray",c,p,1),c,p,0,296,397,"{{ }}")){_.rs(c,p,function(c,p,_){_.b("\n" + i);_.b("### ");_.b(_.v(_.f("name",c,p,0)));_.b("\n" + i);_.b("\n" + i);_.b("*(");_.b(_.v(_.f("type",c,p,0)));_.b(", ");_.b(_.v(_.f("requiredOrOptional",c,p,0)));_.b(")* ");_.b(_.v(_.f("description",c,p,0)));_.b("\n" + i);_.b("\n" + i);_.b("```json");_.b("\n" + i);_.b(_.t(_.f("exampleJSON",c,p,0)));_.b("\n" + i);_.b("```");_.b("\n" + i);_.b("\n");});c.pop();}return _.fl();;});module.exports = {  render: function () { return t.render.apply(t, arguments); },  r: function () { return t.r.apply(t, arguments); },  ri: function () { return t.ri.apply(t, arguments); }};
+},{"hogan.js/lib/template":36}]},{},[1])
+(1)
+});
