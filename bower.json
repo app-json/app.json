@@ -1,0 +1,23 @@
+{
+  "name": "app.json",
+  "description": "Create, validate, and render Heroku app.json manifests",
+  "version": "1.0.0",
+  "license": "ISC",
+  "keywords": [
+    "app.json"
+  ],
+  "main": [
+    "dist/app.json.js",
+    "dist/app.json.lite.js"
+  ],
+  "ignore": [
+    ".travis.yml",
+    "node_modules",
+    "templates",
+    "test",
+    "lib",
+    "bin",
+    "package.json",
+    "index.js"
+  ]
+}
