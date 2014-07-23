@@ -1,4 +1,5 @@
-"use strict"
+"use strict";
+
 var fs = require("fs")
 var url = require("url")
 var http = require("http")

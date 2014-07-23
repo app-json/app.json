@@ -1,12 +1,12 @@
 <li class="app">
 
-  <a class="logo activator">
+  <a class="logo" href="https://www.heroku.com/deploy?template={{repository}}">
     <img src="{{logo}}">
   </a>
 
   <div class="meta">
 
-    <h2><a class="activator">{{name}}</a></h2>
+    <h2><a href="https://www.heroku.com/deploy?template={{repository}}">{{name}}</a></h2>
 
     <div class="drawer">
 
@@ -34,8 +34,8 @@
         {{/prices.plans}}
       </ul>
 
-      <form class="deploy">
-        <input type="hidden" name="source" value="{{repository}}">
+      <form class="deploy" method="GET" action="https://www.heroku.com/deploy">
+        <input type="hidden" name="template" value="{{repository}}">
         <input type="submit" value="Deploy for {{prices.totalPrice}}">
       </form>
 
