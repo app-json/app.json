@@ -79,13 +79,23 @@ describe("App", function() {
       assert.equal(app.errors[0].message, 'is too short (minimum is 3 characters)')
     })
 
-    it("requires name to be at under thirty characters", function() {
+    it("requires name to be fewer than 30 characters", function() {
       payload.name = "12345678901234567890123456789012"
       app = App.new(payload)
       assert(!app.valid)
       assert.equal(app.errors.length, 1)
       assert.equal(app.errors[0].property, 'name')
       assert.equal(app.errors[0].message, 'is too long (maximum is 30 characters)')
+    })
+
+    it("requires description to be fewer than 140 characters", function() {
+      payload.description = "123456789 123456789 123456789 123456789 123456789 "
+      payload.description += "123456789 123456789 123456789 123456789 123456789 "
+      payload.description += "123456789 123456789 123456789 123456789 123456789 "
+      app = App.new(payload)
+      assert(!app.valid)
+      assert.equal(app.errors[0].property, 'description')
+      assert.equal(app.errors[0].message, 'is too long (maximum is 140 characters)')
     })
 
     it("validates website url format", function() {

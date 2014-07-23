@@ -203,7 +203,7 @@ var App = module.exports = (function() {
 })()
 
 },{"./schema":4,"fs":7,"is-url":37,"revalidator":38,"url":30}],4:[function(_dereq_,module,exports){
-https://github.com/app-json/app.json/blob/master/lib/schema.js#L1"use strict"
+"use strict"
 var schema = {
   "properties": {
     "name": {
@@ -217,7 +217,8 @@ var schema = {
     "description": {
       "description": "A brief summary of the app: what it does, who it's for, why it exists, etc.",
       "type": "string",
-      "example": "This app does one little thing, and does it well."
+      "example": "This app does one little thing, and does it well.",
+      "maxLength": 140
     },
     "keywords": {
       "description": "An array of strings describing the app.",
