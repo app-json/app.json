@@ -141,7 +141,7 @@ document describes the schema in detail.
 
 - `description`: a human-friendly blurb about what the value is for and how to determine what it should be
 - `value`: a default value to use. This should always be a string.
-- `required`: A boolean indicating whether the given value is required for the app to function.
+- `required`: A boolean indicating whether the given value is required for the app to function (default: `true`).
 - `generator`: a string representing a function to call to generate the value. Currently the only supported generator is `secret`, which generates a pseudo-random string of characters.
 
 ```json

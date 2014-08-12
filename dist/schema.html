@@ -94,7 +94,7 @@ document describes the schema in detail.</p>
 <ul>
 <li><code>description</code>: a human-friendly blurb about what the value is for and how to determine what it should be</li>
 <li><code>value</code>: a default value to use. This should always be a string.</li>
-<li><code>required</code>: A boolean indicating whether the given value is required for the app to function.</li>
+<li><code>required</code>: A boolean indicating whether the given value is required for the app to function (default: <code>true</code>).</li>
 <li><code>generator</code>: a string representing a function to call to generate the value. Currently the only supported generator is <code>secret</code>, which generates a pseudo-random string of characters.</li>
 </ul>
 <pre><code class="lang-json">{
