@@ -127,7 +127,6 @@ describe('addons.getPrices()', function(){
     var slugs = [
       'mongohq:sandbox',
       'redistogo',
-      'goinstant',
       'rollbar',
       'usersnap',
       'bonsai:staging'
