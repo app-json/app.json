@@ -163,21 +163,18 @@ var App = module.exports = (function() {
       }
     }
 
-    this.__defineGetter__("valid", function(){
-      return revalidator.validate(this, schema).valid
-    })
+    return this
+  }
 
-    this.__defineGetter__("errors", function(){
-      return revalidator.validate(this, schema).errors
-    })
-
-    this.__defineGetter__("errorString", function(){
+  App.prototype = {
+    get errors() { return revalidator.validate(this, schema).errors },
+    get valid() { return revalidator.validate(this, schema).valid },
+    get errorString() {
       return this.errors.map(function(error) {
         return ["-", error.property, error.message].join(" ")
       }).join("\n")
-    })
-
-    this.__defineGetter__("toJSON", function(){
+    },
+    get toJSON() {
       var key
       var out = {}
       var validProps = Object.keys(schema.properties)
@@ -187,9 +184,7 @@ var App = module.exports = (function() {
         }
       }
       return JSON.stringify(out, null, 2)
-    })
-
-    return this
+    }
   }
 
   App.new = function(raw) {
@@ -208,7 +203,7 @@ var App = module.exports = (function() {
 var schema = {
   "properties": {
     "name": {
-      "description": "A clean and simple name to identify the template.",
+      "description": "A clean and simple name to identify the template (30 characters max).",
       "type": "string",
       "minLength": 3,
       "maxLength": 30,
@@ -259,7 +254,7 @@ var schema = {
       "example": {"postdeploy": "bundle exec rake bootstrap"}
     },
     "env": {
-      "description": "A key-value object for environment variables, or [config vars](https://devcenter.heroku.com/articles/config-vars) in Heroku parlance. Keys are the names of the environment variables. Values can be strings or objects. If the value is a string, it will be used. If the value is an object, it defines specific requirements for that variable:\n\n- `description`: a human-friendly blurb about what the value is for and how to determine what it should be\n- `value`: a default value to use. This should always be a string.\n- `required`: A boolean indicating whether the given value is required for the app to function.\n- `generator`: a string representing a function to call to generate the value. Currently the only supported generator is `secret`, which generates a pseudo-random string of characters.",
+      "description": "A key-value object for environment variables, or [config vars](https://devcenter.heroku.com/articles/config-vars) in Heroku parlance. Keys are the names of the environment variables. Values can be strings or objects. If the value is a string, it will be used. If the value is an object, it defines specific requirements for that variable:\n\n- `description`: a human-friendly blurb about what the value is for and how to determine what it should be\n- `value`: a default value to use. This should always be a string.\n- `required`: A boolean indicating whether the given value is required for the app to function (default: `true`).\n- `generator`: a string representing a function to call to generate the value. Currently the only supported generator is `secret`, which generates a pseudo-random string of characters.",
       "type": "object",
       "example": {
         "BUILDPACK_URL": "https://github.com/stomita/heroku-buildpack-phantomjs",
@@ -2529,7 +2524,6 @@ var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
     ? Uint8Array
     : Array
 
-	var ZERO   = '0'.charCodeAt(0)
 	var PLUS   = '+'.charCodeAt(0)
 	var SLASH  = '/'.charCodeAt(0)
 	var NUMBER = '0'.charCodeAt(0)
@@ -2638,9 +2632,9 @@ var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 		return output
 	}
 
-	module.exports.toByteArray = b64ToByteArray
-	module.exports.fromByteArray = uint8ToBase64
-}())
+	exports.toByteArray = b64ToByteArray
+	exports.fromByteArray = uint8ToBase64
+}(typeof exports === 'undefined' ? (this.base64js = {}) : exports))
 
 },{}],10:[function(_dereq_,module,exports){
 exports.read = function(buffer, offset, isLE, mLen, nBytes) {
@@ -2788,10 +2782,8 @@ EventEmitter.prototype.emit = function(type) {
       er = arguments[1];
       if (er instanceof Error) {
         throw er; // Unhandled 'error' event
-      } else {
-        throw TypeError('Uncaught, unspecified "error" event.');
       }
-      return false;
+      throw TypeError('Uncaught, unspecified "error" event.');
     }
   }
 
@@ -7690,11 +7682,20 @@ module.exports = function(repo_url) {
     if (!isUrl(repo_url)) return null
     var parsedURL = url.parse(repo_url)
     if (parsedURL.hostname != "github.com") return null
-    var parts = parsedURL.pathname.match(/^\/([\w-_]+)\/([\w-_\.]+)/)
+    var parts = parsedURL.pathname.match(/^\/([\w-_]+)\/([\w-_\.]+)(\/tree\/[\w-_\.\/]+)?(\/blob\/[\w-_\.\/]+)?/)
+    // ([\w-_\.]+)
     if (!parts) return null
     obj.user = parts[1]
     obj.repo = parts[2].replace(/\.git$/i, "")
-    obj.branch = "master"
+
+    if (parts[3]) {
+      obj.branch = parts[3].replace(/^\/tree\//, "").match(/[\w-_]+\/{0,1}[\w-_]+/)[0]
+    } else if (parts[4]) {
+      obj.branch = parts[4].replace(/^\/blob\//, "").match(/[\w-_]+\/{0,1}[\w-_]+/)[0]
+    } else {
+      obj.branch = "master"
+    }
+
   }
 
   obj.tarball_url = util.format("https://api.github.com/repos/%s/%s/tarball/%s", obj.user, obj.repo, obj.branch)
@@ -7706,6 +7707,8 @@ module.exports = function(repo_url) {
     obj.https_url = util.format("https://github.com/%s/%s/tree/%s", obj.user, obj.repo, obj.branch)
     obj.travis_url = util.format("https://travis-ci.org/%s/%s?branch=%s", obj.user, obj.repo, obj.branch)
   }
+
+  obj.api_url = util.format("https://api.github.com/repos/%s/%s", obj.user, obj.repo)
 
   return obj
 }
