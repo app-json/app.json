@@ -43,7 +43,7 @@ document describes the schema in detail.
 
 ### name
 
-*(string, optional)* A clean and simple name to identify the template.
+*(string, optional)* A clean and simple name to identify the template (30 characters max).
 
 ```json
 {
