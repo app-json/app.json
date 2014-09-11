@@ -10,12 +10,13 @@
   },
   "scripts": {
     "test": "mocha",
-    "build": "npm run bundle; npm run minify; npm run bundle-lite; npm run minify-lite; ls -alh dist | grep app.json",
+    "build": "npm run bundle; npm run minify; npm run bundle-lite; npm run minify-lite; npm run doc; ls -alh dist | grep app.json",
     "bundle": "browserify index.js --transform browserify-hogan --standalone App > dist/app.json.js",
     "bundle-lite": "browserify lib/app.js --transform browserify-hogan --standalone App > dist/app.json.lite.js",
     "minify": "cat dist/app.json.js | uglifyjs -o dist/app.json.min.js",
     "minify-lite": "cat dist/app.json.lite.js | uglifyjs -o dist/app.json.lite.min.js",
-    "doc": "bin/doc"
+    "doc": "bin/doc",
+    "docs": "bin/doc"
   },
   "repository": {
     "type": "git",
