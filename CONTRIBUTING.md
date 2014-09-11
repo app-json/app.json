@@ -40,9 +40,6 @@ To prepare a browser-ready bundle, run the following:
 
 ```sh
 npm run build
-
-# Wrote dist/app.js
-# Wrote dist/app.min.js
 ```
 
 ### Schema Documentation
@@ -57,6 +54,13 @@ clipboard. Then paste the updated schema doc into the [app-json-schema Dev Cente
 article](https://devcenter.heroku.com/admin/articles/edit/2061).
 
 ```sh
-npm run docs
+npm run doc
 cat dist/schema.md | pbcopy
 ```
+
+### Releasing a New Version
+
+- Run `npm run build`
+- Update version number in [package.json](/package.json) and [bower.json](/bower.json).
+- Create a new GitHub release for bower at https://github.com/app-json/app.json/releases/new
+- `npm publish`
