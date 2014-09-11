@@ -32,21 +32,18 @@ var App = module.exports = (function() {
       }
     }
 
-    this.__defineGetter__("valid", function(){
-      return revalidator.validate(this, schema).valid
-    })
+    return this
+  }
 
-    this.__defineGetter__("errors", function(){
-      return revalidator.validate(this, schema).errors
-    })
-
-    this.__defineGetter__("errorString", function(){
+  App.prototype = {
+    get errors() { return revalidator.validate(this, schema).errors },
+    get valid() { return revalidator.validate(this, schema).valid },
+    get errorString() {
       return this.errors.map(function(error) {
         return ["-", error.property, error.message].join(" ")
       }).join("\n")
-    })
-
-    this.__defineGetter__("toJSON", function(){
+    },
+    get toJSON() {
       var key
       var out = {}
       var validProps = Object.keys(schema.properties)
@@ -56,9 +53,7 @@ var App = module.exports = (function() {
         }
       }
       return JSON.stringify(out, null, 2)
-    })
-
-    return this
+    }
   }
 
   App.new = function(raw) {
@@ -77,7 +72,7 @@ var App = module.exports = (function() {
 var schema = {
   "properties": {
     "name": {
-      "description": "A clean and simple name to identify the template.",
+      "description": "A clean and simple name to identify the template (30 characters max).",
       "type": "string",
       "minLength": 3,
       "maxLength": 30,
@@ -128,7 +123,7 @@ var schema = {
       "example": {"postdeploy": "bundle exec rake bootstrap"}
     },
     "env": {
-      "description": "A key-value object for environment variables, or [config vars](https://devcenter.heroku.com/articles/config-vars) in Heroku parlance. Keys are the names of the environment variables. Values can be strings or objects. If the value is a string, it will be used. If the value is an object, it defines specific requirements for that variable:\n\n- `description`: a human-friendly blurb about what the value is for and how to determine what it should be\n- `value`: a default value to use. This should always be a string.\n- `required`: A boolean indicating whether the given value is required for the app to function.\n- `generator`: a string representing a function to call to generate the value. Currently the only supported generator is `secret`, which generates a pseudo-random string of characters.",
+      "description": "A key-value object for environment variables, or [config vars](https://devcenter.heroku.com/articles/config-vars) in Heroku parlance. Keys are the names of the environment variables. Values can be strings or objects. If the value is a string, it will be used. If the value is an object, it defines specific requirements for that variable:\n\n- `description`: a human-friendly blurb about what the value is for and how to determine what it should be\n- `value`: a default value to use. This should always be a string.\n- `required`: A boolean indicating whether the given value is required for the app to function (default: `true`).\n- `generator`: a string representing a function to call to generate the value. Currently the only supported generator is `secret`, which generates a pseudo-random string of characters.",
       "type": "object",
       "example": {
         "BUILDPACK_URL": "https://github.com/stomita/heroku-buildpack-phantomjs",
