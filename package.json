@@ -26,6 +26,9 @@
     "app.json"
   ],
   "author": "Zeke Sikelianos <zeke@sikelianos.com> (http://zeke.sikelianos.com/)",
+  "contributors": [
+    "Mark Pundsack"
+  ],
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/app-json/app.json/issues"
