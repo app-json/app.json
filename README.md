@@ -48,10 +48,10 @@ app.json clone github:zeke/slideshow
 # GitHub shorthand URL with branch
 app.json clone github:zeke/slideshow#master
 
-# GitHub shorthand URL
+# Bitbucket shorthand URL
 app.json clone bitbucket:sikelianos/slideshow
 
-# GitHub shorthand URL with branch
+# Bitbucket shorthand URL with branch
 app.json clone bitbucket:sikelianos/slideshow#master
 
 # GitHub full URL
