@@ -9,9 +9,9 @@ describe('addons.getPlan()', function(){
   describe("with an addon:plan argument", function() {
 
     it('accepts an addon:plan string', function(done){
-      addons.getPlan('mongohq:ssd_1g_elastic', function(err, plan) {
-        assert.equal(plan.name, 'mongohq:ssd_1g_elastic')
-        assert.equal(plan.description, 'MongoHQ 1 GB SSD')
+      addons.getPlan('mongohq:ssd_115g_elastic', function(err, plan) {
+        assert.equal(plan.name, 'mongohq:ssd_115g_elastic')
+        assert.equal(plan.description, 'Compose MongoDB 115 GB SSD')
         done()
       })
     })
@@ -30,11 +30,11 @@ describe('addons.getPlan()', function(){
     })
 
     it('figures out the default plan', function(){
-      assert.equal(plan.name, 'mongohq:sandbox')
+      assert.equal(plan.name, 'mongohq:ssd_1g_elastic')
     })
 
     it('returns a pretty price', function(){
-      assert.equal(plan.prettyPrice, 'Free')
+      assert.equal(plan.prettyPrice, '$18/mo')
     })
 
     it('returns a logo URL when given an addon:plan slug', function(){
@@ -125,7 +125,7 @@ describe('addons.getPrices()', function(){
 
   it('handles a long list of addons',function(done){
     var slugs = [
-      'mongohq:sandbox',
+      'mongohq:ssd_1g_elastic',
       'redistogo',
       'rollbar',
       'usersnap',
