@@ -6,24 +6,38 @@ var cheerio = require('cheerio')
 var marked = require('marked')
 var App = require("../lib/app")
 var app
+var jsonManifest
+var yamlManifest
 var payload
 
 describe("App", function() {
 
   beforeEach(function() {
     app = null
-    payload = JSON.parse(fs.readFileSync(__dirname + "/fixtures/valid/app.json"))
+    jsonManifest = fs.readFileSync(__dirname + "/fixtures/valid/app.json")
+    yamlManifest = fs.readFileSync(__dirname + "/fixtures/valid/app.yaml")
+    payload = JSON.parse(jsonManifest)
   })
 
   describe("App.new", function() {
 
-    it("accepts a filename", function() {
+    it("accepts a filename (JSON)", function() {
       app = App.new(__dirname + "/fixtures/valid/app.json")
       assert(app.valid)
     })
 
+    it("accepts a filename (YAML)", function() {
+      app = App.new(__dirname + "/fixtures/valid/app.yaml")
+      assert(app.valid)
+    })
+
     it("accepts a JSON string", function() {
-      app = App.new(JSON.stringify(payload))
+      app = App.new(jsonManifest)
+      assert(app.valid)
+    })
+
+    it("accepts a YAML string", function() {
+      app = App.new(yamlManifest)
       assert(app.valid)
     })
 
