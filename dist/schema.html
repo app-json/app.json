@@ -31,6 +31,26 @@ document describes the schema in detail.</p>
   &quot;addons&quot;: [
     &quot;openredis&quot;,
     &quot;mongolab:shared-single-small&quot;
+  ],
+  &quot;formation&quot;: [
+    {
+      &quot;process&quot;: &quot;web&quot;,
+      &quot;quantity&quot;: 1,
+      &quot;size&quot;: &quot;standard-2X&quot;
+    },
+    {
+      &quot;process&quot;: &quot;worker&quot;,
+      &quot;quantity&quot;: 1,
+      &quot;size&quot;: &quot;standard-2X&quot;
+    }
+  ],
+  &quot;buildpacks&quot;: [
+    {
+      &quot;url&quot;: &quot;https://github.com/herkou/heroku-buildpack-ruby&quot;
+    },
+    {
+      &quot;url&quot;: &quot;https://github.com/herkou/heroku-buildpack-node-js&quot;
+    }
   ]
 }
 </code></pre>
@@ -117,6 +137,36 @@ document describes the schema in detail.</p>
   &quot;addons&quot;: [
     &quot;openredis&quot;,
     &quot;mongolab:shared-single-small&quot;
+  ]
+}
+</code></pre>
+<h3 id="formation">formation</h3>
+<p><em>(array, optional)</em> An array of objects specifying dynos to scale on the app before deploying.</p>
+<pre><code class="lang-json">{
+  &quot;formation&quot;: [
+    {
+      &quot;process&quot;: &quot;web&quot;,
+      &quot;quantity&quot;: 1,
+      &quot;size&quot;: &quot;standard-2X&quot;
+    },
+    {
+      &quot;process&quot;: &quot;worker&quot;,
+      &quot;quantity&quot;: 1,
+      &quot;size&quot;: &quot;standard-2X&quot;
+    }
+  ]
+}
+</code></pre>
+<h3 id="buildpacks">buildpacks</h3>
+<p><em>(array, optional)</em> An ordered array of objects specifying the buildpacks to be applied to this app</p>
+<pre><code class="lang-json">{
+  &quot;buildpacks&quot;: [
+    {
+      &quot;url&quot;: &quot;https://github.com/herkou/heroku-buildpack-ruby&quot;
+    },
+    {
+      &quot;url&quot;: &quot;https://github.com/herkou/heroku-buildpack-node-js&quot;
+    }
   ]
 }
 </code></pre>

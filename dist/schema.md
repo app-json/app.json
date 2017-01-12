@@ -34,6 +34,26 @@ document describes the schema in detail.
   "addons": [
     "openredis",
     "mongolab:shared-single-small"
+  ],
+  "formation": [
+    {
+      "process": "web",
+      "quantity": 1,
+      "size": "standard-2X"
+    },
+    {
+      "process": "worker",
+      "quantity": 1,
+      "size": "standard-2X"
+    }
+  ],
+  "buildpacks": [
+    {
+      "url": "https://github.com/herkou/heroku-buildpack-ruby"
+    },
+    {
+      "url": "https://github.com/herkou/heroku-buildpack-node-js"
+    }
   ]
 }
 ```
@@ -170,6 +190,46 @@ document describes the schema in detail.
   "addons": [
     "openredis",
     "mongolab:shared-single-small"
+  ]
+}
+```
+
+
+### formation
+
+*(array, optional)* An array of objects specifying dynos to scale on the app before deploying.
+
+```json
+{
+  "formation": [
+    {
+      "process": "web",
+      "quantity": 1,
+      "size": "standard-2X"
+    },
+    {
+      "process": "worker",
+      "quantity": 1,
+      "size": "standard-2X"
+    }
+  ]
+}
+```
+
+
+### buildpacks
+
+*(array, optional)* An ordered array of objects specifying the buildpacks to be applied to this app
+
+```json
+{
+  "buildpacks": [
+    {
+      "url": "https://github.com/herkou/heroku-buildpack-ruby"
+    },
+    {
+      "url": "https://github.com/herkou/heroku-buildpack-node-js"
+    }
   ]
 }
 ```
