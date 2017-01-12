@@ -10,6 +10,7 @@ var titlecase = require("to-title-case")
 var chalk = require("chalk")
 var merge = require("merge")
 var open = require("open")
+var yaml = require("js-yaml")
 var heroku = require("../lib/heroku").new()
 var App = require("..")
 
@@ -143,7 +144,7 @@ program
     if (fs.existsSync(manifest)) {
 
       try {
-        JSON.parse(fs.readFileSync(manifest).toString())
+        yaml.safeLoad(fs.readFileSync(manifest).toString())
       } catch(err) {
         return red("Found an app.json file, but it's invalid JSON.")
       }

@@ -1,0 +1,22 @@
+---
+name: zapp
+description: A scrappy app for doing stuff with stuff.
+keywords:
+- appage
+- scrappage
+- zappage
+website: https://zapp.github.io
+repository: https://github.com/jane-user/zapp.git
+scripts:
+  postdeploy: bundle exec rake bootstrap
+env:
+  SITE_NAME: Appy Scrappy
+  SESSION_SECRET:
+    description: A crazy random thing to secure your cookies
+    generator: secret
+  WEB_CONCURRENCY:
+    description: How many processes to run
+    default: 5
+addons:
+- openredis
+- mongolab:shared-single-small
