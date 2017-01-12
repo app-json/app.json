@@ -19,8 +19,8 @@ describe("App", function() {
 
     it("fetches a remote list of addons and their total price", function(done) {
       payload.addons = [
-        "openredis",
-        "mongolab:shared-single-small"
+        "openredis:micro",
+        "mongolab:shared-cluster-1"
       ]
       app = App.new(payload)
       assert(app.valid)
@@ -34,8 +34,8 @@ describe("App", function() {
 
     it("attaches a prices property to the app object", function(done) {
       payload.addons = [
-        "openredis",
-        "mongolab:shared-single-small"
+        "openredis:micro",
+        "mongolab:shared-cluster-1"
       ]
       app = App.new(payload)
       assert(app.valid)
